@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Public leaderboard snapshot, previous GEMSDOE results, and evidence-limited analysis of H19-4/H19-5.">
+  <title>Scores & Evidence · GEMSDOE23</title><link rel="stylesheet" href="assets/site.css"><script defer src="assets/site.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="header-inner">
+  <a class="brand" href="index.html"><span class="brand-mark">G23</span><span>GEMSDOE23 <span class="small" style="color:#c8d8cd">/ research log</span></span></a>
+  <nav class="nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="executive-summary.html">How to submit</a><a href="hypotheses.html">Hypotheses</a><a href="uncertainty.html">Uncertainty</a><a href="results.html" aria-current="page">Scores</a><a href="sources.html">Sources</a><a href="verification.html">Audit</a></nav>
+</div></header>
+<main id="main">
+  <div class="eyebrow">Results, not narrative</div>
+  <h1>What the score history can—and cannot—tell us</h1>
+  <p class="lead">Public scores are outcomes on a particular leaderboard split. They are not ablations, do not reveal which feature caused the score, and do not establish performance against private or expert-revised Phase 2 labels.</p>
+
+  <section class="section">
+    <div class="section-head"><div><div class="eyebrow">Official DrivenData snapshot</div><h2>Public leaderboard on 2026-10-01</h2></div><span id="feed-status" class="status status-neutral">Dated snapshot</span></div>
+    <p class="small">The official page showed DARD at 0.3168. The value 0.3049 in the request was already stale at this retrieval; second place was 0.3042. User-provided H19 values match public scores at ranks 24 and 26, but neither score can be tied to a TIFF hash from the public board.</p>
+    <div class="table-wrap"><table><thead><tr><th>Rank</th><th>Participant</th><th>Public DW-Tversky</th></tr></thead><tbody id="leaderboard-rows">
+      <tr><td>1</td><td>DARD</td><td class="numeric">0.3168</td></tr><tr><td>2</td><td>alexoktaba</td><td class="numeric">0.3042</td></tr><tr><td>3</td><td>Batik Shirt Brothers</td><td class="numeric">0.2998</td></tr><tr><td>4</td><td>joeyfezster</td><td class="numeric">0.2919</td></tr><tr><td>5</td><td>xiaofanhu</td><td class="numeric">0.2901</td></tr>
+    </tbody></table></div>
+    <p id="leaderboard-retrieved" class="freshness">Snapshot date: 2026-10-01</p>
+    <p><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Open the live official board →</a></p>
+  </section>
+
+  <section class="grid-3">
+    <div class="card metric-card"><span>Current official public leader</span><strong>0.3168</strong><span>DARD · rank 1 in retrieved snapshot</span></div>
+    <div class="card metric-card"><span>H19-5 score listed by user / same score visible on board</span><strong>0.1922</strong><span>Public score appears at rank 24; artifact-to-account mapping unknown</span></div>
+    <div class="card metric-card"><span>H19-5 minus H19-4 score listed</span><strong>+0.0028</strong><span>Small public-score gap; not causal attribution</span></div>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">Relevant user-supplied entries</div><h2>Local candidate history</h2>
+    <div class="table-wrap"><table><thead><tr><th>Site / candidate</th><th>Score in supplied record</th><th>Evidence status</th></tr></thead><tbody>
+      <tr><td><a href="https://buffedlizard55-lab.github.io/19GEMSDOE/docs/index.html">H19-5 · power-law budget / multi-line corroboration</a></td><td class="numeric">0.1922</td><td>Score is user-supplied and appears on official board at rank 24; file hash/account link is not public.</td></tr>
+      <tr><td><a href="https://buffedlizard55-lab.github.io/19GEMSDOE/docs/index.html">H19-4 · multi-line corroborated openness/thermal/population</a></td><td class="numeric">0.1894</td><td>Score is user-supplied and appears on official board at rank 26; exact evaluated artifact is not identified.</td></tr>
+      <tr><td><a href="https://buffedlizard55-lab.github.io/GEMSDOE10/">H28 dotted-ridge</a></td><td class="numeric">0.1839</td><td>Score in supplied record; may be stale relative to current results.</td></tr>
+      <tr><td><a href="https://buffedlizard55-lab.github.io/16GEMSDOE/docs/index.html">H16-1 topo/geophys baseline ridges</a></td><td class="numeric">0.1855</td><td>Score in supplied record. On the official snapshot, a rank-29 score of 0.1855 appears under another participant; no exact file identity is exposed.</td></tr>
+      <tr><td>Other projects from the request</td><td class="numeric">0.0020–0.1563</td><td>Full copied score table is preserved in <a href="PROJECT_BRIEF.md">the project brief</a>; project-page claims are not all independently tied to leaderboard entries.</td></tr>
+    </tbody></table></div>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">H19-5 forensic reading</div><h2>Why might it score better? Plausible mechanism, not proven cause</h2>
+    <div class="grid-2">
+      <article class="card"><h3>Its own project page's account</h3><p>The linked 19GEMSDOE page describes H19-5 as a sparse candidate set supported by several physical lines: power-law fault-length scaling, backward thermal/geochemical conduit reasoning, high-resolution topographic openness/local relief, and geophysical lineaments. It describes an approximately 2.45% per-quadrant emission budget.</p><p class="small">These are claims from a team-maintained project page. This checkout has not reproduced its feature extraction, folds, or scores. They are not independently verified measurements.</p></article>
+      <article class="card"><h3>Metric-compatible rationale</h3><p>The official metric uses `α=0.2`, `β=0.8`, so its false-negative coefficient is larger than its false-positive coefficient. A limited set of plausible, thin traces could improve recall while limiting false-positive mass; the 300 m triangular kernel also tolerates small location offsets.</p><p class="small">That describes an incentive in the metric; it does not show which H19 feature caused the score. Thin binary output alone is not evidence of geological correctness.</p></article>
+    </div>
+    <div class="callout" style="margin-top:1rem"><strong>Best defensible answer:</strong> H19's score is an observed public result, but the causal explanation is unknown. The multi-line corroboration and controlled output density are plausible reasons; only matched ablations, independent spatial folds, and artifact provenance can distinguish them from data leakage, split luck, or unrelated changes.</div>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">The question: can we exceed .1894?</div><h2>Already above that value in the supplied record; beating the leader is a different problem</h2>
+    <ul class="list-clean">
+      <li>The supplied history already lists H19-5 at <strong>0.1922</strong>, which is 0.0028 above H19-4's 0.1894. The official board snapshot also shows 0.1922 and 0.1894 as public scores, though it does not establish the file/account mapping.</li>
+      <li>Beating the stated `.3049` is not the same as beating `.1894`; as of the official retrieval the leader was `.3168`, a gap of 0.1246 from 0.1922. That is a large generalization gap, not a small tuning target.</li>
+      <li>It is possible in principle to generate a higher public score; it cannot be promised. Public leaderboard scores can overfit and do not reveal the private Phase 1 or Phase 2 outcome.</li>
+      <li>This repository has not trained or validated a new candidate. Therefore it cannot responsibly claim a new expected score, nor recommend spending a weekly upload slot.</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">What must happen next</div><h2>Turn explanation into an experiment</h2>
+    <ol class="list-clean">
+      <li>Obtain the authorized `training_features.tif`, `labels.tif`, and official `sample_submission.tif` from the competition data tab.</li>
+      <li>Reproduce one incumbent candidate from its source and hash; freeze labels, spatial folds, the DTI implementation, 300 m support, and pixel budget.</li>
+      <li>Run the H1 edge-normal consensus as a matched ablation on those same folds; report foldwise DTI, calibration, uncertainty, and false-positive distance distribution.</li>
+      <li>Only advance if the preregistered holdout gate passes. Then produce one uniquely named file, re-read it against the sample template, record its hash/note, and decide whether a public upload is worth the slot.</li>
+    </ol>
+    <p class="small">Sources: <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/#performance-metric">official metric</a>, <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">public board</a>, <a href="https://buffedlizard55-lab.github.io/19GEMSDOE/docs/index.html">linked H19 submission page</a>.</p>
+  </section>
+</main>
+<footer class="site-footer"><div class="footer-inner"><span>Scores are evidence; causal stories require experiments.</span><span><a href="hypotheses.html">Next: hypothesis register</a> · <a href="verification.html">Audit flags</a></span></div></footer>
+</body>
+</html>

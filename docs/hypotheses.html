@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Five falsifiable geological fault-mapping hypotheses ranked by expected value, evidence, and cost.">
+  <title>Hypothesis Register · GEMSDOE23</title><link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="header-inner">
+  <a class="brand" href="index.html"><span class="brand-mark">G23</span><span>GEMSDOE23 <span class="small" style="color:#c8d8cd">/ research log</span></span></a>
+  <nav class="nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="executive-summary.html">How to submit</a><a href="hypotheses.html" aria-current="page">Hypotheses</a><a href="uncertainty.html">Uncertainty</a><a href="results.html">Scores</a><a href="sources.html">Sources</a><a href="verification.html">Audit</a></nav>
+</div></header>
+<main id="main">
+  <div class="eyebrow">Preregister before modeling · as of 2026-10-01</div>
+  <h1>Five new geological tests</h1>
+  <p class="lead">Rank is a qualitative prior for expected development value—not a predicted DTI uplift. No candidate has been validated because the required competition rasters are absent. The H19 pages linked in the request describe prior efforts; this checkout itself began empty. The comparisons below therefore distinguish what is actually in this repository (nothing before this implementation) from what the linked project pages report.</p>
+  <div class="callout danger"><strong>Promotion gate is closed.</strong> The first candidate needs a frozen, spatially blocked holdout comparison against a reproducible incumbent. No weekly submission slot should be used until that comparison passes. The local proxy will still differ from hidden expert labels.</div>
+
+  <section class="section">
+    <div class="section-head"><div><div class="eyebrow">Relative prior ranking</div><h2>Expected value × evidence × implementation cost</h2></div></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Rank</th><th>Hypothesis</th><th>Prior DTI upside</th><th>Confidence</th><th>Cost</th><th>New external data?</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td class="numeric">1</td><td>Multi-sensor edge-normal consensus</td><td>Moderate, unquantified</td><td>Medium-low</td><td>Medium</td><td>No new dataset beyond competition features</td><td>Not tested</td></tr>
+        <tr><td class="numeric">2</td><td>Survey-gap-conditioned epistemic triage</td><td>High upside, uncertain</td><td>Low</td><td>High</td><td>Yes: NGMDB coverage/scale metadata</td><td>Source exists; coverage not assembled</td></tr>
+        <tr><td class="numeric">3</td><td>Hydrogeomorphic channel offset / knickpoint</td><td>Low–moderate</td><td>Low–medium</td><td>High</td><td>3DEP DEM; exact tile availability not verified here</td><td>Conditional</td></tr>
+        <tr><td class="numeric">4</td><td>Conductive-base / magnetic-source-depth break</td><td>Low–moderate</td><td>Low</td><td>Medium</td><td>No new dataset beyond competition features</td><td>Not tested</td></tr>
+        <tr><td class="numeric">5</td><td>Strain-accommodation / seismicity-boundary coherence</td><td>Low, exploratory</td><td>Low</td><td>Low–medium</td><td>No new dataset beyond competition features</td><td>Not tested</td></tr>
+      </tbody>
+    </table></div>
+    <p class="small">“Expected DTI upside” is intentionally qualitative: no local folds or candidate rasters are available, so numerical score gains would be fabricated. Costs are engineering estimates, not measured timings.</p>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">H1 · first to validate</div><h2>Multi-sensor geophysical edge-normal consensus</h2>
+    <div class="grid-2">
+      <div class="card"><h3>Layers & physical signature</h3><p>The official page lists total magnetic intensity (`TMI`), reduced-to-pole magnetics, isostatic gravity, surface conductivity, and depth to conductive base. The organizer reference notebook's printed metadata instead labels a channel `Depth to basement surface`; that is not assumed to be the same product. The resolver excludes derivative bands for raw TMI/gravity and will fail closed until the downloaded raster confirms a unique depth channel. At 100–400 m smoothing scales, compute gradient magnitude and unoriented edge-normal alignment (`|cos Δθ|`) across magnetic, gravity, and conductive families; require cross-family support rather than a single sharp boundary.</p></div>
+      <div class="card"><h3>Why a catalogue gap might show here</h3><p>A fault may juxtapose rocks with contrasting magnetization, density, or electrical conductivity even where the surface trace is subtle or buried. Independent aligned contrasts could locate a structure not drawn in the USGS/INGENIOUS catalogue. Lithologic contacts and processing edges are important false-positive alternatives.</p></div>
+      <div class="card"><h3>Difference from earlier work</h3><p>The linked H19 page describes a geopotential “strike worm” component and earlier pages describe geophysics/ridge ensembles. This test is different in its preregistered cross-family gradient-normal agreement and explicit one-sensor ablation; it does not simply emit magnetic or gravity ridges. Those prior descriptions have not been independently reproduced in this checkout.</p></div>
+      <div class="card"><h3>Data, cost & validation</h3><p>Uses official competition-provided GeoDAWN/INGENIOUS feature bands, so it needs no new external dataset; the files themselves remain login-gated. Estimated cost: medium. Freeze band-name mapping from GeoTIFF metadata, then compare a baseline U-Net/ensemble with and without the consensus channel on identical out-of-fold quadrants and equal emission budgets. Require positive mean DTI delta and at least 3/4 fold wins under the preregistered gate. No local result exists.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">H2 · intended uncertainty innovation</div><h2>Survey-gap-conditioned epistemic review priority</h2>
+    <div class="grid-2">
+      <div class="card"><h3>Layers & physical signature</h3><p>For each candidate pixel/trace, use independently trained ensemble probabilities on the competition feature stack, plus an independent mapped-coverage proxy derived from USGS National Geologic Map Database (NGMDB) map footprints, scale, and publication metadata. High ensemble variance in sparse/low-detail mapped areas becomes a discovery cue; the same disagreement under dense, detailed coverage becomes a caution.</p></div>
+      <div class="card"><h3>Why the catalogue gap might be spatially structured</h3><p>The official competition states that the public fault catalogue is incomplete and may be inaccurate. It does <em>not</em> establish that historical fieldwork scarcity caused the omissions or identify which terrain was undersurveyed. This experiment directly tests that additional premise rather than assuming it.</p></div>
+      <div class="card"><h3>Difference from earlier work</h3><p>The user-supplied history describes feature fusion, model ensembles, thin-ridge emissions, and geological priors, but not an independent survey-coverage observation model interacting with epistemic uncertainty. This is a review-priority mechanism, not an uncertainty-only rejection rule and not a submission probability adjustment.</p></div>
+      <div class="card"><h3>External source check & cost</h3><p><a href="https://ngmdb.usgs.gov/mapview/index.html">USGS NGMDB MapView</a> and the <a href="https://www.usgs.gov/faqs/what-national-geologic-map-database">NGMDB catalog</a> are publicly browsable and provide map records/metadata. The relevant footprints and scale metadata have <strong>not</strong> been downloaded, rasterized, or tested for this study area. Map coverage is not direct field-effort evidence. Estimated cost: high. Do not call the coverage proxy viable until a spatial layer is obtained, independently checked, and compared with survey-area records.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">H3 · terrain, not another scarp score</div><h2>Hydrogeomorphic drainage offsets and channel knickpoints</h2>
+    <div class="grid-2">
+      <div class="card"><h3>Layer & signature</h3><p>USGS 3DEP 1 m bare-earth DEM: derive drainage paths, channel curvature, and longitudinal-profile slope breaks; measure coherent lateral channel deflection or paired knickpoints along a candidate linear structure at multiple channel orders.</p></div>
+      <div class="card"><h3>Why it may find unmapped traces</h3><p>A subtle fault can perturb channel course or base level without producing a clean scarp at 100 m. Requiring aligned effects on independent channels may reject isolated topographic artifacts. Lithology, drainage engineering, landslides, and DEM artifacts can imitate the signal.</p></div>
+      <div class="card"><h3>Difference from earlier work</h3><p>H19 pages describe 1 m/10 m topographic openness, local-relief/scarp detection, and ridge thinning. The proposed signature is network topology and along-channel profile discontinuity, not scarp polarity, openness, or ridge emission.</p></div>
+      <div class="card"><h3>External source check & cost</h3><p>The <a href="https://www.usgs.gov/3d-elevation-program/about-3dep-products-services">USGS 3DEP program</a> states elevation products are free and links a 1 m DEM availability viewer and download tools. The exact GeoDAWN tile set is not verified here because `1m_DEM_links.csv` is absent. Cost: high (many high-resolution tiles and hydrology processing). Viable only after overlap/quality audit.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">H4 · subsurface geometry</div><h2>Conductive-base and magnetic-source-depth breaks</h2>
+    <div class="grid-2">
+      <div class="card"><h3>Layers & physical signature</h3><p>Depth to conductive base surface, surface conductivity, and top-of-crustal magnetic source-depth estimate. Compute multiscale curvature / zero-crossings in the depth surfaces and test whether aligned discontinuities persist between electrical and magnetic estimates.</p></div>
+      <div class="card"><h3>Why it may find unmapped traces</h3><p>A basement fault or step may control conductor geometry and magnetic source depth even where surficial mapping has not resolved a trace. The mechanism is independent of spring/well heat anomalies. Spatial-resolution and inversion-smoothing artifacts may dominate.</p></div>
+      <div class="card"><h3>Difference from earlier work</h3><p>The linked H19 write-up names thermal/geochemical conduit inversion and geopotential lineaments; this candidate targets the geometry of electrical/magnetic source surfaces, not thermal targets or gravity-strike paths. Current checkout has no existing implementation.</p></div>
+      <div class="card"><h3>Data, cost & validation</h3><p>These feature families are listed in the official competition description; data access still requires the official data tab. No additional external dataset. Cost: medium. Validate held-out known-fault recovery at equal candidate density and run single-channel ablations to exclude a one-layer pattern match.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">H5 · exploratory / lower prior</div><h2>Strain-accommodation boundaries and seismicity contrast</h2>
+    <div class="grid-2">
+      <div class="card"><h3>Layers & physical signature</h3><p>Dilatation rate, shear strain rate, second invariant of the strain-rate tensor, and earthquake density. Test multiscale tensor gradients and linearly coherent strain boundaries that are adjacent to—not simply colocated with—seismicity-density transitions.</p></div>
+      <div class="card"><h3>Why it may find unmapped traces</h3><p>A fault can accommodate distributed deformation and create a sharp strain boundary; seismicity can vary along the same structure. This may reveal a structural corridor not represented by a surface trace, but the relationship is non-unique and the provided earthquake-density window/time support must be audited.</p></div>
+      <div class="card"><h3>Difference from earlier work</h3><p>The proposed feature is an explicit spatial derivative/contrast between strain tensors and seismicity, not a generic classifier trained on the same channels. It does not use the H19 population-length budget or DEM scarps.</p></div>
+      <div class="card"><h3>Data, cost & validation</h3><p>Uses named feature families listed on the official competition page; no new external data. Estimated cost: low–medium. Require data-window provenance, directional controls, permutation/rotation nulls, and a spatially blocked comparison. Because earthquake density can proxy mapped/active systems, score only as exploratory until label leakage and survey bias are ruled out.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Decision rule</h2>
+    <ol class="list-clean">
+      <li>Inventory the official feature-band descriptions; if the exact channel mapping is absent, stop rather than guess band positions.</li>
+      <li>Freeze spatial folds, the 300 m metric support, a buffer sensitivity plan, and equal pixel budgets before looking at candidate scores.</li>
+      <li>Compare each candidate against the current reproducible holdout incumbent on the same folds; include foldwise deltas and uncertainty intervals across spatial subblocks.</li>
+      <li>Only candidate 1 is currently implemented as a generic edge-consensus feature function. None is validated or submission-eligible.</li>
+      <li>When a survey-coverage source is missing or not spatially testable, omit H2's adjustment and report coverage as unknown.</li>
+    </ol>
+    <p class="small">The local code implementing H1 is <code>src/gems/geology.py</code>. It refuses missing layer names and has not been run on competition rasters.</p>
+  </section>
+</main>
+<footer class="site-footer"><div class="footer-inner"><span>Five hypotheses · zero validated in this checkout</span><span><a href="sources.html">Evidence register</a> · <a href="uncertainty.html">Uncertainty design</a></span></div></footer>
+</body>
+</html>

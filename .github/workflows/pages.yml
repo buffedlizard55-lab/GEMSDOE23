@@ -1,0 +1,38 @@
+name: Publish site and refresh public leaderboard
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Refresh the official public leaderboard snapshot
+        run: python scripts/update_leaderboard.py --output docs/data/leaderboard.json --status docs/data/leaderboard-status.json
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

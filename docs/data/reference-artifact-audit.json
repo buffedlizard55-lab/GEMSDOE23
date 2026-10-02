@@ -1,0 +1,42 @@
+{
+  "path": "docs/downloads/gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif",
+  "sha256": "ec1f9b56b83ce33cad781ceb9f104b18fb4f2ff785263a4e89616af4aabdee8d",
+  "bytes": 1712322,
+  "classic_tiff": true,
+  "byte_order": "little",
+  "width": 3292,
+  "height": 3730,
+  "samples_per_pixel": 1,
+  "bits_per_sample": 32,
+  "sample_format": "IEEE float",
+  "compression": "LZW",
+  "predictor": 1,
+  "epsg": 32611,
+  "pixel_scale": [
+    100.0,
+    100.0,
+    0.0
+  ],
+  "tiepoint": [
+    0.0,
+    0.0,
+    0.0,
+    243350.0,
+    4508550.0,
+    0.0
+  ],
+  "gdal_nodata": "nan",
+  "decoded_pixels": 12279160,
+  "finite_pixels": 5167373,
+  "nan_pixels": 7111787,
+  "positive_infinity_pixels": 0,
+  "negative_infinity_pixels": 0,
+  "finite_min": 0.0,
+  "finite_max": 1.0,
+  "finite_value_counts": {
+    "0.0": 5046242,
+    "1.0": 121131
+  },
+  "finite_values_in_0_1": true,
+  "template_match": "NOT CHECKED; official sample_submission.tif is required"
+}

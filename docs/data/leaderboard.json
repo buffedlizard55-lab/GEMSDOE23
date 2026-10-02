@@ -1,0 +1,86 @@
+{
+  "competition": "DOE GEMS Prize / DrivenData #306",
+  "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
+  "retrieved_utc": "2026-10-01",
+  "source_status": "snapshot",
+  "source_note": "Live refresh failed; the last verified official leaderboard rows were retained.",
+  "rows": [
+    {
+      "rank": 1,
+      "participant": "DARD",
+      "score": 0.3168
+    },
+    {
+      "rank": 2,
+      "participant": "alexoktaba",
+      "score": 0.3042
+    },
+    {
+      "rank": 3,
+      "participant": "Batik Shirt Brothers",
+      "score": 0.2998
+    },
+    {
+      "rank": 4,
+      "participant": "joeyfezster",
+      "score": 0.2919
+    },
+    {
+      "rank": 5,
+      "participant": "xiaofanhu",
+      "score": 0.2901
+    },
+    {
+      "rank": 6,
+      "participant": "HardcoreTechGod",
+      "score": 0.2854
+    },
+    {
+      "rank": 7,
+      "participant": "mzoorob",
+      "score": 0.2843
+    },
+    {
+      "rank": 8,
+      "participant": "GrigorSargsyan",
+      "score": 0.2742
+    },
+    {
+      "rank": 9,
+      "participant": "op01",
+      "score": 0.271
+    },
+    {
+      "rank": 10,
+      "participant": "exposed",
+      "score": 0.2584
+    },
+    {
+      "rank": 11,
+      "participant": "tchu",
+      "score": 0.2511
+    },
+    {
+      "rank": 24,
+      "participant": "smrtdoog5",
+      "score": 0.1922
+    },
+    {
+      "rank": 25,
+      "participant": "hudsonenterprises",
+      "score": 0.1907
+    },
+    {
+      "rank": 26,
+      "participant": "SDCF9",
+      "score": 0.1894
+    }
+  ],
+  "attribution_caveat": "The official public leaderboard displays participant and score but does not expose the submission GeoTIFF SHA-256. Matching H19 site values to leaderboard values is not proof that the leaderboard evaluated the copied H19 artifact.",
+  "refresh_status": {
+    "checked_utc": "2026-10-02T00:11:33.515561+00:00",
+    "status": "stale-snapshot-retained",
+    "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
+    "error": "URLError: <urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>"
+  }
+}
