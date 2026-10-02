@@ -4,7 +4,7 @@
   "retrieved_utc": "2026-10-02T09:28:35+00:00",
   "source_status": "snapshot",
   "capture_method": "Rows transcribed from the official public leaderboard page as rendered by the Arena web reader at 2026-10-02T09:28:35+00:00 UTC (all 50 displayed rows). The sandbox shell has no TLS egress to drivendata.org, and the GitHub Actions refresh of 2026-10-02T09:20:31Z could not parse the HTML the site served it; scripts/update_leaderboard.py now records diagnostics for that case in docs/data/leaderboard-status.json.",
-  "source_note": "Verified against the official page on 2026-10-02. Changes versus the previous snapshot: kinghorton42 (0.2635) entered at rank 10, shifting ranks 10-25 down by one; smrtdoog5 (0.1922) is now displayed at rank 26, not 24.",
+  "source_note": "Live refresh failed at 2026-10-02T09:45:15+00:00 (ValueError: Could not find a leaderboard table with rank and score headers (0 tables, 0 rows, 0 bytes of cell text)); the last verified official leaderboard rows were retained. See docs/data/leaderboard-status.json for diagnostics.",
   "rows": [
     {
       "rank": 1,
@@ -311,16 +311,31 @@
   "attribution_caveat": "The official public leaderboard displays participants and scores but does not expose a prediction-file SHA-256 or public submission identifier; score equality is not artifact, account, or team attribution. As of 2026-10-02: H19-4 (0.1894) coincides with displayed rank 28 (SDCF9); H19-5 (0.1922) coincides with displayed rank 26 (smrtdoog5).",
   "phase_caveat": "These are public leaderboard results only, not private Initial Prize Round (Phase 1) or expert-updated Final Prize Round (Phase 2) scores.",
   "refresh_status": {
-    "checked_utc": "2026-10-02T09:28:35+00:00",
-    "status": "dated-snapshot",
+    "checked_utc": "2026-10-02T09:45:15+00:00",
+    "status": "stale-snapshot-retained",
     "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-    "row_count": 50,
-    "top": {
-      "rank": 1,
-      "participant": "DARD",
-      "score": 0.3195,
-      "score_text": "0.3195"
-    },
-    "note": "Manually captured the same day; the automated HTML refresh could not parse the page served to the GitHub Actions runner. Re-run scripts/update_leaderboard.py --strict to test the automated path."
+    "error": "ValueError: Could not find a leaderboard table with rank and score headers (0 tables, 0 rows, 0 bytes of cell text)",
+    "retained_retrieved_utc": "2026-10-02T09:28:35+00:00",
+    "retained_row_count": 50,
+    "diagnostics": {
+      "attempts": [
+        {
+          "user_agent": "Mozilla/5.0",
+          "http_status": 200,
+          "final_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
+          "bytes": 30166,
+          "ok": true
+        }
+      ],
+      "title": "Competition: The Geologic Enhanced Mapping System (GEMS) Prize Challenge",
+      "tables": 0,
+      "rows": 0,
+      "cell_text_bytes": 0,
+      "user_links": 0,
+      "rank_markers": 1,
+      "tversky_mentions": 0,
+      "loading_placeholder": true,
+      "text_excerpt": "Competition: The Geologic Enhanced Mapping System (GEMS) Prize Challenge Skip to main content Competitions Partner with us How it works DrivenData LABS Blog Log in Sign up energy The Geologic Enhanced Mapping System (GEMS) Prize Challenge Identify hidden geologic faults to discover new geothermal resources. #energy #sc"
+    }
   }
 }
