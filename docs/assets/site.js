@@ -53,7 +53,7 @@
         const isLive = data.source_status === 'live';
         const refreshState = data.refresh_status?.status;
         const refreshFailed = refreshState === 'stale-snapshot-retained' || refreshState === 'unavailable-no-snapshot';
-        const manual = refreshState === 'dated-snapshot';
+        const manual = refreshState === 'dated-snapshot' || refreshState === 'manual-dated-snapshot';
         feedBadge.textContent = isLive
           ? 'Live feed refreshed'
           : (refreshFailed ? 'Dated snapshot · automated refresh failed'

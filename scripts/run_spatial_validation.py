@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Score out-of-fold predictions on four spatial blocks and issue a conservative gate."""
+"""Score out-of-fold predictions against known catalogue labels as a diagnostic only.
+
+The supplied training labels are already-mapped faults, not the competition's target of
+uncatalogued faults. This script can screen for gross spatial generalisation failures, but it
+never authorizes a submission slot. Release approval requires a separate, documented comparison
+against the current best on an independent uncatalogued-fault holdout.
+"""
 from __future__ import annotations
 
 import argparse
@@ -129,9 +135,14 @@ def main() -> int:
         deltas = [r["delta"] for r in results]
         mean_delta = float(np.mean(deltas))
         fold_wins = sum(delta > 0.0 for delta in deltas)
-        gate = mean_delta >= args.min_mean_delta and fold_wins >= args.minimum_fold_wins
+        metric_screen_passed = mean_delta >= args.min_mean_delta and fold_wins >= args.minimum_fold_wins
+        # This command scores the official *known-catalogue* label raster by default. Those
+        # pixels are masked from the competition metric, so even a positive screen cannot
+        # authorize spending a competition slot. Preserve the measured comparison, but make
+        # release eligibility impossible at this stage.
         report = {
             "created_utc": datetime.now(timezone.utc).isoformat(),
+            "status": "PROXY_ONLY",
             "candidate_id": meta.get("candidate_id", "unnamed"),
             "candidate_spec_sha256": meta.get("candidate_spec_sha256"),
             "candidate_metadata_sha256": sha256(args.metadata),
@@ -140,7 +151,8 @@ def main() -> int:
             "incumbent_spec_sha256": incumbent_meta.get("candidate_spec_sha256"),
             "incumbent_metadata_sha256": sha256(args.incumbent_metadata),
             "incumbent_prediction_sha256": sha256(args.incumbent),
-            "truth_semantics": "held-out known catalogue faults only; this is a proxy, not the competition's hidden-fault score",
+            "truth_semantics": "known_catalogue_faults; proxy-only and excluded from competition scoring",
+            "truth_sha256": sha256(args.truth),
             "metric": "official distance-weighted Tversky index; alpha=0.2, beta=0.8",
             "spatial_design": {
                 "folds": 4,
@@ -155,16 +167,18 @@ def main() -> int:
                 "minimum_fold_wins": args.minimum_fold_wins,
                 "mean_delta": mean_delta,
                 "fold_wins": fold_wins,
-                "eligible_for_submission": bool(gate),
+                "screen_passed": bool(metric_screen_passed),
+                "eligible_for_submission": False,
+                "reason": "known-catalogue truth is not the hidden uncatalogued-fault target and cannot release a competition submission",
             },
-            "eligible_for_submission": bool(gate),
+            "eligible_for_submission": False,
             "fold_results": results,
-            "warning": "Passing this local known-label proxy gate does not predict or guarantee a public/private leaderboard score. A missing or non-reproducible incumbent invalidates the comparison.",
+            "warning": "This four-quadrant known-catalogue diagnostic is not submission validation. A candidate must separately beat the reproducible current holdout best on independent uncatalogued-fault truth before any weekly submission slot is used.",
         }
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         print(json.dumps(report, indent=2))
-        return 0 if gate else 3
+        return 0
     except Exception as exc:
         print(f"run_spatial_validation: ERROR: {exc}", file=sys.stderr)
         return 2

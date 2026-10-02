@@ -1,0 +1,242 @@
+{
+  "schema_version": 1,
+  "checked_utc": "2026-10-02T15:32:18+00:00",
+  "template": {
+    "path": "data/sample_submission.tif",
+    "sha256": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc"
+  },
+  "method": "scripts/validate_submission.py / gems.submission.validate_submission; Rasterio-based direct comparison to official sample_submission.tif",
+  "scope": "Format preflight only. Passing this file-format audit does not validate fault placement, does not establish a score, and does not release a competition slot.",
+  "results": {
+    "h24_nan": {
+      "path": "docs/downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif",
+      "bytes": 1705590,
+      "sha256": "e29e8f04e048a4aa210edbc1128dc39703e9271a11c02a5a391c7753339b0125",
+      "hard_checks_passed": true,
+      "hard_failures": [],
+      "advisory_failures": [],
+      "report": {
+        "passed": true,
+        "hard_failures": [],
+        "prediction_path": "docs/downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif",
+        "template_path": "data/sample_submission.tif",
+        "checks": [
+          {
+            "check": "single band",
+            "passed": true,
+            "detail": "count=1",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "float32",
+            "passed": true,
+            "detail": "dtypes=('float32',)",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "CRS matches template",
+            "passed": true,
+            "detail": "prediction=EPSG:32611; template=EPSG:32611",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "dimensions match template",
+            "passed": true,
+            "detail": "prediction=(3292, 3730); template=(3292, 3730)",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "affine transform matches template",
+            "passed": true,
+            "detail": "prediction=| 100.00, 0.00, 243350.00|\n| 0.00,-100.00, 4508550.00|\n| 0.00, 0.00, 1.00|; template=| 100.00, 0.00, 243350.00|\n| 0.00,-100.00, 4508550.00|\n| 0.00, 0.00, 1.00|",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "EPSG:32611",
+            "passed": true,
+            "detail": "EPSG=32611",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "finite values in [0, 1] over footprint",
+            "passed": true,
+            "detail": "valid_pixels=5167373; finite=True; min=0.0; max=1.0",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "outside-footprint is null/NaN",
+            "passed": true,
+            "detail": "outside_pixels=7111787; all_nan=True; all_equal_to_nodata_tag=False; nodata=nan",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "NaN nodata tag",
+            "passed": true,
+            "detail": "nodata=nan",
+            "kind": "advisory format convention"
+          },
+          {
+            "check": "no infinity anywhere",
+            "passed": true,
+            "detail": "infinite_pixels=0",
+            "kind": "hard requirement"
+          }
+        ]
+      }
+    },
+    "h24_allfinite": {
+      "path": "docs/downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-allfinite.tif",
+      "bytes": 933582,
+      "sha256": "aac907db6aadc3d07a4eeb2531a0be200ee0143599ab304921e4f4f742fbc02a",
+      "hard_checks_passed": true,
+      "hard_failures": [],
+      "advisory_failures": [
+        "NaN nodata tag"
+      ],
+      "report": {
+        "passed": true,
+        "hard_failures": [],
+        "prediction_path": "docs/downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-allfinite.tif",
+        "template_path": "data/sample_submission.tif",
+        "checks": [
+          {
+            "check": "single band",
+            "passed": true,
+            "detail": "count=1",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "float32",
+            "passed": true,
+            "detail": "dtypes=('float32',)",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "CRS matches template",
+            "passed": true,
+            "detail": "prediction=EPSG:32611; template=EPSG:32611",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "dimensions match template",
+            "passed": true,
+            "detail": "prediction=(3292, 3730); template=(3292, 3730)",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "affine transform matches template",
+            "passed": true,
+            "detail": "prediction=| 100.00, 0.00, 243350.00|\n| 0.00,-100.00, 4508550.00|\n| 0.00, 0.00, 1.00|; template=| 100.00, 0.00, 243350.00|\n| 0.00,-100.00, 4508550.00|\n| 0.00, 0.00, 1.00|",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "EPSG:32611",
+            "passed": true,
+            "detail": "EPSG=32611",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "finite values in [0, 1] over footprint",
+            "passed": true,
+            "detail": "valid_pixels=5167373; finite=True; min=0.0; max=1.0",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "outside-footprint is null/NaN",
+            "passed": true,
+            "detail": "outside_pixels=7111787; all_nan=False; all_equal_to_nodata_tag=True; nodata=0.0",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "NaN nodata tag",
+            "passed": false,
+            "detail": "nodata=0.0",
+            "kind": "advisory format convention"
+          },
+          {
+            "check": "no infinity anywhere",
+            "passed": true,
+            "detail": "infinite_pixels=0",
+            "kind": "hard requirement"
+          }
+        ]
+      }
+    },
+    "h19_5_nan": {
+      "path": "docs/downloads/gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif",
+      "bytes": 1712322,
+      "sha256": "ec1f9b56b83ce33cad781ceb9f104b18fb4f2ff785263a4e89616af4aabdee8d",
+      "hard_checks_passed": true,
+      "hard_failures": [],
+      "advisory_failures": [],
+      "report": {
+        "passed": true,
+        "hard_failures": [],
+        "prediction_path": "docs/downloads/gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif",
+        "template_path": "data/sample_submission.tif",
+        "checks": [
+          {
+            "check": "single band",
+            "passed": true,
+            "detail": "count=1",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "float32",
+            "passed": true,
+            "detail": "dtypes=('float32',)",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "CRS matches template",
+            "passed": true,
+            "detail": "prediction=EPSG:32611; template=EPSG:32611",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "dimensions match template",
+            "passed": true,
+            "detail": "prediction=(3292, 3730); template=(3292, 3730)",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "affine transform matches template",
+            "passed": true,
+            "detail": "prediction=| 100.00, 0.00, 243350.00|\n| 0.00,-100.00, 4508550.00|\n| 0.00, 0.00, 1.00|; template=| 100.00, 0.00, 243350.00|\n| 0.00,-100.00, 4508550.00|\n| 0.00, 0.00, 1.00|",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "EPSG:32611",
+            "passed": true,
+            "detail": "EPSG=32611",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "finite values in [0, 1] over footprint",
+            "passed": true,
+            "detail": "valid_pixels=5167373; finite=True; min=0.0; max=1.0",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "outside-footprint is null/NaN",
+            "passed": true,
+            "detail": "outside_pixels=7111787; all_nan=True; all_equal_to_nodata_tag=False; nodata=nan",
+            "kind": "hard requirement"
+          },
+          {
+            "check": "NaN nodata tag",
+            "passed": true,
+            "detail": "nodata=nan",
+            "kind": "advisory format convention"
+          },
+          {
+            "check": "no infinity anywhere",
+            "passed": true,
+            "detail": "infinite_pixels=0",
+            "kind": "hard requirement"
+          }
+        ]
+      }
+    }
+  }
+}

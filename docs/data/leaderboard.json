@@ -1,10 +1,10 @@
 {
   "competition": "DOE GEMS Prize / DrivenData #306",
   "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-  "retrieved_utc": "2026-10-02T10:04:20+00:00",
-  "source_status": "live",
-  "capture_method": "Rendered by headless Chromium (scripts/render_leaderboard.py) because the official page builds its table with JavaScript, then parsed and validated by scripts/update_leaderboard.py (strategy: header row 0, score column 3).",
-  "parse_strategy": "header row 0, score column 3",
+  "retrieved_utc": "2026-10-02",
+  "source_status": "snapshot",
+  "capture_method": "Official DrivenData leaderboard page fetched via Arena page reader on 2026-10-02; the visible rank/participant/score table was read across the page-reader chunks and persisted here. The fetch tool did not expose an exact retrieval time. This is a dated manual capture, not a repository Playwright refresh.",
+  "parse_strategy": "Official rendered HTML/Markdown table, ranks 1–50, Participant and Best public DW-Tversky columns; visible team display name retained.",
   "rows": [
     {
       "rank": 1,
@@ -20,21 +20,21 @@
     },
     {
       "rank": 3,
-      "participant": "rariwa",
+      "participant": "Batik Shirt Brothers",
       "score": 0.2998,
       "score_text": "0.2998"
     },
     {
       "rank": 4,
-      "participant": "joeyfezster",
-      "score": 0.2919,
-      "score_text": "0.2919"
+      "participant": "xiaofanhu",
+      "score": 0.2941,
+      "score_text": "0.2941"
     },
     {
       "rank": 5,
-      "participant": "xiaofanhu",
-      "score": 0.2901,
-      "score_text": "0.2901"
+      "participant": "joeyfezster",
+      "score": 0.2919,
+      "score_text": "0.2919"
     },
     {
       "rank": 6,
@@ -74,7 +74,7 @@
     },
     {
       "rank": 12,
-      "participant": "exposed",
+      "participant": "No Fault of Our Own",
       "score": 0.2624,
       "score_text": "0.2624"
     },
@@ -212,21 +212,21 @@
     },
     {
       "rank": 35,
+      "participant": "raboush2",
+      "score": 0.1742,
+      "score_text": "0.1742"
+    },
+    {
+      "rank": 36,
       "participant": "Scotty77",
       "score": 0.1682,
       "score_text": "0.1682"
     },
     {
-      "rank": 36,
+      "rank": 37,
       "participant": "rksams7",
       "score": 0.1682,
       "score_text": "0.1682"
-    },
-    {
-      "rank": 37,
-      "participant": "raboush2",
-      "score": 0.1673,
-      "score_text": "0.1673"
     },
     {
       "rank": 38,
@@ -308,38 +308,21 @@
     }
   ],
   "row_count": 50,
-  "attribution_caveat": "The official public leaderboard displays participants and scores but does not expose a prediction-file SHA-256 or public submission identifier; score equality is not artifact, account, or team attribution. As of 2026-10-02: H19-4 (0.1894) coincides with displayed rank 28 (SDCF9); H19-5 (0.1922) coincides with displayed rank 26 (smrtdoog5).",
-  "phase_caveat": "These are public leaderboard results only, not private Initial Prize Round (Phase 1) or expert-updated Final Prize Round (Phase 2) scores.",
+  "attribution_caveat": "The public board displays participant names and scores but no prediction-file SHA-256 or public submission ID. Displayed score matches include rank 26 (smrtdoog5) at 0.1922 and rank 28 (SDCF9) at 0.1894; score equality is not artifact, account, or team attribution.",
+  "phase_caveat": "These are public leaderboard results only, not private Initial Prize Round (Phase 1) scores or expert-updated Final Prize Round (Phase 2) scores.",
   "capture_path": "headless-render",
   "refresh_status": {
-    "checked_utc": "2026-10-02T10:04:16+00:00",
-    "status": "live",
-    "capture_path": "headless-render",
-    "row_count": 50,
-    "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-    "top": {
-      "rank": 1,
-      "participant": "DARD",
-      "score": 0.3195,
-      "score_text": "0.3195"
-    },
-    "diagnostics": {
-      "attempts": [
-        {
-          "user_agent": "Mozilla/5.0",
-          "http_status": 200,
-          "final_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-          "bytes": 30166,
-          "ok": true
-        }
-      ],
-      "render": {
-        "returncode": 0,
-        "stdout": "rendered 158571 bytes of HTML to /tmp/gems-leaderboard-rendered.html",
-        "stderr": ""
-      },
-      "rendered_bytes": 158571
-    }
+    "status": "dated-snapshot",
+    "automated_refresh": "not run in this continuation",
+    "note": "Official page was directly read through the Arena web-page fetch. Exact retrieval time was not supplied by the fetch tool; check the official board again before relying on the current ordering."
   },
-  "source_note": "Retrieved live from the official public leaderboard page."
+  "source_note": "Retrieved live from the official public leaderboard page.",
+  "diagnostics": {
+    "source": "Official DrivenData leaderboard page",
+    "capture": "Arena page-reader manual capture",
+    "rows_persisted": 50,
+    "visible_rank_range": "1-50",
+    "retrieved_utc": "2026-10-02 (exact time not supplied by page-reader tool)",
+    "notes": "This record is not a live API response; page ordering/scores can change."
+  }
 }

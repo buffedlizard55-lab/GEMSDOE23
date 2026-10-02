@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "reviewed_utc": "2026-10-02T09:55:00Z",
+  "reviewed_utc": "2026-10-02",
   "rule": "A row exists only if it was measured or read from an official source in this session. 'how_established' says which. Nothing here is inferred from a previous session's claim without re-measurement.",
   "flags": [
     {
@@ -8,7 +8,7 @@
       "severity": "medium",
       "status": "open",
       "title": "The official sample_submission.tif is not an all-absence template",
-      "evidence": "The problem page says 'A sample submission that predicts total fault absence is provided'. The file (sha256 2176d08e\u2026, 1,599,597 B) contains 60,988 pixels equal to 1.0, exactly the known-fault catalogue, and 0.0 elsewhere inside the footprint.",
+      "evidence": "The problem page says 'A sample submission that predicts total fault absence is provided'. The file (sha256 2176d08e…, 1,599,597 B) contains 60,988 pixels equal to 1.0, exactly the known-fault catalogue, and 0.0 elsewhere inside the footprint.",
       "action": "Used only for its grid, CRS, transform and footprint. Never as a zero baseline, and never as a prediction.",
       "how_established": "measured here (docs/data/anchor-geometry.json, data_verification)",
       "links": [
@@ -19,12 +19,13 @@
       "id": "I-02",
       "severity": "medium",
       "status": "open",
-      "title": "Band 6 'tc' is mislabelled in the feature file's own tags",
-      "evidence": "The tag reads 'Tilt angle or total curvature - magnetic field derivative for edge detection' with data_category=magnetic_data. Measured on 5,164,300 valid in-footprint pixels: r = +0.9971 with the USGS GeoDAWN radiometric TOTAL COUNT channel, r = +0.8817 with its potassium channel, r = -0.1624 with the official magnetic horizontal-gradient band, and all values are positive (2.95 to 88.57) while a tilt angle spans both signs.",
-      "action": "Treat band 6 as radiometric total count (surface lithology / soil chemistry), not as a magnetic edge detector. Any hypothesis that assumed a magnetic meaning is mis-specified. The official problem page's own layer list includes 'Total radiometric counts per second', which agrees with the measurement.",
-      "how_established": "measured here (docs/data/band6-tc-audit.json)",
+      "title": "Band 6 `tc` tag conflicts with a historical interpretation; external comparison not re-run",
+      "evidence": "The feature metadata labels band 6 as magnetic \"Tilt angle or total curvature\"; the old docs/data/band6-tc-audit.json reports near-perfect correlation to a GeoDAWN radiometric total-count layer. The external GeoDAWN comparison raster is absent from this checkout, so the correlation and interpretation were not independently reproduced in this continuation.",
+      "action": "Do not treat band 6 as a magnetic derivative unless its provenance is verified against the official band map and source raster. Exclude it from new hypotheses pending that check; retain the older correlation only as a historical audit result.",
+      "how_established": "read current feature metadata and historical docs/data/band6-tc-audit.json; external comparison file absent; no fresh correlation run",
       "links": [
-        "https://www.sciencebase.gov/catalog/item/657e1d85d34e23d3533209f7"
+        "https://www.sciencebase.gov/catalog/item/657e1d85d34e23d3533209f7",
+        "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/"
       ]
     },
     {
@@ -52,9 +53,9 @@
       "severity": "high",
       "status": "withdrawn",
       "title": "The headline '4-fold spatial holdout gate passed' claim measured the wrong population",
-      "evidence": "docs/data/validation-report.json claims mean out-of-fold DTI 0.21177 over four geographic quadrant folds with 4/4 wins. Its truth is the supplied catalogue (59,969 positives across the folds) and its folds are quadrants. Known-fault pixels are masked out of the official evaluation, so the catalogue cannot contribute score; and quadrant folds delete the fault population from the held-out region. Measured independently this session: no offline proxy truth ranks the 24 live-scored artefacts better than chance (best Spearman rho = +0.326, p = 0.12, and it ranks the 0.0297 artefact first).",
-      "action": "Claim withdrawn from README.md, docs/PROJECT_BRIEF.md and every site page. Replaced by an explicit statement that placement cannot be validated offline, plus a projection range derived from the exact metric algebra.",
-      "how_established": "measured here (docs/data/offline-proxy-audit.json) plus the official staff ruling",
+      "evidence": "The retained docs/data/validation-report.json claims mean OOF DTI 0.21177 over four geographic quadrant folds against the supplied known-fault catalogue. That target is not the independent uncatalogued-fault geometry sought by the competition; staff states known USGS/INGENIOUS pixels are masked/excluded from evaluation. This continuation did not reproduce the report.",
+      "action": "Keep the report WITHDRAWN. It cannot authorize release or support a score claim. The current project states that no valid placement holdout is available; no numerical score projection is presented.",
+      "how_established": "inspection of the historical validation report and official staff ruling; independent truth/artifacts absent",
       "links": [
         "https://community.drivendata.org/t/11516/2"
       ]
@@ -62,11 +63,11 @@
     {
       "id": "I-06",
       "severity": "high",
-      "status": "corrected",
-      "title": "|G| = 125,000 hidden truth pixels is refuted by an order of magnitude",
-      "evidence": "TP_w <= |G| applied to the 24 live scores gives |G| >= 4,607. The r13-lattice-s5 artefact covers 98.9% of the scored domain within 300 m, so its TP_w is nearly independent of where the truth sits; measuring its mean kernel envelope on two real trace populations gives |G| <= 7,709 (SGMC-like geometry) or <= 11,410 (catalogue-like geometry).",
-      "action": "The 550,000-pixel 'value-based emission budget' inherited from earlier group work is abandoned: at the measured |G| it is far past the metric's marginal rule. The shipped emission uses ~120,000 pixels chosen by maximin expected DTI.",
-      "how_established": "measured here (docs/data/live-model-bounds.json)",
+      "status": "open",
+      "title": "Historical hidden-truth-size bounds are not reproducible from this checkout",
+      "evidence": "An older analysis reports |G| bounds derived by inverting 24 live public scores and measuring a lattice envelope on two trace populations. The original 24 raster artifacts, exact scoring snapshot, and independent truth populations needed to reproduce the bound are not all present here. This continuation did not recompute the numbers.",
+      "action": "Retain the calculation only as a historical hypothesis; do not use its bounds or the derived 550,000-pixel rejection as current measured facts. Rebuild from immutable, attributed artifacts and truth geometry before using in a budget decision.",
+      "how_established": "read historical docs/data/live-model-bounds.json and checked current workspace for its source artifacts; not independently remeasured in this continuation",
       "links": [
         "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/#performance-metric"
       ]
@@ -75,30 +76,30 @@
       "id": "I-07",
       "severity": "medium",
       "status": "open",
-      "title": "A previously reported proxy correlation did not reproduce",
-      "evidence": "Earlier group work reported Spearman rho = 0.518 (p = 0.048, n = 15) between the SGMC-gap proxy DTI and the public score. Recomputed here on 24 artefacts with the official metric, the same proxy gives rho = +0.194 (p = 0.36) strict and +0.326 (p = 0.12) with a 2 km catalogue buffer; the catalogue proxy gives +0.134 (p = 0.53).",
-      "action": "No offline proxy is used for model or budget selection. The only instrument with out-of-family validation is the habitat regression fitted to the live scores themselves (nested-CV rho = +0.46).",
-      "how_established": "measured here (docs/data/offline-proxy-audit.json)",
+      "title": "Historical offline-proxy correlations have not been re-run in the current checkout",
+      "evidence": "Prior reports record weak correlations between catalogue-based proxy scores and public leaderboard order. Those values and p-values are historical JSON outputs; source TIFFs/versions and the full reproduction run were not re-established in this continuation.",
+      "action": "Do not use an offline proxy for candidate selection or release. Recompute only with immutable source artifacts and document that it remains a proxy, not independent uncatalogued-fault truth.",
+      "how_established": "read historical docs/data/offline-proxy-audit.json; no new correlation calculation was performed",
       "links": []
     },
     {
       "id": "I-08",
       "severity": "medium",
       "status": "open",
-      "title": "The deep ensemble failed its own admission gate",
-      "evidence": "Five independently initialised and independently trained U-Net members were trained on faults from an independent compilation that the catalogue does not contain. Out of fold, the ensemble's DTI at the operating budget did not beat a seed-matched random emission of the same size on a majority of blocked folds.",
-      "action": "The pre-registered gate set the detector's weight in the submitted emission to 0. The ensemble is still reported in full and still supplies the epistemic/aleatoric decomposition, whose validity does not depend on the members being accurate. Compute was the binding constraint: 2 CPU cores, 3 GB RAM, no GPU.",
-      "how_established": "measured here (docs/data/oof-evaluation.json, docs/data/ensemble-report.json)",
+      "title": "Historical ensemble admission-gate result is not reproduced from current checkpoints",
+      "evidence": "The older OOF JSON states the detector did not beat its random-emission control on a majority of folds. The referenced model checkpoints, all inputs, and predictions are absent or unverified in the current checkout, so the comparison was not re-run.",
+      "action": "Treat the report as historical only. Do not use its predicted probabilities or uncertainty values until independently trained members/checkpoints and OOF maps are restored and the gate is reproduced.",
+      "how_established": "read docs/data/oof-evaluation.json and docs/data/ensemble-report.json; no new training/inference was run",
       "links": []
     },
     {
       "id": "I-09",
       "severity": "low",
-      "status": "fixed",
-      "title": "The leaderboard feed had silently gone stale",
-      "evidence": "docs/data/leaderboard-status.json recorded status 'stale-snapshot-retained' with error 'URLError: TLS/SSL connection has been closed (EOF)', so the site was serving an older snapshot without saying when.",
-      "action": "Snapshot refreshed manually for 2026-10-02 and the page now prints the retrieval timestamp and a live/stale badge next to the table; .github/workflows/pages.yml refreshes it on every push and daily at 12:00 UTC.",
-      "how_established": "read here and re-fetched from the official leaderboard page",
+      "status": "open",
+      "title": "Automated leaderboard refresh remains unverified; the current board is a dated manual capture",
+      "evidence": "An older refresh attempt retained stale rows after failing to parse the client-rendered page. This continuation manually read the official rendered leaderboard and saved a 50-row snapshot dated 2026-10-02; the page-reader tool did not supply an exact time.",
+      "action": "The site labels the snapshot as dated/manual and links to the official page. Do not claim automated refresh is healthy until the repository renderer and Pages workflow are run and their artifacts inspected.",
+      "how_established": "current docs/data/leaderboard.json and docs/data/leaderboard-status.json plus historical feed diagnostics",
       "links": [
         "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/"
       ]
@@ -107,10 +108,10 @@
       "id": "I-10",
       "severity": "low",
       "status": "open",
-      "title": "Sandbox egress blocks every official host except GitHub and PyPI",
-      "evidence": "From the development sandbox, drivendata.org, dropbox.com, usgs.gov, sciencebase.gov, docs.nlr.gov, index.nationalmap.gov, gdr.openei.org, raw.githubusercontent.com and download.pytorch.org all fail the TLS handshake (curl exit 35). api.github.com, codeload.github.com, pypi.org and files.pythonhosted.org succeed.",
-      "action": "Official rasters arrive through the hash-pinned git bridge; official page text arrives through a text fetch; torch is installed from PyPI. GitHub Actions has full egress and re-does the leaderboard fetch there.",
-      "how_established": "measured here (connection matrix, this session)",
+      "title": "Training and external-data retrieval capabilities are incomplete in this checkout",
+      "evidence": "Earlier shell connection checks reported TLS failures to several official/external hosts; the official leaderboard was accessible through the Arena page-reader tool in this continuation, but this did not download external datasets. The current `.venv` lacks Torch, scikit-learn and pandas.",
+      "action": "Do not claim external data availability or new model training. Reacquire free official layers through documented access when possible, verify coverage/license/hash, and install the required training stack only when compute and checkpoints can be retained.",
+      "how_established": "read current environment/import status, inspect data/ folder, and compare with prior shell-egress log; no new external downloads or model runs",
       "links": []
     },
     {
@@ -118,9 +119,9 @@
       "severity": "medium",
       "status": "open",
       "title": "Ambiguity in the masking ruling that this submission resolves conservatively",
-      "evidence": "Staff wrote that known-fault pixels 'are masked / excluded from evaluation, so they do not count towards penalty terms'. That is explicit about FP and silent about whether a prediction on a masked pixel can still supply TP credit to a new fault within 300 m of it.",
-      "action": "This submission emits nothing on catalogue pixels, which is safe under both readings and matches every top-scoring artefact (on-catalogue mass = 0 for h19-5, h19-4, h16-1, lidarscarp). The alternative reading would make catalogue pixels free upside; it is not taken because the downside under the strict reading is 60,988 pixels of unrepaid FP mass.",
-      "how_established": "read from the official forum; geometry measured here",
+      "evidence": "Staff says known-fault pixels are masked/excluded and do not count toward penalty terms; the public wording does not fully settle whether such pixels can still supply TP credit to a nearby newly mapped fault within the distance kernel.",
+      "action": "The H24 QA candidate builder excludes the known catalogue from its eligible domain, a conservative choice under either interpretation. This is not a release recommendation; do not describe the behavior of other historical artifacts as independently checked in this continuation.",
+      "how_established": "official forum wording; H24 builder domain excludes catalogue pixels; no official metric implementation beyond published description is available here",
       "links": [
         "https://community.drivendata.org/t/11516/2"
       ]
@@ -129,22 +130,74 @@
       "id": "I-12",
       "severity": "high",
       "status": "resolved",
-      "title": "GitHub credentials expired mid-session, blocking the pull request (restored; PRs #4-#6 merged)",
-      "evidence": "`gh auth status` now reports 'The github.com token in GH_TOKEN is no longer valid'; `git ls-remote origin` fails with 'could not read Username'. Unauthenticated api.github.com calls return 401 Bad credentials and codeload.github.com returns 404 for the sibling repositories that were reachable two hours earlier, which also means scripts/fetch_data_bridge.py can no longer re-download the bridge from this sandbox.",
-      "action": "Resolved the same day: authentication was restored, the work was pushed, and pull requests #4 (main delivery), #5 (Pages contents:write) and #6 (leaderboard feed) were reviewed with green CI and merged to main; the site is deployed. No re-acquisition of data was needed - the official rasters on disk stayed hash-verified throughout.",
-      "how_established": "measured here (gh auth status / git push, 2026-10-02T06:20Z failure; gh pr merge confirmations 2026-10-02T09:17Z-09:44Z)",
+      "title": "A prior GitHub credential outage was resolved in earlier work; not the current PR status",
+      "evidence": "An earlier session recorded GitHub authentication failures followed by restoration and merges of PRs #4–#6. This entry is historical context only and says nothing about the authentication or PR status of the current branch.",
+      "action": "Current PR/merge state must be checked independently on the session branch. Do not treat the old merged PRs as the delivery for the present review.",
+      "how_established": "prior session log; no inference about the current branch",
       "links": []
     },
     {
       "id": "I-13",
       "severity": "medium",
-      "status": "mitigated",
+      "status": "open",
       "title": "The published leaderboard feed was silently stale: the official board is built by JavaScript, so the automatic refresh could never see it",
-      "evidence": "The first pages.yml run on main exited 0 from the refresh step having written 'status: stale-snapshot-retained, error: ValueError: Could not find a leaderboard table with rank and Tversky headers'. Diagnostics added by the rewrite show what the runner actually received: HTTP 200, 30,166 bytes, correct page title, but tables: 0, rows: 0, cell_text_bytes: 0, user_links: 0, tversky_mentions: 0, loading_placeholder: true. The board is client-rendered. There is no anonymous JSON endpoint either: https://www.drivendata.org/api/competitions/306/leaderboard/ returns 404 with 'please make sure that you are signed in and signed up for that competition'. Meanwhile the delivered snapshot had already gone wrong: the board moved between 02:38 UTC and 09:33 UTC, kinghorton42 (0.2635) entered at rank 10, and the rows coinciding with 0.1922 and 0.1894 are now displayed at ranks 26 and 28, not 24 and 26.",
-      "action": "Three fixes. (1) The snapshot was re-captured from the official page at 09:33 UTC - all 50 displayed rows, with retrieval timestamp, capture method and a note of exactly what moved. (2) scripts/update_leaderboard.py was rewritten to collect tables at any nesting depth, match columns by priority-ordered hints, prefer displayed names over /users/ slugs, validate before accepting (>=10 rows, unique ascending ranks, scores in [0,1]) and record diagnostics on every failure; scripts/render_leaderboard.py plus --render execute the page's public JavaScript in anonymous headless Chromium, which pages.yml installs - no credentials, no signed-in endpoint, no access control bypassed. (3) The attribution caveat is now computed from the rows, and both caveats are printed under every leaderboard table, so a stale or unattributed board cannot pass unnoticed. Verified: the CI probe and the pages.yml refresh both run; the render path is covered by tests using a stub renderer because the sandbox has no egress to drivendata.org.",
-      "how_established": "measured here (runner-side diagnostics committed to docs/data/leaderboard-status.json at 2026-10-02T09:45Z; official page read through the web reader at 02:38Z and 09:33Z; api endpoint probed 2026-10-02)",
+      "evidence": "The first pages.yml run on main exited 0 from the refresh step having written 'status: stale-snapshot-retained, error: ValueError: Could not find a leaderboard table with rank and Tversky headers'. Diagnostics added by the rewrite show what the runner actually received: HTTP 200, 30,166 bytes, correct page title, but tables: 0, rows: 0, cell_text_bytes: 0, user_links: 0, tversky_mentions: 0, loading_placeholder: true. The board is client-rendered. There is no anonymous JSON endpoint either: https://www.drivendata.org/api/competitions/306/leaderboard/ returns 404 with 'please make sure that you are signed in and signed up for that competition'. Meanwhile the delivered snapshot had already gone wrong: the board moved between 02:38 UTC and 09:33 UTC, kinghorton42 (0.2635) entered at rank 10, and the rows coinciding with 0.1922 and 0.1894 are now displayed at ranks 26 and 28, not 24 and 26. Current continuation directly fetched the official rendered page and saved a dated 50-row snapshot on 2026-10-02; it did not run the repository Playwright refresher or verify an automated Pages workflow run.",
+      "action": "The official page is client-rendered. This update stores a manual, date-only page-reader capture because the exact retrieval time was not supplied; automated feed status is not asserted. Re-run scripts/update_leaderboard.py --render in CI and inspect the workflow result before calling future captures live.",
+      "how_established": "measured here (runner-side diagnostics committed to docs/data/leaderboard-status.json at 2026-10-02T09:45Z; official page read through the web reader at 02:38Z and 09:33Z; api endpoint probed 2026-10-02); current continuation fetched official page via Arena page reader, 2026-10-02",
       "links": [
         "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/"
+      ]
+    },
+    {
+      "id": "I-14",
+      "severity": "medium",
+      "status": "open",
+      "title": "The user-reported 0.3049 is not the current official public-board leader",
+      "evidence": "The official page-reader capture persisted at docs/data/leaderboard.json on 2026-10-02 shows DARD 0.3195 at rank 1 and alexoktaba 0.3042 at rank 2; the fetch tool did not provide an exact retrieval time. The quoted 0.3049 is absent from this 50-row capture. No primary official archived page capture confirming 0.3049 as a prior top score was available in this checkout.",
+      "action": "Record 0.3049 only as a user-reported/prior value until a dated primary capture is found. Keep the 0.3195 official snapshot's capture date distinct, and state that its exact retrieval time is unavailable; do not compare it with H19 scores as if all came from the same split or date.",
+      "how_established": "direct page-reader capture of the official DrivenData leaderboard and parsed current docs/data/leaderboard.json",
+      "links": [
+        "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/"
+      ]
+    },
+    {
+      "id": "I-15",
+      "severity": "high",
+      "status": "open",
+      "title": "H19 score matches do not identify the submitted TIFF or account",
+      "evidence": "The current public board displays 0.1922 (smrtdoog5, rank 26) and 0.1894 (SDCF9, rank 28). It exposes no prediction-file SHA-256 or public submission ID. Prior project prose calls 0.1894 the highest while listing 0.1922 elsewhere; numerically 0.1922 is higher. The H19 project page calls H19-4/H19-5 “not live-scored yet,” despite upload-oriented guidance.",
+      "action": "Treat both as score-level coincidences only. Do not attribute either row to an H19 artifact, method, team, or holdout claim without a direct submission receipt/artifact hash or equivalent primary evidence.",
+      "how_established": "official leaderboard snapshot plus self-published H19 project-page review; attribution fields are not present on the public board",
+      "links": [
+        "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
+        "https://buffedlizard55-lab.github.io/19GEMSDOE/docs/index.html"
+      ]
+    },
+    {
+      "id": "I-16",
+      "severity": "high",
+      "status": "fixed",
+      "title": "A stale generated manifest presented format-passing H24 files as upload-approved",
+      "evidence": "The checked-in docs/data/submission-manifest.json at the start of this review marked both H24 variants ok_to_upload=true, although docs/data/current-holdout-best.json is BLOCKED and validation-report.json is WITHDRAWN. A format preflight cannot authorize a slot.",
+      "action": "Replaced the manifest with schema_version 2, explicit release_decision.status=BLOCKED, release_approved=false and ok_to_upload=false for both variants. The homepage and executive summary label downloads QA-only; release builder must remain fail-closed.",
+      "how_established": "direct comparison of the stale manifest, current-holdout registry, withdrawn validation record, and release gate code",
+      "links": [
+        "docs/data/submission-manifest.json",
+        "docs/data/current-holdout-best.json",
+        "docs/data/current-template-validation.json"
+      ]
+    },
+    {
+      "id": "I-17",
+      "severity": "medium",
+      "status": "fixed",
+      "title": "Older site copy described external feature files as locally hash-pinned",
+      "evidence": "The current checkout has no data/external/ directory. Earlier generated pages said scarp, GeoDAWN-extension and SGMC-derivative rasters were on disk and hash-pinned, although only the competition core rasters and prepared arrays are present.",
+      "action": "Removed those availability claims from the homepage/source page. H-31/H-32 and all external data are explicitly labeled not acquired, not coverage-checked, or not locally present. Do not use external-data claims without checking files, AOI overlap, hashes and licenses.",
+      "how_established": "filesystem inspection of data/ and generated-site source references",
+      "links": [
+        "https://www.usgs.gov/3d-elevation-program/about-3dep-products-services",
+        "https://www.sciencebase.gov/catalog/item/62979746d34ec53d276c113b"
       ]
     }
   ]

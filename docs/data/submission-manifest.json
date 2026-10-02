@@ -1,206 +1,189 @@
 {
- "generated_utc": "2026-10-02T06:42:13Z",
- "template_sha256": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc",
- "weights": {
-  "habitat": 0.625,
-  "votes": 0.37499999999999994,
-  "ensemble": 0.0
- },
- "r_min_px": 4,
- "rolling_limit": "3 submissions per rolling 7 days per entity (official rules 3.2/3.4)",
- "claims": {
-  "score_predicted": false,
-  "statement": "Projected DTI is exact metric algebra over |G| in [6k, 15k] and q in [0.04, 0.11], where q is the kernel-weighted true-positive mass per emitted pixel. The q prior's upper half is measured: the best of 24 live-scored artefacts reached q = 0.0518 at dispersion eta = 0.85, and this emission runs at eta = 0.95. No offline proxy validates placement (best Spearman rho = +0.33, p = 0.12), so this is a projection, not a prediction, and no score is claimed."
- },
- "primary": {
-  "name": "gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif",
-  "href": "downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif",
-  "bytes": 1705590,
-  "sha256": "e29e8f04e048a4aa210edbc1128dc39703e9271a11c02a5a391c7753339b0125",
-  "variant": "nan-outside-footprint",
-  "ok_to_upload": true
- },
- "compatibility": {
-  "name": "gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-allfinite.tif",
-  "href": "downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-allfinite.tif",
-  "bytes": 933582,
-  "sha256": "aac907db6aadc3d07a4eeb2531a0be200ee0143599ab304921e4f4f742fbc02a",
-  "variant": "zeros-outside-footprint",
-  "ok_to_upload": true
- },
- "note": "GEMSDOE23 H24 dispersed-habitat | 1m-3DEP lidar uphill-facing/step/crest scarps + 700 m detrended-slope heterogeneity, low radiometric U, off-catalogue | 400 m dot spacing, eta=0.95, 100,000 px | projected DTI 0.12-0.34 (q prior 0.04-0.11, |G| 6k-15k) | sha256 e29e8f04",
- "geometry": {
-  "area": 100000.0,
-  "kbar": 0.17378193140029907,
-  "eta": 0.946022680409377,
-  "coverage": 0.437935839150397
- },
- "expected_dti": {
-  "6000": {
-   "0.04": 0.15760001728499812,
-   "0.06": 0.23273216657992013,
-   "0.08": 0.23273216657992013,
-   "0.11": 0.23273216657992013
+  "schema_version": 2,
+  "generated_utc": "2026-10-02T15:32:18+00:00",
+  "artifact_role": "research_candidate_preflight_only",
+  "template_sha256": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc",
+  "format_preflight_scope": "Hard GeoTIFF/template checks only; not geology/placement validation, not an online uploader test, and not submission approval.",
+  "release_decision": {
+    "status": "BLOCKED",
+    "eligible_for_submission": false,
+    "approved": false,
+    "reason": "No reproducible, non-withdrawn spatially blocked comparison is registered as the current best. docs/data/validation-report.json is WITHDRAWN (I-05); the public H19 page's holdout claims cannot be reproduced from this checkout, and its score-to-file attribution is unresolved. Do not spend a competition submission slot until a verified independent-uncatalogued-fault holdout and exact current-best OOF artifact are registered here.",
+    "current_best_registry": "docs/data/current-holdout-best.json"
   },
-  "10000": {
-   "0.04": 0.14066223534501418,
-   "0.06": 0.20806664113326787,
-   "0.08": 0.27362668252716604,
-   "0.11": 0.3374170379232041
+  "primary": {
+    "name": "gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif",
+    "href": "downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif",
+    "bytes": 1705590,
+    "sha256": "e29e8f04e048a4aa210edbc1128dc39703e9271a11c02a5a391c7753339b0125",
+    "variant": "nan-outside-footprint",
+    "format_preflight_passed": true,
+    "release_approved": false,
+    "ok_to_upload": false,
+    "hard_failures": []
   },
-  "15000": {
-   "0.04": 0.1239932426498828,
-   "0.06": 0.1837119598137372,
-   "0.08": 0.2419855701951696,
-   "0.11": 0.3267991088659924
-  }
- },
- "detector_gate": {
-  "path": "docs/data/oof-evaluation.json",
-  "found": true,
-  "passed": false,
-  "reason": "out-of-fold DTI did not beat the random-emission control",
-  "mean_dti": 0.04400261614400984,
-  "mean_random": 0.10118601266663155,
-  "folds_beating_random": 0,
-  "n_folds": 5
- },
- "validation": {
-  "nan": {
-   "passed": true,
-   "hard_failures": [],
-   "prediction_path": "docs/downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif",
-   "template_path": "data/sample_submission.tif",
-   "checks": [
-    {
-     "check": "single band",
-     "passed": true,
-     "detail": "count=1",
-     "kind": "hard requirement"
+  "compatibility": {
+    "name": "gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-allfinite.tif",
+    "href": "downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-allfinite.tif",
+    "bytes": 933582,
+    "sha256": "aac907db6aadc3d07a4eeb2531a0be200ee0143599ab304921e4f4f742fbc02a",
+    "variant": "zeros-outside-footprint-nodata-zero",
+    "format_preflight_passed": true,
+    "release_approved": false,
+    "ok_to_upload": false,
+    "hard_failures": [],
+    "advisory_failures": [
+      "NaN nodata tag"
+    ],
+    "advisory_note": "Outside cells are 0.0 with nodata=0.0; the official template convention is NaN. This is a QA fallback only and has not been tested on the live uploader."
+  },
+  "note": "GEMSDOE23 QA ONLY — not for upload | H24 candidate | artifact sha256 e29e8f04",
+  "geometry": {
+    "area": 100000,
+    "eta": 0.946022680409377,
+    "kbar": 0.17378193140029907,
+    "coverage": 0.437935839150397
+  },
+  "validation": {
+    "nan": {
+      "passed": true,
+      "hard_failures": [],
+      "prediction_path": "docs/downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif",
+      "template_path": "data/sample_submission.tif",
+      "checks": [
+        {
+          "check": "single band",
+          "passed": true,
+          "detail": "count=1",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "float32",
+          "passed": true,
+          "detail": "dtypes=('float32',)",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "CRS matches template",
+          "passed": true,
+          "detail": "prediction=EPSG:32611; template=EPSG:32611",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "dimensions match template",
+          "passed": true,
+          "detail": "prediction=(3292, 3730); template=(3292, 3730)",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "affine transform matches template",
+          "passed": true,
+          "detail": "prediction=| 100.00, 0.00, 243350.00|\n| 0.00,-100.00, 4508550.00|\n| 0.00, 0.00, 1.00|; template=| 100.00, 0.00, 243350.00|\n| 0.00,-100.00, 4508550.00|\n| 0.00, 0.00, 1.00|",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "EPSG:32611",
+          "passed": true,
+          "detail": "EPSG=32611",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "finite values in [0, 1] over footprint",
+          "passed": true,
+          "detail": "valid_pixels=5167373; finite=True; min=0.0; max=1.0",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "outside-footprint is null/NaN",
+          "passed": true,
+          "detail": "outside_pixels=7111787; all_nan=True; all_equal_to_nodata_tag=False; nodata=nan",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "NaN nodata tag",
+          "passed": true,
+          "detail": "nodata=nan",
+          "kind": "advisory format convention"
+        },
+        {
+          "check": "no infinity anywhere",
+          "passed": true,
+          "detail": "infinite_pixels=0",
+          "kind": "hard requirement"
+        }
+      ]
     },
-    {
-     "check": "float32",
-     "passed": true,
-     "detail": "dtypes=('float32',)",
-     "kind": "hard requirement"
-    },
-    {
-     "check": "CRS matches template",
-     "passed": true,
-     "detail": "prediction=EPSG:32611; template=EPSG:32611",
-     "kind": "hard requirement"
-    },
-    {
-     "check": "dimensions match template",
-     "passed": true,
-     "detail": "prediction=(3292, 3730); template=(3292, 3730)",
-     "kind": "hard requirement"
-    },
-    {
-     "check": "affine transform matches template",
-     "passed": true,
-     "detail": "prediction=| 100.00, 0.00, 243350.00|\n| 0.00,-100.00, 4508550.00|\n| 0.00, 0.00, 1.00|; template=| 100.00, 0.00, 243350.00|\n| 0.00,-100.00, 4508550.00|\n| 0.00, 0.00, 1.00|",
-     "kind": "hard requirement"
-    },
-    {
-     "check": "EPSG:32611",
-     "passed": true,
-     "detail": "EPSG=32611",
-     "kind": "hard requirement"
-    },
-    {
-     "check": "finite values in [0, 1] over footprint",
-     "passed": true,
-     "detail": "valid_pixels=5167373; finite=True; min=0.0; max=1.0",
-     "kind": "hard requirement"
-    },
-    {
-     "check": "outside-footprint is null/NaN",
-     "passed": true,
-     "detail": "outside_pixels=7111787; all_nan=True; all_equal_to_nodata_tag=False; nodata=nan",
-     "kind": "hard requirement"
-    },
-    {
-     "check": "NaN nodata tag",
-     "passed": true,
-     "detail": "nodata=nan",
-     "kind": "advisory format convention"
-    },
-    {
-     "check": "no infinity anywhere",
-     "passed": true,
-     "detail": "infinite_pixels=0",
-     "kind": "hard requirement"
+    "allfinite": {
+      "passed": true,
+      "hard_failures": [],
+      "prediction_path": "docs/downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-allfinite.tif",
+      "template_path": "data/sample_submission.tif",
+      "checks": [
+        {
+          "check": "single band",
+          "passed": true,
+          "detail": "count=1",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "float32",
+          "passed": true,
+          "detail": "dtypes=('float32',)",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "CRS matches template",
+          "passed": true,
+          "detail": "prediction=EPSG:32611; template=EPSG:32611",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "dimensions match template",
+          "passed": true,
+          "detail": "prediction=(3292, 3730); template=(3292, 3730)",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "affine transform matches template",
+          "passed": true,
+          "detail": "prediction=| 100.00, 0.00, 243350.00|\n| 0.00,-100.00, 4508550.00|\n| 0.00, 0.00, 1.00|; template=| 100.00, 0.00, 243350.00|\n| 0.00,-100.00, 4508550.00|\n| 0.00, 0.00, 1.00|",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "EPSG:32611",
+          "passed": true,
+          "detail": "EPSG=32611",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "finite values in [0, 1] over footprint",
+          "passed": true,
+          "detail": "valid_pixels=5167373; finite=True; min=0.0; max=1.0",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "outside-footprint is null/NaN",
+          "passed": true,
+          "detail": "outside_pixels=7111787; all_nan=False; all_equal_to_nodata_tag=True; nodata=0.0",
+          "kind": "hard requirement"
+        },
+        {
+          "check": "NaN nodata tag",
+          "passed": false,
+          "detail": "nodata=0.0",
+          "kind": "advisory format convention"
+        },
+        {
+          "check": "no infinity anywhere",
+          "passed": true,
+          "detail": "infinite_pixels=0",
+          "kind": "hard requirement"
+        }
+      ]
     }
-   ]
   },
-  "allfinite": {
-   "passed": true,
-   "hard_failures": [],
-   "prediction_path": "docs/downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-allfinite.tif",
-   "template_path": "data/sample_submission.tif",
-   "checks": [
-    {
-     "check": "single band",
-     "passed": true,
-     "detail": "count=1",
-     "kind": "hard requirement"
-    },
-    {
-     "check": "float32",
-     "passed": true,
-     "detail": "dtypes=('float32',)",
-     "kind": "hard requirement"
-    },
-    {
-     "check": "CRS matches template",
-     "passed": true,
-     "detail": "prediction=EPSG:32611; template=EPSG:32611",
-     "kind": "hard requirement"
-    },
-    {
-     "check": "dimensions match template",
-     "passed": true,
-     "detail": "prediction=(3292, 3730); template=(3292, 3730)",
-     "kind": "hard requirement"
-    },
-    {
-     "check": "affine transform matches template",
-     "passed": true,
-     "detail": "prediction=| 100.00, 0.00, 243350.00|\n| 0.00,-100.00, 4508550.00|\n| 0.00, 0.00, 1.00|; template=| 100.00, 0.00, 243350.00|\n| 0.00,-100.00, 4508550.00|\n| 0.00, 0.00, 1.00|",
-     "kind": "hard requirement"
-    },
-    {
-     "check": "EPSG:32611",
-     "passed": true,
-     "detail": "EPSG=32611",
-     "kind": "hard requirement"
-    },
-    {
-     "check": "finite values in [0, 1] over footprint",
-     "passed": true,
-     "detail": "valid_pixels=5167373; finite=True; min=0.0; max=1.0",
-     "kind": "hard requirement"
-    },
-    {
-     "check": "outside-footprint is null/NaN",
-     "passed": true,
-     "detail": "outside_pixels=7111787; all_nan=False; all_equal_to_nodata_tag=True; nodata=0.0",
-     "kind": "hard requirement"
-    },
-    {
-     "check": "NaN nodata tag",
-     "passed": false,
-     "detail": "nodata=0.0",
-     "kind": "advisory format convention"
-    },
-    {
-     "check": "no infinity anywhere",
-     "passed": true,
-     "detail": "infinite_pixels=0",
-     "kind": "hard requirement"
-    }
-   ]
+  "score_claims": {
+    "status": "NOT_REPORTED",
+    "reason": "No valid spatially blocked comparison against a registered current-best OOF map; no numerical score/placement projection is presented."
   }
- }
 }
