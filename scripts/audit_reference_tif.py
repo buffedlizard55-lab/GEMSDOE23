@@ -197,7 +197,14 @@ def audit(path: Path) -> dict[str, Any]:
         "negative_infinity_pixels": negative_inf_count,
         "finite_min": minimum if finite_count else None,
         "finite_max": maximum if finite_count else None,
-        "finite_value_counts": {str(value): count for value, count in sorted(value_counts.items())},
+        "finite_value_counts": (
+            {str(value): count for value, count in sorted(value_counts.items())}
+            if len(value_counts) <= 32
+            else {
+                **{str(value): count for value, count in value_counts.most_common(16)},
+                "_total_unique_finite_values": len(value_counts),
+            }
+        ),
         "finite_values_in_0_1": all_in_range,
         "template_match": "NOT CHECKED; official sample_submission.tif is required",
     }

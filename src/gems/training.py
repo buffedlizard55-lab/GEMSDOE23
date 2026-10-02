@@ -95,11 +95,14 @@ def train_members(
             x0 = min(max(int(cx) - half, 0), y.shape[1] - patch_size)
             y1, x1 = y0 + patch_size, x0 + patch_size
             patch_x = np.asarray(x[:, y0:y1, x0:x1], dtype=np.float32).copy()
-            patch_y = np.asarray(y[y0:y1, x0:x1], dtype=np.float32).copy()
+            patch_x = np.where(np.isfinite(patch_x) & (np.abs(patch_x) < 1e30), patch_x, 0.0)
+            patch_y = np.asarray(y[y0:y1, x0:x1] > 0, dtype=np.float32).copy()
             eligible = train_mask[y0:y1, x0:x1]
             observed = label_observed[y0:y1, x0:x1]
+            valid_px = (eligible & observed).astype(np.float32)
+            patch_y *= valid_px
             weights = np.where(patch_y > 0, 1.0, unlabeled_loss_weight).astype(np.float32)
-            weights *= (eligible & observed).astype(np.float32)
+            weights *= valid_px
             return (
                 torch.from_numpy(patch_x),
                 torch.from_numpy(patch_y[None, :, :]),
@@ -113,7 +116,7 @@ def train_members(
     out.mkdir(parents=True, exist_ok=True)
     reports = []
     for member_index in range(ensemble_size):
-        seed = int(seed_base + member_index)
+        seed = int(seed_base + member_index * 1009)
         random.seed(seed)
         np.random.seed(seed)
         torch.manual_seed(seed)
@@ -125,7 +128,21 @@ def train_members(
 
         # New model and optimizer for every member: no shared weights or optimizer state.
         model = UNetFaultNet(in_channels=int(x.shape[0])).to(device_obj)
-        optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+        unet_params = [
+            p for name, p in model.named_parameters()
+            if not name.startswith(("alpha", "beta_nms", "ridge_bias", "deriv_logits"))
+        ]
+        head_params = [
+            p for name, p in model.named_parameters()
+            if name.startswith(("alpha", "beta_nms", "ridge_bias", "deriv_logits"))
+        ]
+        optimizer = torch.optim.AdamW(
+            [
+                {"params": unet_params, "lr": learning_rate},
+                {"params": head_params, "lr": learning_rate * 0.01},
+            ],
+            weight_decay=1e-4,
+        )
         loss_fn = nn.BCEWithLogitsLoss(reduction="none")
         dataset = PatchDataset(seed)
         loader = DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=0)
@@ -139,9 +156,19 @@ def train_members(
                 xb, yb, wb = xb.to(device_obj), yb.to(device_obj), wb.to(device_obj)
                 optimizer.zero_grad(set_to_none=True)
                 logits = model(xb)
-                per_pixel = loss_fn(logits, yb)
+                # Approximate distance-decayed target y_d on patch for DTI-aligned training
+                y3 = torch.nn.functional.max_pool2d(yb, kernel_size=3, stride=1, padding=1)
+                y7 = torch.nn.functional.max_pool2d(yb, kernel_size=7, stride=1, padding=3)
+                yd = torch.maximum(yb, torch.maximum(0.85 * y3, 0.50 * y7))
+                per_pixel = loss_fn(logits, yd)
+                probs = torch.sigmoid(logits)
+                tp_d = (probs * yd * wb).sum()
+                fp_d = (probs * (1.0 - yd) * wb).sum()
+                fn_d = ((1.0 - probs) * yb * wb).sum()
+                dti_loss = 1.0 - (tp_d + 1e-5) / (tp_d + 0.2 * fp_d + 0.8 * fn_d + 1e-5)
                 denom = wb.sum().clamp_min(1.0)
-                loss = (per_pixel * wb).sum() / denom
+                bce_loss = (per_pixel * wb).sum() / denom
+                loss = 0.5 * bce_loss + 0.5 * dti_loss
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=5.0)
                 optimizer.step()

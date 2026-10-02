@@ -125,8 +125,8 @@ def write_submission_raster(
             count=1,
             dtype="float32",
             nodata=np.nan,
-            compress="deflate",
-            predictor=3,
+            compress="lzw",
+            predictor=1,
         )
         with rasterio.open(output_path, "w", **profile) as dst:
             dst.write(output, 1)

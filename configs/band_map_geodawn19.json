@@ -1,0 +1,8 @@
+{
+  "magnetic_gradient": "tmi_hg - Total magnetic intensity horizontal gradient - rate of change in horizontal direction",
+  "magnetic_curvature": "tc - Tilt angle or total curvature - magnetic field derivative for edge detection",
+  "gravity_gradient": "iso_grav_anom_hg - Isostatic gravity anomaly horizontal gradient - horizontal rate of change",
+  "detrended_elevation": "det_elev - Detrended elevation - topography with regional trends removed",
+  "conductivity": "cond_surf - Conductivity surface - electrical conductivity of subsurface",
+  "conductive_base_depth": "depth_to_base_surf - Depth to basement surface - thickness of sedimentary cover"
+}
