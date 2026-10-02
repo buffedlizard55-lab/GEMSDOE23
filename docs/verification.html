@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Audited limitations, score discrepancies, data blockers, and non-hallucination safeguards for GEMSDOE23.">
+  <title>Verification & Irregularities · GEMSDOE23</title><link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="header-inner">
+  <a class="brand" href="index.html"><span class="brand-mark">G23</span><span>GEMSDOE23 <span class="small" style="color:#c8d8cd">/ research log</span></span></a>
+  <nav class="nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="executive-summary.html">How to submit</a><a href="hypotheses.html">Hypotheses</a><a href="uncertainty.html">Uncertainty</a><a href="results.html">Scores</a><a href="sources.html">Sources</a><a href="verification.html" aria-current="page">Audit</a></nav>
+</div></header>
+<main id="main">
+  <div class="eyebrow">Three review passes complete · evidence and blockers</div>
+  <h1>What is known, what is not, and what needs review</h1>
+  <p class="lead">This page separates direct observations from prior-project claims. It is deliberately explicit where a result cannot be independently verified from the files available here.</p>
+
+  <section class="section">
+    <div class="eyebrow">High-priority irregularities</div><h2>Flag for review</h2>
+    <div class="table-wrap"><table><thead><tr><th>ID</th><th>Finding</th><th>Evidence</th><th>Impact / response</th></tr></thead><tbody>
+      <tr><td>F-01</td><td>Competition files are account-gated.</td><td>The official data tab redirected to the DrivenData login page when retrieved on 2026-10-01. Required rasters are absent from this checkout.</td><td>No model was trained, no local fold was run, and no new submission can honestly be generated. The downloader exits with a transparent blocker rather than requesting credentials or faking a download.</td></tr>
+      <tr><td>F-02</td><td>The user-supplied “current leader” score 0.3049 was stale at retrieval.</td><td>The official live leaderboard page showed rank 1 at 0.3168 (DARD) and rank 2 at 0.3042 (alexoktaba) on 2026-10-01.</td><td>Use the dated official snapshot; refresh automation may fail and will expose a stale status.</td></tr>
+      <tr><td>F-03</td><td>The prompt describes 0.1894 as the highest local score while listing H19-5 at 0.1922.</td><td>The supplied H19-5 score is 0.0028 above 0.1894. The official board displayed values 0.1922 and 0.1894 at ranks 24 and 26 in the retrieved snapshot.</td><td>Use 0.1922 as the highest numeric value in the supplied local list. The exact file/account association remains unknown.</td></tr>
+      <tr><td>F-04</td><td>Prior H19 project-page status appears stale or internally inconsistent.</td><td>The linked H19 landing page describes H19-4/H19-5 as not yet live-scored in its introductory copy, while the request lists those scores; its separate results page still reports an earlier group-best snapshot.</td><td>Do not treat the project page's current recommendation or score narrative as an authoritative live record. Preserve timestamps and compare only with the official board.</td></tr>
+      <tr><td>F-05</td><td>Format audit is not a template equality test.</td><td>The copied H19-5 TIFF can be decoded locally and has one float32 band, EPSG:32611 tags, 100 m scale, finite values `[0,1]`, NaN nodata, and 3292×3730 pixels. The official `sample_submission.tif` is absent.</td><td>Exact bounds, transform, and finite-footprint alignment are not independently verified here. Do not call it fully submission-validated.</td></tr>
+      <tr><td>F-06</td><td>The “historical fieldwork was sparse here” explanation is not directly established.</td><td>The official task says the known catalogue is incomplete and may be inaccurate; the cited NGMDB sources catalog maps but do not measure field-effort intensity.</td><td>Survey coverage is an unvalidated proxy. Never infer low fieldwork from missing map metadata; report unknown and omit the priority adjustment until verified.</td></tr>
+      <tr><td>F-07</td><td>Candidate hypotheses have not beaten a reproducible local incumbent.</td><td>The repository initially contained only a title README. No training rasters, incumbent prediction array, fold reports, or model checkpoints were present.</td><td>All new hypothesis entries remain “not tested”; the public score cannot substitute for spatial validation.</td></tr>
+      <tr><td>F-08</td><td>Leaderboard participant/score rows do not reveal a prediction-file hash.</td><td>The official leaderboard exposes participant name and score, not the submitted GeoTIFF digest.</td><td>Score equality with H19 pages is a match at score level, not cryptographic artifact attribution.</td></tr>
+      <tr><td>F-09</td><td>Organizer feature names differ between the official problem page and reference notebook.</td><td>The problem page calls the raster <code>training_features.tif</code> and lists depth to conductive base surface; the reference notebook uses <code>numeric_features.tif</code> and prints a band called “Depth to basement surface.”</td><td>Preprocessing accepts either raster name but rejects ambiguity. H1 will not equate those depth products; band mapping remains blocked until the authorized raster tags are inspected.</td></tr>
+    </tbody></table></div>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">Limits of this environment</div><h2>What prevents end-to-end training now</h2>
+    <div class="grid-2">
+      <article class="card"><h3>Access and data</h3><ul class="list-clean"><li>No authorized DrivenData browser session is available.</li><li>Training features, labels, sample template, and 1 m DEM link CSV are missing.</li><li>Private test labels and submission-account history are never exposed to this repository.</li><li>The public third-party H19 TIFF is a prior artifact, not raw data or a training set.</li></ul></article>
+      <article class="card"><h3>Runtime and validation</h3><ul class="list-clean"><li>The base interpreter lacks NumPy, SciPy, rasterio, Python GDAL bindings (<code>osgeo</code>), the <code>gdalinfo</code> CLI, and PyTorch. During this audit, an ignored, temporary <code>.venv</code> installed NumPy/SciPy/rasterio for synthetic integration tests; PyTorch and a GPU runtime remain unavailable.</li><li>GPU access is not exposed through the probes available here: <code>nvidia-smi</code>, <code>rocm-smi</code>, <code>/dev/nvidia*</code>, and <code>/dev/dri/renderD*</code> are absent. This is a local-shell observation, not a claim about other environments.</li><li>Metric, GeoTIFF writing/validation, feature transforms, and the OOF-to-gate-to-manifest chain passed synthetic tests; no official competition raster, model training, or real spatial holdout was run.</li><li>Synthetic tests exercise code contracts; they do not establish a real holdout gain or hidden-fault performance.</li></ul></article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">Local artifact audit</div><h2>What was independently verified about H19-5</h2>
+    <p>The reference artifact was fetched from the GitHub Contents API for the user-linked 19GEMSDOE public repository. Its SHA-256 exactly matches the H19-5 digest published by that repository. A separate standard-library TIFF/LZW decoder in this checkout read every image strip:</p>
+    <div class="table-wrap"><table><thead><tr><th>Check</th><th>Observed</th><th>Interpretation</th></tr></thead><tbody>
+      <tr><td>Raster structure</td><td>3292×3730, one sample/pixel, 32-bit IEEE float</td><td>Matches the basic one-band float32 requirement; official dimensions were not available locally for comparison.</td></tr>
+      <tr><td>GeoTIFF keys</td><td>EPSG 32611, pixel scale 100×100 m, origin tiepoint (243350, 4508550)</td><td>Tags are internally consistent with a north-up UTM grid; exact official transform equality remains untested.</td></tr>
+      <tr><td>Value checks</td><td>5,167,373 finite values; min 0, max 1; 121,131 ones and 5,046,242 zeroes; 7,111,787 NaNs; no infinities</td><td>Every finite value passes `[0,1]`. No claim that the finite mask exactly matches the official scored footprint.</td></tr>
+      <tr><td>Nodata</td><td>GDAL_NODATA tag is `nan`</td><td>Consistent with official outside-null convention; exact template matching not performed.</td></tr>
+      <tr><td>SHA-256</td><td><code>ec1f9b56b83ce33cad781ceb9f104b18fb4f2ff785263a4e89616af4aabdee8d</code></td><td>Reproducible local file identity.</td></tr>
+    </tbody></table></div>
+    <p><a href="data/reference-artifact-audit.json">Machine-readable audit output</a> · <a href="downloads/gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif">downloaded TIFF</a>.</p>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">Review record · 2026-10-01 local</div><h2>Three passes complete; no competition result claimed</h2>
+    <ol class="list-clean">
+      <li><strong>Pass 1 — build and test:</strong> all 29 unit/synthetic integration tests passed in a temporary ignored environment with NumPy, SciPy, and rasterio; Python compilation passed.</li>
+      <li><strong>Pass 2 — adversarial review:</strong> checked OOF provenance/hash handoffs, mask/nodata handling, edge polarity, submission grid/range checks, per-candidate missing coverage, leaderboard-feed fallback, and band-name ambiguity. The official/reference feature-name discrepancies are now explicit; H1 does not infer that “Depth to basement” equals “depth to conductive base.”</li>
+      <li><strong>Pass 3 — requirement audit:</strong> local site links/fragments, JavaScript syntax, shell syntax, and workflow YAML passed. The external leaderboard refresh failed with TLS/SSL EOF and retained the dated snapshot. The GitHub Pages workflow is configured but deploy status depends on repository settings and a successful merge.</li>
+    </ol>
+    <p class="small">These are code/synthetic checks. Competition data and PyTorch are absent here, so there is no trained model, real spatial holdout, fitted calibration report, or new submission raster. The local OOF assertions are metadata checks, not tamper-proof proof of training history.</p>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">Next verified action</div><h2>Access cannot be automated around; everything else can</h2>
+    <p>After the data is legitimately placed in <code>data/</code>, the project can validate inputs, derive blocked folds, train five independently seeded members, calculate the DTI proxy and uncertainty maps, generate per-candidate reviewer CSVs, and run the submission validator. Until then, the robust next action is to improve source/score-feed automation and test code invariants—not publish a speculative GeoTIFF.</p>
+    <p>Final evaluation still needs one chosen submission and complete code/documentation under the official rules. A model can win a public score and still fail to generalize to hidden labels; maintain an explicit private/public/Phase-2 distinction.</p>
+  </section>
+</main>
+<footer class="site-footer"><div class="footer-inner"><span>Irregularities are data, not details to hide.</span><span><a href="sources.html">Source register</a> · <a href="https://github.com/buffedlizard55-lab/GEMSDOE23/blob/main/README.md">README</a></span></div></footer>
+</body>
+</html>

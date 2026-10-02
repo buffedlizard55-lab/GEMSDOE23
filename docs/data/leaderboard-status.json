@@ -1,0 +1,6 @@
+{
+  "checked_utc": "2026-10-02T00:11:33.515561+00:00",
+  "status": "stale-snapshot-retained",
+  "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
+  "error": "URLError: <urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>"
+}

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Deep-ensemble epistemic and aleatoric uncertainty decomposition and survey-aware candidate-review priorities.">
+  <title>Uncertainty & Reviewer Handoff · GEMSDOE23</title><link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="header-inner">
+  <a class="brand" href="index.html"><span class="brand-mark">G23</span><span>GEMSDOE23 <span class="small" style="color:#c8d8cd">/ research log</span></span></a>
+  <nav class="nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="executive-summary.html">How to submit</a><a href="hypotheses.html">Hypotheses</a><a href="uncertainty.html" aria-current="page">Uncertainty</a><a href="results.html">Scores</a><a href="sources.html">Sources</a><a href="verification.html">Audit</a></nav>
+</div></header>
+<main id="main">
+  <div class="eyebrow">Every candidate gets an uncertainty explanation</div>
+  <h1>Model disagreement can be a finding</h1>
+  <p class="lead">A fault score alone cannot tell a geologist whether the network is reading a weak but repeatable signal or extrapolating because it lacks evidence. This design reports the variance split and an independently sourced survey-coverage context for every candidate.</p>
+  <div class="callout danger"><strong>Not yet measured on competition data.</strong> The decomposition functions and model scaffold are in this repository, but no ensemble has been trained because the official rasters are unavailable. No actual epistemic map, aleatoric map, or Phase 2 candidate report is claimed.</div>
+
+  <section class="section">
+    <div class="eyebrow">Deep ensemble, not MC dropout</div><h2>Train independent members; infer each deterministically</h2>
+    <p>Train <em>M</em> separate networks from independently sampled initial weights, each optimized independently using the same training set and independent data-loader/random seeds. No member reuses another member's weights or optimizer state. The shipped U-Net has no dropout layer; inference runs with evaluation mode and no gradient. The method is motivated by Lakshminarayanan, Pritzel &amp; Blundell, <em>Simple and Scalable Predictive Uncertainty Estimation Using Deep Ensembles</em>, NeurIPS 2017.</p>
+    <p class="small">The current default config requests five members. This is a starting compute budget, not a statistically established optimum. Members should be calibrated out-of-fold before the probabilities are described as calibrated confidence.</p>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">Variance decomposition</div><h2>Exact law of total variance for the ensemble mixture</h2>
+    <p>For model member <em>m</em>, let <em>p<sub>m</sub>(x)</em> be that member's probability of fault presence at pixel <em>x</em>. View the ensemble as a uniform mixture over member identity, followed by a Bernoulli outcome.</p>
+    <div class="formula" role="math" aria-label="Total predictive variance equals the variance across member probabilities plus the average within-member Bernoulli variance">
+      p̄ = E<sub>m</sub>[p<sub>m</sub>]<br>
+      U<sub>epi</sub> = Var<sub>m</sub>(p<sub>m</sub>)<br>
+      U<sub>alea</sub> = E<sub>m</sub>[p<sub>m</sub>(1 − p<sub>m</sub>)]<br>
+      U<sub>total</sub> = p̄(1 − p̄) = U<sub>epi</sub> + U<sub>alea</sub>
+    </div>
+    <div class="grid-2" style="margin-top:1rem">
+      <article class="card"><div class="card-kicker">Epistemic</div><h3>Between-model disagreement</h3><p>High variance means independently fitted members assign different probabilities. It can signal lack of evidence, model sensitivity, distribution shift, or optimization instability. It is not proof that the terrain was under-surveyed.</p></article>
+      <article class="card"><div class="card-kicker">Aleatoric / conditional</div><h3>Within-member Bernoulli ambiguity</h3><p>For members that each predict a probability near 0.5, the conditional Bernoulli variance is high even when the ensemble agrees. It may reflect irreducible ambiguity, label uncertainty, or miscalibration. Call it an aleatoric estimate—not proven geological randomness—until calibration and the observation process are evaluated.</p></article>
+    </div>
+    <p class="small" style="margin-top:1rem">The implementation uses population variance (`ddof=0`) because it treats the finite ensemble as a uniformly weighted predictive mixture. `src/gems/uncertainty.py` checks the identity numerically and rejects invalid probabilities.</p>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">Why survey coverage changes triage</div><h2>Use disagreement differently where mapping effort differs</h2>
+    <p>Let <code>c(x) ∈ [0,1]</code> be an independent mapped-coverage proxy, where 0 means less mapped coverage and 1 means more. Scale epistemic standard deviation to `[0,1]` by dividing by its Bernoulli maximum of 0.5 and clipping. Define a <strong>review-priority adjustment</strong>:</p>
+    <div class="formula">A(x) = λ · min(√U<sub>epi</sub>(x) / 0.5, 1) · (1 − 2c(x))</div>
+    <p>With positive, validation-selected `λ`, high epistemic uncertainty at low mapped coverage raises priority. The same disagreement at high mapped coverage lowers it. At `c=0.5`, no signed adjustment is applied. If coverage is unknown, adjustment is exactly zero and the report says why.</p>
+    <div class="callout"><strong>Illustration only, not measured data:</strong> members `{0.1, 0.9}` give mean `0.5`, epistemic variance `0.16`, conditional variance `0.09`, total `0.25`. At an illustrative `λ=0.10`, normalized disagreement is `0.8`: coverage `c=0` shifts the review score by `+0.08`; coverage `c=1` shifts it by `−0.08`. The resulting `0.58`/`0.42` are ranking scores, not probabilities and not a proposed model output.</div>
+    <p>The adjustment must not silently alter the submission raster. Select `λ` only on spatially blocked folds and report sensitivity. An NGMDB map-footprint/scale index is at best a mapping-coverage proxy; it does not directly measure fieldwork intensity, and map absence may reflect digitization/cataloguing rather than lack of geological work.</p>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">Reviewer handoff</div><h2>One record for every Phase 2 candidate</h2>
+    <p>For each line/component candidate, export a CSV and map sidecars with at least these fields:</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Field</th><th>Interpretation</th><th>Review caveat</th></tr></thead>
+      <tbody>
+        <tr><td><code>mean_probability</code></td><td>Ensemble mean at candidate pixels</td><td>Only calibrated if the out-of-fold calibration report says so</td></tr>
+        <tr><td><code>epistemic_variance</code></td><td>Between-member disagreement</td><td>Can reflect OOD inputs or optimization instability, not only missing labels</td></tr>
+        <tr><td><code>aleatoric_variance</code></td><td>Mean within-member Bernoulli variance</td><td>Label/model ambiguity proxy; assumptions must be stated</td></tr>
+        <tr><td><code>predictive_variance</code></td><td>Pixelwise total `p̄(1−p̄)`</td><td>Check decomposition sum within tolerance</td></tr>
+        <tr><td><code>survey_coverage_proxy</code></td><td>Independent mapped-coverage score and source</td><td>Blank when not available; never impute “low coverage” from no data</td></tr>
+        <tr><td><code>review_priority_score</code></td><td>Base evidence plus signed epistemic/coverage adjustment</td><td>Not a probability and not the one-band contest submission</td></tr>
+        <tr><td><code>calibration_status</code></td><td>Calibration method, fold and reliability result</td><td>“Not calibrated” is an acceptable honest value</td></tr>
+      </tbody>
+    </table></div>
+    <p>The script <code>scripts/export_candidate_review.py</code> exports per-component averages from candidate-label and uncertainty maps. It records a centroid in the template CRS. The single-band competition GeoTIFF remains the mean probability or separately selected submission score; reviewers receive epistemic/aleatoric rasters and the CSV as companion materials.</p>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">Safeguards</div><h2>What this does not establish</h2>
+    <ul class="list-clean">
+      <li>A high epistemic map is not, by itself, a map of sparse fieldwork.</li>
+      <li>A high conditional Bernoulli variance is not automatically irreducible geological ambiguity.</li>
+      <li>Ensemble uncertainty is not calibrated until checked with out-of-fold reliability/error analyses and spatial distribution-shift tests.</li>
+      <li>The official known-fault raster is an incomplete catalogue, so a background zero is not necessarily a true negative. Training code downweights unlabeled background; the effect must be tested.</li>
+      <li>Phase 2 candidate reporting is a scientific handoff proposal. The competition's official one-band GeoTIFF submission contract remains unchanged.</li>
+    </ul>
+  </section>
+</main>
+<footer class="site-footer"><div class="footer-inner"><span>Uncertainty: reported separately, interpreted cautiously</span><span><a href="hypotheses.html">Hypothesis register</a> · <a href="sources.html">NeurIPS &amp; official sources</a></span></div></footer>
+</body>
+</html>

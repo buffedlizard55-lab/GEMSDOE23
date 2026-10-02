@@ -1,0 +1,39 @@
+# Local competition inputs and derived geospatial data (never commit private competition data)
+data/*
+!data/README.md
+!data/.gitkeep
+
+# Model weights, generated predictions, temporary/large experiments
+outputs/
+runs/
+checkpoints/
+*.ckpt
+*.pth
+*.pt
+*.npz
+*.npy
+*.aux.xml
+*.ovr
+*.tfw
+
+# Python/test/build artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+
+# Local logs and credentials
+*.log
+.env
+.env.*
+!.env.example
+.cookies
+cookies.txt
