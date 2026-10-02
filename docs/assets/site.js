@@ -51,12 +51,16 @@
       if (retrievedAt) retrievedAt.textContent = `Snapshot / refresh: ${data.retrieved_utc || 'date not supplied'}`;
       if (feedBadge) {
         const isLive = data.source_status === 'live';
-        const refreshFailed = data.refresh_status?.status === 'stale-snapshot-retained';
+        const refreshState = data.refresh_status?.status;
+        const refreshFailed = refreshState === 'stale-snapshot-retained' || refreshState === 'unavailable-no-snapshot';
+        const manual = refreshState === 'dated-snapshot';
         feedBadge.textContent = isLive
           ? 'Live feed refreshed'
-          : (refreshFailed ? 'Dated snapshot · refresh failed' : 'Dated snapshot');
+          : (refreshFailed ? 'Dated snapshot · automated refresh failed'
+            : (manual ? 'Dated snapshot · captured from the official page by hand' : 'Dated snapshot'));
         feedBadge.className = `status ${isLive ? 'status-ok' : (refreshFailed ? 'status-warning' : 'status-neutral')}`;
-        if (refreshFailed && data.refresh_status?.error) feedBadge.title = data.refresh_status.error;
+        const why = data.refresh_status?.error || data.capture_method;
+        if ((refreshFailed || manual) && why) feedBadge.title = why;
       }
     })
     .catch((error) => {

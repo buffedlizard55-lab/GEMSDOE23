@@ -1,6 +1,13 @@
 {
-  "checked_utc": "2026-10-02T09:20:31.099774+00:00",
-  "status": "stale-snapshot-retained",
+  "checked_utc": "2026-10-02T09:28:35+00:00",
+  "status": "dated-snapshot",
   "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-  "error": "ValueError: Could not find a leaderboard table with rank and Tversky headers"
+  "row_count": 50,
+  "top": {
+    "rank": 1,
+    "participant": "DARD",
+    "score": 0.3195,
+    "score_text": "0.3195"
+  },
+  "note": "Manually captured the same day; the automated HTML refresh could not parse the page served to the GitHub Actions runner. Re-run scripts/update_leaderboard.py --strict to test the automated path."
 }

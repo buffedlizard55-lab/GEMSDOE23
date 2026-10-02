@@ -17,6 +17,19 @@ DATA = os.path.join(DOCS, "data")
 DL = os.path.join(DOCS, "downloads")
 
 
+# Rendered under every leaderboard table so the two standing qualifications travel with the numbers
+# rather than living only in the JSON. Fallbacks match scripts/update_leaderboard.py.
+ATTRIBUTION_FALLBACK = (
+    "The official public leaderboard displays participants and scores but does not expose a "
+    "prediction-file SHA-256 or public submission identifier; score equality is not artifact, "
+    "account, or team attribution."
+)
+PHASE_FALLBACK = (
+    "These are public leaderboard results only, not private Initial Prize Round (Phase 1) "
+    "or expert-updated Final Prize Round (Phase 2) scores."
+)
+
+
 def j(name, default=None):
     p = os.path.join(DATA, name)
     if not os.path.exists(p):
@@ -238,6 +251,8 @@ def build():
                           num(r["survey_coverage"], 3), esc(r["epistemic_interpretation"]), num(r["priority"], 4)])
     cand_table = table(["#", "px", "UTM 11N", "m to catalogue", "p̄", "epistemic", "aleatoric", "epi share", "survey coverage", "reading", "priority"], cand_rows)
 
+    lb_attribution = esc(lb.get("attribution_caveat") or ATTRIBUTION_FALLBACK)
+    lb_phase = esc(lb.get("phase_caveat") or PHASE_FALLBACK)
     lb_rows = [[r.get("rank"), esc(r.get("participant")), num(r.get("score"), 4)] for r in rows_lb[:25]]
     lb_table = table(["rank", "participant", "public DW-Tversky"], lb_rows, tbody_id="leaderboard-rows")
 
@@ -319,6 +334,8 @@ def build():
       <p><span class="status status-neutral" id="feed-status">loading feed…</span> <span class="small" id="leaderboard-retrieved"></span>
       Refreshed automatically by <code>.github/workflows/pages.yml</code>; <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">official source</a>.</p></div></div>
     {lb_table}
+    <p class="small">{lb_attribution}</p>
+    <p class="small">{lb_phase}</p>
   </section>"""
 
     executive = f"""
@@ -583,6 +600,8 @@ def build():
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">Top 25</div><h2>Public DW-Tversky</h2></div></div>
     {lb_table}
+    <p class="small">{lb_attribution}</p>
+    <p class="small">{lb_phase}</p>
   </section>
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">The question the brief asked</div><h2>Why did H19 score highest?</h2>
