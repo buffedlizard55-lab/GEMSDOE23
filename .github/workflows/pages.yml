@@ -8,7 +8,10 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  # contents: write is required for the snapshot commit-back step below; without it the push
+  # is rejected (403) and every later step - including the Pages deploy - is skipped, which is
+  # exactly what happened on the first run after PR #4 merged.
+  contents: write
   pages: write
   id-token: write
 
@@ -31,15 +34,28 @@ jobs:
         run: python scripts/update_leaderboard.py --output docs/data/leaderboard.json --status docs/data/leaderboard-status.json
       - name: Rebuild every page from the evidence records
         run: python scripts/build_site.py
+      # Best effort: publication must never be blocked by a rejected commit-back push, so this
+      # step is allowed to fail (continue-on-error) and rebases onto the remote tip first to
+      # avoid a non-fast-forward rejection when two refreshes overlap.
       - name: Commit the refreshed snapshot back to the branch
+        continue-on-error: true
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/data/leaderboard.json docs/data/leaderboard-status.json docs/*.html docs/downloads/latest.json
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: refresh public leaderboard snapshot and rebuild the site"
-            git push origin HEAD:${GITHUB_REF_NAME}
+          if git diff --cached --quiet; then
+            echo "snapshot unchanged; nothing to commit"
+            exit 0
           fi
+          git commit -m "chore: refresh public leaderboard snapshot and rebuild the site"
+          git fetch origin "${GITHUB_REF_NAME}"
+          if ! git rebase "origin/${GITHUB_REF_NAME}"; then
+            git rebase --abort
+            echo "commit-back skipped: remote moved on; the deploy below still uses this run's pages"
+            exit 0
+          fi
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          echo "committed the refreshed snapshot to ${GITHUB_REF_NAME}" 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
