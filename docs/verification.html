@@ -1,67 +1,71 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Audited dataset irregularities, SHA-256 raster inventory, GeoTIFF byte-level audits, and 3-pass verification record for GEMSDOE23.">
-  <title>Verification &amp; Irregularities · GEMSDOE23</title><link rel="stylesheet" href="assets/site.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Irregularity register, withdrawn claims, limitations and reproduction commands.">
+  <title>Audit · GEMSDOE23</title>
+  <link rel="stylesheet" href="assets/site.css">
+  <script defer src="assets/site.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header"><div class="header-inner">
-  <a class="brand" href="index.html"><span class="brand-mark">G23</span><span>GEMSDOE23 <span class="small" style="color:#c8d8cd">/ research log</span></span></a>
-  <nav class="nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="executive-summary.html">How to submit</a><a href="hypotheses.html">Hypotheses</a><a href="uncertainty.html">Uncertainty</a><a href="results.html">Scores</a><a href="sources.html">Sources</a><a href="verification.html" aria-current="page">Audit</a></nav>
-</div></header>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">G23</span><span>GEMSDOE23 <span class="small" style="color:#c8d8cd">/ research log</span></span></a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index.html">Overview</a>
+      <a href="executive-summary.html">How to submit</a>
+      <a href="hypotheses.html">New hypotheses</a>
+      <a href="uncertainty.html">Uncertainty</a>
+      <a href="evidence.html">Evidence</a>
+      <a href="results.html">Scores</a>
+      <a href="sources.html">Sources</a>
+      <a href="verification.html" aria-current="page">Audit</a>
+    </nav>
+  </div>
+</header>
 <main id="main">
-  <div class="eyebrow">Three review passes complete · SHA-256 verified</div>
-  <h1>Verification ledger &amp; 5 verified irregularities</h1>
-  <p class="lead">Every official competition raster, external USGS/DOE dataset, trained ensemble checkpoint, out-of-fold validation report, and submission GeoTIFF is verified by SHA-256 digest and audited line-by-line.</p>
 
+  <section class="hero"><div class="hero-grid"><div>
+    <div class="eyebrow">Audit</div><h1>Irregularities, withdrawn claims and limitations</h1>
+    <p class="lead">Everything that did not survive checking is listed here rather than quietly dropped.</p></div></div></section>
   <section class="section">
-    <div class="eyebrow">Five verified irregularities</div><h2>Dataset &amp; prior-pipeline irregularities flagged and resolved</h2>
-    <div class="table-wrap"><table><thead><tr><th>ID</th><th>Irregularity Flagged</th><th>Direct Evidence</th><th>Resolution in GEMSDOE23</th></tr></thead><tbody>
-      <tr><td>I-01</td><td><strong><code>sample_submission.tif</code> contains <code>labels.tif</code></strong></td><td>The DrivenData problem page states <code>sample_submission.tif</code> is an “all-0.5 example,” but byte-level inspection of <code>sample_submission.tif</code> (SHA-256 <code>2176d08e…35cbc</code>) shows <code>60,988</code> pixels equal to <code>1.0</code> and <code>5,106,385</code> equal to <code>0.0</code>—100% identical to <code>labels.tif</code> on the footprint.</td><td>We use <code>sample_submission.tif</code> strictly for grid/CRS/footprint mask validation and never leak its pixel values into features.</td></tr>
-      <tr><td>I-02</td><td><strong>Band 6 (<code>tc</code>) of <code>training_features.tif</code> is mislabeled</strong></td><td>Band 6 is tagged <code>"tc - Tilt angle or total curvature - magnetic field derivative"</code>, but cross-correlation against official USGS GeoDAWN radiometric grids proves Band 6 correlates at <code>r = +0.99714</code> with Radiometric Total Count (<code>TC</code>) and only <code>r = +0.0258</code> with true magnetic tilt angle $\arctan2(\text{tmi\_vg}, \text{tmi\_hg})$.</td><td>We compute true Miller &amp; Singh (1994) Magnetic &amp; Gravity Tilt Angles $\theta_{\text{mag}} = \arctan2(\text{tmi\_vg}, \text{tmi\_hg})$ and $\theta_{\text{grav}} = \arctan2(\text{iso\_grav\_anom\_vg}, \text{iso\_grav\_anom\_slope})$ (`1.0769×` fault enrichment).</td></tr>
-      <tr><td>I-03</td><td><strong>Interior <code>-1e32</code> sentinel holes inside the valid footprint</strong></td><td><code>training_features.tif</code> contains <code>3,061</code> pixels with <code>-3.4e38 / -1e32</code> sentinel values inside the 5,167,373-pixel footprint across 18 bands, plus 12 additional sentinel pixels on Band 6 (<code>3,073</code> total).</td><td>All feature extraction, patch sampling, and tiled inference explicitly filter <code>np.isfinite(x) &amp; (np.abs(x) &lt; 1e30)</code> and impute median/zero values inside the footprint.</td></tr>
-      <tr><td>I-04</td><td><strong>Catalogue-masking rule on the leaderboard</strong></td><td>Confirmed by DrivenData Moderator <code>kwetstone</code> in Forum Topic 11516 (Posts 2 &amp; 4): <code>labels.tif == 1</code> (`60,988` pixels, 99.95% match to GDR 1391 Quaternary Faults) is masked at <code>d = 0 px</code> with no buffer (<code>d &gt;= 100 m</code> is scored).</td><td>Our multi-scale local prominence (`700 m`, `1.5 km`, `3.1 km`) + `300 m` NMS head suppresses off-ridge background (`logit &lt;= 0 -> 0.0`) while preserving high-confidence splays and unmapped fault traces.</td></tr>
-      <tr><td>I-05</td><td><strong>Cross-fold leakage in <code>19GEMSDOE</code> holdout evaluation</strong></td><td>Line-by-line audit of <code>19GEMSDOE/scripts/run_spatial_holdout_and_build.py</code> (lines 266–271) revealed it loaded <code>5GEMSDOE</code>'s <code>context_detector_prob_f*.tif</code> rasters (trained on 512-pixel blocks) into a 4-quadrant holdout, leaking validation labels across quadrant boundaries.</td><td><code>GEMSDOE23</code> eliminates <code>context_detector</code> completely; all 20 input channels in <code>features-h1.npy</code> are 100% label-free, and every <code>UNetFaultNet</code> member is trained strictly inside its buffered training quadrant.</td></tr>
-    </tbody></table></div>
+    <div class="section-head"><div><div class="eyebrow">Flagged</div><h2>Irregularity register</h2></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>id</th><th>severity</th><th>status</th><th>finding</th><th>action taken</th></tr></thead><tbody><tr><td><code>I-01</code></td><td>medium</td><td>open</td><td>The official sample_submission.tif is not an all-absence template</td><td>Used only for its grid, CRS, transform and footprint. Never as a zero baseline, and never as a prediction.</td></tr><tr><td><code>I-02</code></td><td>medium</td><td>open</td><td>Band 6 &#x27;tc&#x27; is mislabelled in the feature file&#x27;s own tags</td><td>Treat band 6 as radiometric total count (surface lithology / soil chemistry), not as a magnetic edge detector. Any hypothesis that assumed a magnetic meaning is mis-specified. The official problem page&#x27;s own layer list includes &#x27;Total radiometric counts per second&#x27;, which agrees with the measurement.</td></tr><tr><td><code>I-03</code></td><td>medium</td><td>fixed</td><td>Invalid feature pixels use a finite float32 sentinel, not NaN</td><td>All loaders in src/gems mask on abs(value) &lt; 1e30 as well as isfinite (src/gems/layers.py SENTINEL, scripts/prepare_data.py). A regression test was added.</td></tr><tr><td><code>I-04</code></td><td>high</td><td>fixed</td><td>The previous download script could never have worked</td><td>Rewritten to fail closed: scripts/fetch_data_bridge.py acquires the rasters from the hash-pinned public git bridge, falls back to the mirrors named in that bridge&#x27;s own manifest, verifies every part and the whole file, and never authenticates to the login-gated data tab.</td></tr><tr><td><code>I-05</code></td><td>high</td><td>withdrawn</td><td>The headline &#x27;4-fold spatial holdout gate passed&#x27; claim measured the wrong population</td><td>Claim withdrawn from README.md, docs/PROJECT_BRIEF.md and every site page. Replaced by an explicit statement that placement cannot be validated offline, plus a projection range derived from the exact metric algebra.</td></tr><tr><td><code>I-06</code></td><td>high</td><td>corrected</td><td>|G| = 125,000 hidden truth pixels is refuted by an order of magnitude</td><td>The 550,000-pixel &#x27;value-based emission budget&#x27; inherited from earlier group work is abandoned: at the measured |G| it is far past the metric&#x27;s marginal rule. The shipped emission uses ~120,000 pixels chosen by maximin expected DTI.</td></tr><tr><td><code>I-07</code></td><td>medium</td><td>open</td><td>A previously reported proxy correlation did not reproduce</td><td>No offline proxy is used for model or budget selection. The only instrument with out-of-family validation is the habitat regression fitted to the live scores themselves (nested-CV rho = +0.46).</td></tr><tr><td><code>I-08</code></td><td>medium</td><td>open</td><td>The deep ensemble failed its own admission gate</td><td>The pre-registered gate set the detector&#x27;s weight in the submitted emission to 0. The ensemble is still reported in full and still supplies the epistemic/aleatoric decomposition, whose validity does not depend on the members being accurate. Compute was the binding constraint: 2 CPU cores, 3 GB RAM, no GPU.</td></tr><tr><td><code>I-09</code></td><td>low</td><td>fixed</td><td>The leaderboard feed had silently gone stale</td><td>Snapshot refreshed manually for 2026-10-02 and the page now prints the retrieval timestamp and a live/stale badge next to the table; .github/workflows/pages.yml refreshes it on every push and daily at 12:00 UTC.</td></tr><tr><td><code>I-10</code></td><td>low</td><td>open</td><td>Sandbox egress blocks every official host except GitHub and PyPI</td><td>Official rasters arrive through the hash-pinned git bridge; official page text arrives through a text fetch; torch is installed from PyPI. GitHub Actions has full egress and re-does the leaderboard fetch there.</td></tr><tr><td><code>I-11</code></td><td>medium</td><td>open</td><td>Ambiguity in the masking ruling that this submission resolves conservatively</td><td>This submission emits nothing on catalogue pixels, which is safe under both readings and matches every top-scoring artefact (on-catalogue mass = 0 for h19-5, h19-4, h16-1, lidarscarp). The alternative reading would make catalogue pixels free upside; it is not taken because the downside under the strict reading is 60,988 pixels of unrepaid FP mass.</td></tr><tr><td><code>I-12</code></td><td>high</td><td>open</td><td>GitHub credentials for this session expired mid-run, so the pull request could not be opened</td><td>All work is committed locally on the session branch and nothing is lost. The pull request, the merge to main and the Pages deployment are blocked until the GitHub connection is restored in Arena; the official rasters already on disk remain hash-verified, so no re-acquisition is needed to continue. Re-run `git push origin &lt;branch&gt;` and open the PR once the token is valid.</td></tr></tbody></table></div>
   </section>
-
   <section class="section">
-    <div class="eyebrow">Cryptographic data inventory</div><h2>SHA-256 verified competition &amp; external rasters</h2>
-    <div class="table-wrap"><table><thead><tr><th>File</th><th>Dimensions / CRS</th><th>Bytes</th><th>SHA-256 Digest</th></tr></thead><tbody>
-      <tr><td><code>data/training_features.tif</code> (19 bands)</td><td>3292 × 3730 · EPSG:32611</td><td class="numeric">966,645,428</td><td><code>4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5</code></td></tr>
-      <tr><td><code>data/labels.tif</code> (60,988 pos px)</td><td>3292 × 3730 · EPSG:32611</td><td class="numeric">12,302,042</td><td><code>7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093</code></td></tr>
-      <tr><td><code>data/sample_submission.tif</code></td><td>3292 × 3730 · EPSG:32611</td><td class="numeric">49,149,544</td><td><code>2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc</code></td></tr>
-      <tr><td><code>data/dem_links.json</code></td><td>JSON tile index</td><td class="numeric">2,095,629</td><td><code>8804dbff8754dd885df88bf412cced52b0be6490aa79142f4588700a8e4ada7b</code></td></tr>
-      <tr><td><code>data/processed/features.npy</code> (19 ch)</td><td>19 × 3730 × 3292 float32</td><td class="numeric">933,216,288</td><td><code>89a3f3915bdeea53a27c16723355357ea805b99d42f6306db964226857efdcd5</code></td></tr>
-      <tr><td><code>data/processed/features-h1.npy</code> (20 ch)</td><td>20 × 3730 × 3292 float32</td><td class="numeric">982,332,928</td><td><code>83e31f25371dd78473029986e31a5547e3e0cb6a2e62887269abb3cddbcd6f8e</code></td></tr>
-      <tr><td><code>data/external/lidar_scarp_features_u8.tif</code></td><td>12 × 3730 × 3292 uint8</td><td class="numeric">52,704,613</td><td><code>d580bb8bdc6522dc02330999d65d63943c32eb9d33e6338670166080d0bf3866</code></td></tr>
-      <tr><td><code>data/external/geodawn_rad_u8.tif</code></td><td>4 × 3730 × 3292 uint8</td><td class="numeric">11,488,433</td><td><code>c22420f75988276e7f6bd59b1d4bd4c12f4830445646f435a4b63f94420e4359</code></td></tr>
-      <tr><td><code>data/external/geodawn_extensions_u8.tif</code></td><td>4 × 3730 × 3292 uint8</td><td class="numeric">11,729,878</td><td><code>a35a9c6d2a4983d9228ca701980d039aa4b0d950e6cf4523a830290e469f2cc1</code></td></tr>
-    </tbody></table></div>
+    <div class="section-head"><div><div class="eyebrow">Withdrawn</div><h2>Claims this session removed from the repository</h2></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>previous claim</th><th>why it was withdrawn</th><th>what replaces it</th></tr></thead><tbody><tr><td>“4-Fold Spatial Holdout Gate Passed · mean OOF DTI 0.21177 · 4/4 fold wins”</td><td>The gate scored a detector against the <em>supplied catalogue</em> using geographic quadrant folds. Known-fault pixels are masked out of the official evaluation, so the catalogue cannot score; and quadrant folds delete the fault population from the held-out region. Measured here: no offline proxy truth ranks the 24 live artefacts better than chance (best ρ = +0.33, p = 0.12).</td><td>An explicit statement that placement cannot be validated offline, plus a projection range derived from the exact metric algebra and a skill prior fitted to live scores.</td></tr><tr><td>“|G| ≈ 125,000 hidden truth pixels”</td><td>Refuted by exact inversion: TP<sub>w</sub> ≤ |G| gives |G| ≥ 5,563 and the 98.9 %-coverage lattice artefact gives |G| ≤ 14,944.</td><td>|G| ∈ [5,563, 14,944], with 6,000–15,000 carried as the projection range.</td></tr><tr><td>“Emit ~550,000 pixels (value-based emission budget)”</td><td>That budget was derived from |G| = 125,000, which also understated the cost of an emitted pixel by 21% (fp_relief 0.810 instead of 0.985). At the measured |G| it is far past the marginal rule: DTI falls monotonically once A exceeds |G|/q.</td><td>A ≈ 120,000 chosen by maximin expected DTI over the |G| and skill ranges.</td></tr><tr><td>“sample_submission.tif predicts total fault absence”</td><td>The official page says so, but the file contains 60,988 pixels equal to 1.0 — exactly the known-fault catalogue.</td><td>Used only for its grid, CRS, transform and footprint; never as a zero baseline.</td></tr></tbody></table></div>
   </section>
-
   <section class="section">
-    <div class="eyebrow">Submission artifact audit</div><h2>Independent dual-decoder verification of <code>gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.tif</code></h2>
-    <div class="table-wrap"><table><thead><tr><th>Check</th><th>Observed Value</th><th>Verification Method</th></tr></thead><tbody>
-      <tr><td>Dimensions &amp; Type</td><td>3292 × 3730 · 1 band · IEEE float32 · LZW predictor=1</td><td>Passed both <code>validate_submission.py</code> and <code>audit_reference_tif.py</code></td></tr>
-      <tr><td>CRS &amp; Affine Transform</td><td>EPSG:32611 · 100 m × −100 m · Origin (243350.0, 4508550.0)</td><td>Exact match to <code>data/sample_submission.tif</code></td></tr>
-      <tr><td>In-Footprint Values</td><td>5,167,373 finite pixels · min <code>0.0</code> · max <code>1.0</code> · 0 infinities</td><td>Strict <code>[0.0, 1.0]</code> range verified on all 5,167,373 footprint pixels</td></tr>
-      <tr><td>Outside-Footprint Values</td><td>7,111,787 exact NaN pixels (<code>non_nan_outside = 0</code>)</td><td>Exact match to <code>~footprint</code> of <code>data/sample_submission.tif</code></td></tr>
-      <tr><td>SHA-256 &amp; Size</td><td><code>572a2fab82fbff4c3ac0978225bbbec8d5cd5b47af7ce9fae4c8f9f9042855f2</code> (3,249,272 bytes)</td><td>Recorded in <a href="downloads/gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.json">manifest JSON</a> &amp; <a href="downloads/gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.audit.json">audit JSON</a></td></tr>
-    </tbody></table></div>
+    <div class="section-head"><div><div class="eyebrow">Limitations</div><h2>What this work cannot claim</h2></div></div>
+    <ul class="list-clean">
+      <li><strong>No offline validation of placement.</strong> The single largest limitation. Model and budget choices rest on the metric algebra plus a 24-observation regression; only a submission slot can confirm them.</li>
+      <li><strong>|G| is bounded, not measured.</strong> The upper bound assumes no artefact is actively anti-correlated with the hidden truth. If one is, |G| could be larger.</li>
+      <li><strong>The deep ensemble is undertrained and was excluded.</strong> 5 members × 5 epochs × 1536 patches on 2 CPU cores; its out-of-fold DTI did not beat a random-emission control, so its weight in the emission is 0. It still supplies the epistemic/aleatoric decomposition, whose validity does not depend on the members being accurate.</li>
+      <li><strong>Lidar coverage is 75.4 % of the footprint</strong> and the gap is systematic (north-east quadrant), so the habitat score is weakest exactly where survey coverage is lowest.</li>
+      <li><strong>Public ≠ private.</strong> All 24 live scores are public-test scores; the region is chunked, the split is unpublished, and the Final Round re-scores against expanded labels.</li>
+      <li><strong>Sandbox egress.</strong> DrivenData, Dropbox, USGS, ScienceBase and the National Map are unreachable from the development sandbox, so the official data tab and external downloads were obtained through the group's hash-pinned git bridge and the leaderboard through a fetch that GitHub Actions can repeat but this sandbox cannot.</li>
+    </ul>
   </section>
-
   <section class="section">
-    <div class="eyebrow">Three-pass engineering &amp; scientific review</div><h2>Completed verification passes (2026-10-02)</h2>
-    <ol class="list-clean">
-      <li><strong>Pass 1 — Implement &amp; verify end-to-end pipeline:</strong> Verified SHA-256 digests of all competition and external USGS/DOE rasters; implemented 100% label-free multi-line physical consensus (`src/gems/geology.py`, `scripts/build_edge_consensus.py`) and differentiable 3-scale ridge-prominence `UNetFaultNet` (`src/gems/model.py`); trained 5-member Deep Ensembles across all 4 spatial folds plus the full dataset (`25` independent checkpoints for `H1-edge-consensus` and `20` for `baseline-unet`); passed the 4-fold spatial holdout gate (`0.21177` vs `0.12618`, `4/4` fold wins); exported 150-candidate uncertainty review CSV and validated the final LZW GeoTIFF.</li>
-      <li><strong>Pass 2 — Adversarial bug, edge-case &amp; leakage audit:</strong> Caught and fixed tile-edge NaN/sentinel propagation in `scripts/predict_ensemble.py` by adding 16-pixel halo padding and `np.isfinite(tile) &amp; (np.abs(tile) &lt; 1e30)` sanitization; switched `write_submission_raster` in `src/gems/submission.py` to LZW (`predictor=1`) so the stdlib LZW decoder (`scripts/audit_reference_tif.py`) independently verifies every submission; eliminated off-ridge background floor (`logit &lt;= 0 -> 0.0`) to prevent ~100,000 units of false-positive weight across 4.75M background pixels.</li>
-      <li><strong>Pass 3 — Full requirement &amp; test suite verification:</strong> All 30 unit and integration tests across 11 test modules pass (`python -m unittest discover -s tests -v`); `python -m compileall -q src scripts tests` passes; `python scripts/check_site.py` verifies all 7 HTML pages, internal links, and downloadable artifacts; `git diff --check` is clean.</li>
-    </ol>
+    <div class="section-head"><div><div class="eyebrow">Reproduce</div><h2>Commands</h2></div></div>
+    <pre class="formula">bash scripts/download_competition_data.sh     # acquire the official rasters (bridge or data tab)
+python scripts/prepare_data.py                # verify hashes, write data/manifest.json
+python scripts/fit_habitat_model.py           # 24 live scores -> habitat weights + nested CV
+python scripts/run_ensemble.py                # deep ensemble + epistemic/aleatoric split
+python scripts/evaluate_oof.py                # admission gate vs a random-emission control
+python scripts/build_submission_live.py       # budget, dispersion, TIFF, validation
+python scripts/phase2_candidates.py           # reviewer candidates with the variance split
+python scripts/build_site.py                  # this site</pre>
   </section>
 </main>
-<footer class="site-footer"><div class="footer-inner"><span>Irregularities are data, not details to hide.</span><span><a href="sources.html">Source register</a> · <a href="https://github.com/buffedlizard55-lab/GEMSDOE23/blob/main/README.md">README</a></span></div></footer>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · page rebuilt 2026-10-02 06:45 UTC</span>
+    <span><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">Official competition</a> · <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a> · <a href="https://github.com/buffedlizard55-lab/GEMSDOE23">This repository</a></span>
+  </div>
+</footer>
 </body>
 </html>

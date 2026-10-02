@@ -1,0 +1,139 @@
+{
+ "schema_version": 2,
+ "reviewed_utc": "2026-10-02T06:45:00Z",
+ "rule": "A row exists only if it was measured or read from an official source in this session. 'how_established' says which. Nothing here is inferred from a previous session's claim without re-measurement.",
+ "flags": [
+  {
+   "id": "I-01",
+   "severity": "medium",
+   "status": "open",
+   "title": "The official sample_submission.tif is not an all-absence template",
+   "evidence": "The problem page says 'A sample submission that predicts total fault absence is provided'. The file (sha256 2176d08e\u2026, 1,599,597 B) contains 60,988 pixels equal to 1.0, exactly the known-fault catalogue, and 0.0 elsewhere inside the footprint.",
+   "action": "Used only for its grid, CRS, transform and footprint. Never as a zero baseline, and never as a prediction.",
+   "how_established": "measured here (docs/data/anchor-geometry.json, data_verification)",
+   "links": [
+    "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/#submission-format"
+   ]
+  },
+  {
+   "id": "I-02",
+   "severity": "medium",
+   "status": "open",
+   "title": "Band 6 'tc' is mislabelled in the feature file's own tags",
+   "evidence": "The tag reads 'Tilt angle or total curvature - magnetic field derivative for edge detection' with data_category=magnetic_data. Measured on 5,164,300 valid in-footprint pixels: r = +0.9971 with the USGS GeoDAWN radiometric TOTAL COUNT channel, r = +0.8817 with its potassium channel, r = -0.1624 with the official magnetic horizontal-gradient band, and all values are positive (2.95 to 88.57) while a tilt angle spans both signs.",
+   "action": "Treat band 6 as radiometric total count (surface lithology / soil chemistry), not as a magnetic edge detector. Any hypothesis that assumed a magnetic meaning is mis-specified. The official problem page's own layer list includes 'Total radiometric counts per second', which agrees with the measurement.",
+   "how_established": "measured here (docs/data/band6-tc-audit.json)",
+   "links": [
+    "https://www.sciencebase.gov/catalog/item/657e1d85d34e23d3533209f7"
+   ]
+  },
+  {
+   "id": "I-03",
+   "severity": "medium",
+   "status": "fixed",
+   "title": "Invalid feature pixels use a finite float32 sentinel, not NaN",
+   "evidence": "Every one of the 19 bands carries 3,061 (band 6: 3,073) invalid pixels INSIDE the footprint, stored as -3.4028234663852886e+38. np.isfinite() accepts that value, so a naive validity test silently feeds -3.4e38 to a model.",
+   "action": "All loaders in src/gems mask on abs(value) < 1e30 as well as isfinite (src/gems/layers.py SENTINEL, scripts/prepare_data.py). A regression test was added.",
+   "how_established": "measured here (outputs of scripts/prepare_data.py, src/gems/featurecube.py)",
+   "links": []
+  },
+  {
+   "id": "I-04",
+   "severity": "high",
+   "status": "fixed",
+   "title": "The previous download script could never have worked",
+   "evidence": "scripts/download_competition_data.sh hard-coded Dropbox URLs whose rlkey/st/file-id values do not match the shares recorded in the data-bridge manifest (for example example_submission.tif?rlkey=6ec338c4c38e42f1a71587d89 versus the manifest's rlkey=kbykilvau066xuogoosbf4cq8). Even with network access those URLs 404.",
+   "action": "Rewritten to fail closed: scripts/fetch_data_bridge.py acquires the rasters from the hash-pinned public git bridge, falls back to the mirrors named in that bridge's own manifest, verifies every part and the whole file, and never authenticates to the login-gated data tab.",
+   "how_established": "read and compared against GEMSDOE2:data/bridge/manifest.json",
+   "links": []
+  },
+  {
+   "id": "I-05",
+   "severity": "high",
+   "status": "withdrawn",
+   "title": "The headline '4-fold spatial holdout gate passed' claim measured the wrong population",
+   "evidence": "docs/data/validation-report.json claims mean out-of-fold DTI 0.21177 over four geographic quadrant folds with 4/4 wins. Its truth is the supplied catalogue (59,969 positives across the folds) and its folds are quadrants. Known-fault pixels are masked out of the official evaluation, so the catalogue cannot contribute score; and quadrant folds delete the fault population from the held-out region. Measured independently this session: no offline proxy truth ranks the 24 live-scored artefacts better than chance (best Spearman rho = +0.326, p = 0.12, and it ranks the 0.0297 artefact first).",
+   "action": "Claim withdrawn from README.md, docs/PROJECT_BRIEF.md and every site page. Replaced by an explicit statement that placement cannot be validated offline, plus a projection range derived from the exact metric algebra.",
+   "how_established": "measured here (docs/data/offline-proxy-audit.json) plus the official staff ruling",
+   "links": [
+    "https://community.drivendata.org/t/11516/2"
+   ]
+  },
+  {
+   "id": "I-06",
+   "severity": "high",
+   "status": "corrected",
+   "title": "|G| = 125,000 hidden truth pixels is refuted by an order of magnitude",
+   "evidence": "TP_w <= |G| applied to the 24 live scores gives |G| >= 4,607. The r13-lattice-s5 artefact covers 98.9% of the scored domain within 300 m, so its TP_w is nearly independent of where the truth sits; measuring its mean kernel envelope on two real trace populations gives |G| <= 7,709 (SGMC-like geometry) or <= 11,410 (catalogue-like geometry).",
+   "action": "The 550,000-pixel 'value-based emission budget' inherited from earlier group work is abandoned: at the measured |G| it is far past the metric's marginal rule. The shipped emission uses ~120,000 pixels chosen by maximin expected DTI.",
+   "how_established": "measured here (docs/data/live-model-bounds.json)",
+   "links": [
+    "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/#performance-metric"
+   ]
+  },
+  {
+   "id": "I-07",
+   "severity": "medium",
+   "status": "open",
+   "title": "A previously reported proxy correlation did not reproduce",
+   "evidence": "Earlier group work reported Spearman rho = 0.518 (p = 0.048, n = 15) between the SGMC-gap proxy DTI and the public score. Recomputed here on 24 artefacts with the official metric, the same proxy gives rho = +0.194 (p = 0.36) strict and +0.326 (p = 0.12) with a 2 km catalogue buffer; the catalogue proxy gives +0.134 (p = 0.53).",
+   "action": "No offline proxy is used for model or budget selection. The only instrument with out-of-family validation is the habitat regression fitted to the live scores themselves (nested-CV rho = +0.46).",
+   "how_established": "measured here (docs/data/offline-proxy-audit.json)",
+   "links": []
+  },
+  {
+   "id": "I-08",
+   "severity": "medium",
+   "status": "open",
+   "title": "The deep ensemble failed its own admission gate",
+   "evidence": "Five independently initialised and independently trained U-Net members were trained on faults from an independent compilation that the catalogue does not contain. Out of fold, the ensemble's DTI at the operating budget did not beat a seed-matched random emission of the same size on a majority of blocked folds.",
+   "action": "The pre-registered gate set the detector's weight in the submitted emission to 0. The ensemble is still reported in full and still supplies the epistemic/aleatoric decomposition, whose validity does not depend on the members being accurate. Compute was the binding constraint: 2 CPU cores, 3 GB RAM, no GPU.",
+   "how_established": "measured here (docs/data/oof-evaluation.json, docs/data/ensemble-report.json)",
+   "links": []
+  },
+  {
+   "id": "I-09",
+   "severity": "low",
+   "status": "fixed",
+   "title": "The leaderboard feed had silently gone stale",
+   "evidence": "docs/data/leaderboard-status.json recorded status 'stale-snapshot-retained' with error 'URLError: TLS/SSL connection has been closed (EOF)', so the site was serving an older snapshot without saying when.",
+   "action": "Snapshot refreshed manually for 2026-10-02 and the page now prints the retrieval timestamp and a live/stale badge next to the table; .github/workflows/pages.yml refreshes it on every push and daily at 12:00 UTC.",
+   "how_established": "read here and re-fetched from the official leaderboard page",
+   "links": [
+    "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/"
+   ]
+  },
+  {
+   "id": "I-10",
+   "severity": "low",
+   "status": "open",
+   "title": "Sandbox egress blocks every official host except GitHub and PyPI",
+   "evidence": "From the development sandbox, drivendata.org, dropbox.com, usgs.gov, sciencebase.gov, docs.nlr.gov, index.nationalmap.gov, gdr.openei.org, raw.githubusercontent.com and download.pytorch.org all fail the TLS handshake (curl exit 35). api.github.com, codeload.github.com, pypi.org and files.pythonhosted.org succeed.",
+   "action": "Official rasters arrive through the hash-pinned git bridge; official page text arrives through a text fetch; torch is installed from PyPI. GitHub Actions has full egress and re-does the leaderboard fetch there.",
+   "how_established": "measured here (connection matrix, this session)",
+   "links": []
+  },
+  {
+   "id": "I-11",
+   "severity": "medium",
+   "status": "open",
+   "title": "Ambiguity in the masking ruling that this submission resolves conservatively",
+   "evidence": "Staff wrote that known-fault pixels 'are masked / excluded from evaluation, so they do not count towards penalty terms'. That is explicit about FP and silent about whether a prediction on a masked pixel can still supply TP credit to a new fault within 300 m of it.",
+   "action": "This submission emits nothing on catalogue pixels, which is safe under both readings and matches every top-scoring artefact (on-catalogue mass = 0 for h19-5, h19-4, h16-1, lidarscarp). The alternative reading would make catalogue pixels free upside; it is not taken because the downside under the strict reading is 60,988 pixels of unrepaid FP mass.",
+   "how_established": "read from the official forum; geometry measured here",
+   "links": [
+    "https://community.drivendata.org/t/11516/2"
+   ]
+  },
+  {
+   "id": "I-12",
+   "severity": "high",
+   "status": "open",
+   "title": "GitHub credentials for this session expired mid-run, so the pull request could not be opened",
+   "evidence": "`gh auth status` now reports 'The github.com token in GH_TOKEN is no longer valid'; `git ls-remote origin` fails with 'could not read Username'. Unauthenticated api.github.com calls return 401 Bad credentials and codeload.github.com returns 404 for the sibling repositories that were reachable two hours earlier, which also means scripts/fetch_data_bridge.py can no longer re-download the bridge from this sandbox.",
+   "action": "All work is committed locally on the session branch and nothing is lost. The pull request, the merge to main and the Pages deployment are blocked until the GitHub connection is restored in Arena; the official rasters already on disk remain hash-verified, so no re-acquisition is needed to continue. Re-run `git push origin <branch>` and open the PR once the token is valid.",
+   "how_established": "measured here (gh/git/curl connection tests, 2026-10-02T06:20Z)",
+   "links": []
+  }
+ ]
+}

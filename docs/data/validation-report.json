@@ -1,104 +1,108 @@
 {
-  "created_utc": "2026-10-02T02:35:06.629554+00:00",
-  "candidate_id": "H1-edge-consensus",
-  "candidate_spec_sha256": "76be35b6519d35404be3c57aa7afeeaaaad462b7602edd8566df9915c47aca11",
-  "candidate_metadata_sha256": "c245ed1a73fb7dd9e3f4aab253c916c3dc6fb9b7cb2068033fdb8e390b1fd3bd",
-  "candidate_prediction_sha256": "2eb6750fa6e9f7c0e8673168a0c4f2e98ff872fcf5abe1fed7d0780fe4abf3ce",
-  "incumbent_id": "baseline-unet",
-  "incumbent_spec_sha256": "cb76197c95fe3b673addd64addd8a040c74ac633102c402016244f04d6bc1c0f",
-  "incumbent_metadata_sha256": "cb70b3c66b46fc0adb5365df0ed4232282941103d7ec9833d799da35ea5ab592",
-  "incumbent_prediction_sha256": "78e51e969302ec1376fe7285eeec46c00d24eb7202f27662aaf8fd1fef7e47a5",
-  "truth_semantics": "held-out known catalogue faults only; this is a proxy, not the competition's hidden-fault score",
-  "metric": "official distance-weighted Tversky index; alpha=0.2, beta=0.8",
-  "spatial_design": {
-    "folds": 4,
-    "layout": "four geographic quadrants",
-    "scoring_collar_m": 300.0,
-    "pixel_size_m": 100.0,
-    "prediction_type": "out_of_fold",
-    "provenance_note": "OOF semantics are asserted by checked metadata; this local check is not tamper-proof."
+ "status": "WITHDRAWN",
+ "withdrawn_utc": "2026-10-02T06:40:00Z",
+ "irregularity_flag": "I-05",
+ "withdrawal_reason": "WITHDRAWN 2026-10-02. This report scored a detector against the supplied catalogue using geographic quadrant folds. Known-fault pixels are masked out of the official evaluation (staff ruling, forum topic 11516), so the catalogue cannot contribute score, and quadrant folds delete the fault population from the held-out region. Measured independently: no offline proxy truth ranks the 24 live-scored artefacts better than chance (best Spearman rho = +0.33, p = 0.12; docs/data/offline-proxy-audit.json). The numbers below are retained unchanged as an audit trail and must not be cited as evidence that any candidate is ready for a submission slot.",
+ "created_utc": "2026-10-02T02:35:06.629554+00:00",
+ "candidate_id": "H1-edge-consensus",
+ "candidate_spec_sha256": "76be35b6519d35404be3c57aa7afeeaaaad462b7602edd8566df9915c47aca11",
+ "candidate_metadata_sha256": "c245ed1a73fb7dd9e3f4aab253c916c3dc6fb9b7cb2068033fdb8e390b1fd3bd",
+ "candidate_prediction_sha256": "2eb6750fa6e9f7c0e8673168a0c4f2e98ff872fcf5abe1fed7d0780fe4abf3ce",
+ "incumbent_id": "baseline-unet",
+ "incumbent_spec_sha256": "cb76197c95fe3b673addd64addd8a040c74ac633102c402016244f04d6bc1c0f",
+ "incumbent_metadata_sha256": "cb70b3c66b46fc0adb5365df0ed4232282941103d7ec9833d799da35ea5ab592",
+ "incumbent_prediction_sha256": "78e51e969302ec1376fe7285eeec46c00d24eb7202f27662aaf8fd1fef7e47a5",
+ "truth_semantics": "held-out known catalogue faults only; this is a proxy, not the competition's hidden-fault score",
+ "metric": "official distance-weighted Tversky index; alpha=0.2, beta=0.8",
+ "spatial_design": {
+  "folds": 4,
+  "layout": "four geographic quadrants",
+  "scoring_collar_m": 300.0,
+  "pixel_size_m": 100.0,
+  "prediction_type": "out_of_fold",
+  "provenance_note": "OOF semantics are asserted by checked metadata; this local check is not tamper-proof."
+ },
+ "gate": {
+  "minimum_mean_delta": 0.002,
+  "minimum_fold_wins": 3,
+  "mean_delta": 0.08559039054061926,
+  "fold_wins": 4,
+  "eligible_for_submission": true
+ },
+ "eligible_for_submission": true,
+ "fold_results": [
+  {
+   "fold_id": 0,
+   "scored_pixels": 2430672,
+   "truth_positive_pixels": 29057,
+   "candidate_dti": 0.19342254365864459,
+   "incumbent_dti": 0.11647549233047028,
+   "delta": 0.07694705132817431,
+   "candidate_components": {
+    "dti": 0.19342254365864459,
+    "tp_weighted": 10953.213266640747,
+    "fp_weighted": 155960.89259799843,
+    "fn_weighted": 18103.78673335925,
+    "alpha": 0.2,
+    "beta": 0.8,
+    "radius_m": 300.0,
+    "pixel_size_m": 100.0
+   }
   },
-  "gate": {
-    "minimum_mean_delta": 0.002,
-    "minimum_fold_wins": 3,
-    "mean_delta": 0.08559039054061926,
-    "fold_wins": 4,
-    "eligible_for_submission": true
+  {
+   "fold_id": 1,
+   "scored_pixels": 1349920,
+   "truth_positive_pixels": 12379,
+   "candidate_dti": 0.19109927657601183,
+   "incumbent_dti": 0.10782835107113643,
+   "delta": 0.0832709255048754,
+   "candidate_components": {
+    "dti": 0.19109927657601183,
+    "tp_weighted": 5515.6554466171965,
+    "fp_weighted": 89282.22018501775,
+    "fn_weighted": 6863.344553382804,
+    "alpha": 0.2,
+    "beta": 0.8,
+    "radius_m": 300.0,
+    "pixel_size_m": 100.0
+   }
   },
-  "eligible_for_submission": true,
-  "fold_results": [
-    {
-      "fold_id": 0,
-      "scored_pixels": 2430672,
-      "truth_positive_pixels": 29057,
-      "candidate_dti": 0.19342254365864459,
-      "incumbent_dti": 0.11647549233047028,
-      "delta": 0.07694705132817431,
-      "candidate_components": {
-        "dti": 0.19342254365864459,
-        "tp_weighted": 10953.213266640747,
-        "fp_weighted": 155960.89259799843,
-        "fn_weighted": 18103.78673335925,
-        "alpha": 0.2,
-        "beta": 0.8,
-        "radius_m": 300.0,
-        "pixel_size_m": 100.0
-      }
-    },
-    {
-      "fold_id": 1,
-      "scored_pixels": 1349920,
-      "truth_positive_pixels": 12379,
-      "candidate_dti": 0.19109927657601183,
-      "incumbent_dti": 0.10782835107113643,
-      "delta": 0.0832709255048754,
-      "candidate_components": {
-        "dti": 0.19109927657601183,
-        "tp_weighted": 5515.6554466171965,
-        "fp_weighted": 89282.22018501775,
-        "fn_weighted": 6863.344553382804,
-        "alpha": 0.2,
-        "beta": 0.8,
-        "radius_m": 300.0,
-        "pixel_size_m": 100.0
-      }
-    },
-    {
-      "fold_id": 2,
-      "scored_pixels": 549672,
-      "truth_positive_pixels": 9084,
-      "candidate_dti": 0.256729802238313,
-      "incumbent_dti": 0.1598568081484663,
-      "delta": 0.09687299408984668,
-      "candidate_components": {
-        "dti": 0.256729802238313,
-        "tp_weighted": 3804.7834961324934,
-        "fp_weighted": 33960.14796878271,
-        "fn_weighted": 5279.216503867507,
-        "alpha": 0.2,
-        "beta": 0.8,
-        "radius_m": 300.0,
-        "pixel_size_m": 100.0
-      }
-    },
-    {
-      "fold_id": 3,
-      "scored_pixels": 775796,
-      "truth_positive_pixels": 9449,
-      "candidate_dti": 0.20584634846085856,
-      "incumbent_dti": 0.12057575722127792,
-      "delta": 0.08527059123958064,
-      "candidate_components": {
-        "dti": 0.20584634846085856,
-        "tp_weighted": 3748.4276032458315,
-        "fp_weighted": 49504.73676797911,
-        "fn_weighted": 5700.572396754169,
-        "alpha": 0.2,
-        "beta": 0.8,
-        "radius_m": 300.0,
-        "pixel_size_m": 100.0
-      }
-    }
-  ],
-  "warning": "Passing this local known-label proxy gate does not predict or guarantee a public/private leaderboard score. A missing or non-reproducible incumbent invalidates the comparison."
+  {
+   "fold_id": 2,
+   "scored_pixels": 549672,
+   "truth_positive_pixels": 9084,
+   "candidate_dti": 0.256729802238313,
+   "incumbent_dti": 0.1598568081484663,
+   "delta": 0.09687299408984668,
+   "candidate_components": {
+    "dti": 0.256729802238313,
+    "tp_weighted": 3804.7834961324934,
+    "fp_weighted": 33960.14796878271,
+    "fn_weighted": 5279.216503867507,
+    "alpha": 0.2,
+    "beta": 0.8,
+    "radius_m": 300.0,
+    "pixel_size_m": 100.0
+   }
+  },
+  {
+   "fold_id": 3,
+   "scored_pixels": 775796,
+   "truth_positive_pixels": 9449,
+   "candidate_dti": 0.20584634846085856,
+   "incumbent_dti": 0.12057575722127792,
+   "delta": 0.08527059123958064,
+   "candidate_components": {
+    "dti": 0.20584634846085856,
+    "tp_weighted": 3748.4276032458315,
+    "fp_weighted": 49504.73676797911,
+    "fn_weighted": 5700.572396754169,
+    "alpha": 0.2,
+    "beta": 0.8,
+    "radius_m": 300.0,
+    "pixel_size_m": 100.0
+   }
+  }
+ ],
+ "warning": "Passing this local known-label proxy gate does not predict or guarantee a public/private leaderboard score. A missing or non-reproducible incumbent invalidates the comparison."
 }

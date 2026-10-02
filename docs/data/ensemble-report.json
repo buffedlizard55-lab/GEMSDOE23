@@ -1,0 +1,114 @@
+{
+ "generated_utc": "2026-10-02T05:49:46Z",
+ "config": {
+  "n_members_oof": 3,
+  "n_members_full": 5,
+  "n_folds": 5,
+  "patch": 64,
+  "batch": 16,
+  "patches_per_epoch": 1536,
+  "epochs": 5,
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "channels": 16,
+  "positive_frac": 0.5,
+  "spatial_buffer_px": 15,
+  "tversky_alpha": 0.2,
+  "tversky_beta": 0.8,
+  "seed_base": 20261002,
+  "tile": 512,
+  "tile_stride": 448,
+  "threads": 2
+ },
+ "target": {
+  "sgmc_px": 83593,
+  "catalogue_px": 60988,
+  "target_px": 62122,
+  "min_d_cat_m": 300.0,
+  "source": "USGS SGMC_Structure (Horton, San Juan & Stoeser 2017, DS 1052, DOI 10.3133/ds1052)",
+  "target_frac_of_domain": 0.012165553517801733
+ },
+ "folds": [
+  {
+   "fold": 0,
+   "train_px": 4456446,
+   "holdout_px": 624085,
+   "target_px": 10599,
+   "members": 3,
+   "dti_prob": 0.11698359893556773,
+   "dti_topk": 0.028022821669352615,
+   "topk_px": 7617,
+   "mean_epistemic": 0.014244361780583858,
+   "mean_aleatoric": 0.053523190319538116,
+   "mean_prob": 0.45425423979759216
+  },
+  {
+   "fold": 1,
+   "train_px": 3629280,
+   "holdout_px": 1410184,
+   "target_px": 5218,
+   "members": 3,
+   "dti_prob": 0.041403994894480045,
+   "dti_topk": 0.028942332102224008,
+   "topk_px": 17205,
+   "mean_epistemic": 0.004715257789939642,
+   "mean_aleatoric": 0.036669351160526276,
+   "mean_prob": 0.2691618502140045
+  },
+  {
+   "fold": 2,
+   "train_px": 3223107,
+   "holdout_px": 1811071,
+   "target_px": 23357,
+   "members": 3,
+   "dti_prob": 0.12202333916981042,
+   "dti_topk": 0.07318705103976259,
+   "topk_px": 22096,
+   "mean_epistemic": 0.004079232923686504,
+   "mean_aleatoric": 0.04038816690444946,
+   "mean_prob": 0.36261188983917236
+  },
+  {
+   "fold": 3,
+   "train_px": 4306893,
+   "holdout_px": 755778,
+   "target_px": 13504,
+   "members": 3,
+   "dti_prob": 0.1602412254145259,
+   "dti_topk": 0.04896534305946841,
+   "topk_px": 9221,
+   "mean_epistemic": 0.006562430877238512,
+   "mean_aleatoric": 0.05108609050512314,
+   "mean_prob": 0.4381832480430603
+  },
+  {
+   "fold": 4,
+   "train_px": 4589734,
+   "holdout_px": 505267,
+   "target_px": 9444,
+   "members": 3,
+   "dti_prob": 0.1680703674902452,
+   "dti_topk": 0.04089553284924157,
+   "topk_px": 6165,
+   "mean_epistemic": 0.007485813926905394,
+   "mean_aleatoric": 0.04567975550889969,
+   "mean_prob": 0.345234215259552
+  }
+ ],
+ "full_domain": {
+  "mean_prob": 0.3464658260345459,
+  "mean_epistemic": 0.0068269697949290276,
+  "mean_aleatoric": 0.041003696620464325,
+  "epistemic_share_of_total": 0.14273208379745483,
+  "member_seeds": [
+   1172500541,
+   823731262,
+   1178226494,
+   588726173,
+   1303265575
+  ]
+ },
+ "runtime_s": 3216.9,
+ "identity": "Var(Y)=E_m[p_m(1-p_m)] + Var_m(p_m); epistemic uses ddof=0 across members",
+ "reference": "Lakshminarayanan, Pritzel & Blundell, NeurIPS 2017 (deep ensembles)"
+}

@@ -1,82 +1,86 @@
 {
-  "candidate_id": "H1-edge-consensus",
-  "candidate_spec_sha256": "76be35b6519d35404be3c57aa7afeeaaaad462b7602edd8566df9915c47aca11",
-  "candidate_spec": {
-    "data_dir": "data",
-    "processed_dir": "data/processed",
-    "output_dir": "outputs/h1-edge-consensus",
-    "features_file": "data/processed/features-h1.npy",
-    "labels_file": "data/processed/labels.npy",
-    "label_observed_file": "data/processed/label_observed.npy",
-    "footprint_file": "data/processed/footprint.npy",
-    "feature_manifest": "data/processed/manifest.json",
-    "ensemble_size": 5,
-    "seed_base": 73191,
-    "patch_size": 64,
-    "patches_per_epoch": 32,
-    "batch_size": 8,
-    "epochs": 3,
-    "learning_rate": 0.0003,
-    "unlabeled_loss_weight": 0.03,
-    "spatial_buffer_m": 1500,
-    "pixel_size_m": 100,
-    "dti_radius_m": 300,
-    "dti_alpha": 0.2,
-    "dti_beta": 0.8,
-    "ensemble_inference_batch_size": 8,
-    "coverage_adjustment_strength": 0.12,
-    "survey_coverage_raster": "data/processed/survey_coverage.npy",
-    "calibration": "out_of_fold_only",
-    "dropout_at_inference": false,
-    "candidate_id": "H1-edge-consensus"
+ "status": "SUPERSEDED",
+ "withdrawn_utc": "2026-10-02T06:40:00Z",
+ "irregularity_flag": "I-08",
+ "withdrawal_reason": "SUPERSEDED 2026-10-02 by docs/data/ensemble-report.json and docs/data/oof-evaluation.json, which decompose variance across five independently initialised and independently trained members and test the detector against a seed-matched random-emission control on five blocked folds. The gate did not pass (0/5 folds), so the detector contributes nothing to the submitted raster; the record below is retained as an audit trail.",
+ "candidate_id": "H1-edge-consensus",
+ "candidate_spec_sha256": "76be35b6519d35404be3c57aa7afeeaaaad462b7602edd8566df9915c47aca11",
+ "candidate_spec": {
+  "data_dir": "data",
+  "processed_dir": "data/processed",
+  "output_dir": "outputs/h1-edge-consensus",
+  "features_file": "data/processed/features-h1.npy",
+  "labels_file": "data/processed/labels.npy",
+  "label_observed_file": "data/processed/label_observed.npy",
+  "footprint_file": "data/processed/footprint.npy",
+  "feature_manifest": "data/processed/manifest.json",
+  "ensemble_size": 5,
+  "seed_base": 73191,
+  "patch_size": 64,
+  "patches_per_epoch": 32,
+  "batch_size": 8,
+  "epochs": 3,
+  "learning_rate": 0.0003,
+  "unlabeled_loss_weight": 0.03,
+  "spatial_buffer_m": 1500,
+  "pixel_size_m": 100,
+  "dti_radius_m": 300,
+  "dti_alpha": 0.2,
+  "dti_beta": 0.8,
+  "ensemble_inference_batch_size": 8,
+  "coverage_adjustment_strength": 0.12,
+  "survey_coverage_raster": "data/processed/survey_coverage.npy",
+  "calibration": "out_of_fold_only",
+  "dropout_at_inference": false,
+  "candidate_id": "H1-edge-consensus"
+ },
+ "training_mode": "full-data",
+ "calibration_status": "uncalibrated; temperature scaling not evidenced",
+ "calibration_report_sha256": null,
+ "footprint_sha256": "32484c3533dd007385dca1b11a2f2c9bc71c9f5058e247c8378cc134bdf22148",
+ "training_metadata_sha256": "6f1a18358660c4852974b738abaf474a788daff419af6f8711bfa2dd6b5ad136",
+ "member_count": 5,
+ "checkpoints": [
+  {
+   "path": "member-00-seed-73191.pt",
+   "sha256": "1e1d5b6223b867cd499ebfbc652f8af9e8fc7f101486f2dfd9953acf855a8e21"
   },
-  "training_mode": "full-data",
-  "calibration_status": "uncalibrated; temperature scaling not evidenced",
-  "calibration_report_sha256": null,
-  "footprint_sha256": "32484c3533dd007385dca1b11a2f2c9bc71c9f5058e247c8378cc134bdf22148",
-  "training_metadata_sha256": "6f1a18358660c4852974b738abaf474a788daff419af6f8711bfa2dd6b5ad136",
-  "member_count": 5,
-  "checkpoints": [
-    {
-      "path": "member-00-seed-73191.pt",
-      "sha256": "1e1d5b6223b867cd499ebfbc652f8af9e8fc7f101486f2dfd9953acf855a8e21"
-    },
-    {
-      "path": "member-01-seed-74200.pt",
-      "sha256": "e9b704866ebcc037efb04f19e3fe012cdd4a04db35b37b371f0f86bc60cfdfa0"
-    },
-    {
-      "path": "member-02-seed-75209.pt",
-      "sha256": "20fc887cd49ce0d275662135b13bd142281d3c39795423be7590c9e829220a94"
-    },
-    {
-      "path": "member-03-seed-76218.pt",
-      "sha256": "449a280660611b92351967f7bda2901987dcbd5cdaa598f4e4845fff98c348ad"
-    },
-    {
-      "path": "member-04-seed-77227.pt",
-      "sha256": "9bd69eb213cc2fb9f9ffe9278b09f3c62d4492c5a4a4f3ee51c45d7aa9c307ba"
-    }
-  ],
-  "temperature": 1.0,
-  "calibrated": false,
-  "calibration_report": null,
-  "inference": "eval/inference_mode; model contains no dropout; same raster grid for each independently trained member",
-  "uncertainty": {
-    "epistemic_variance": "population variance across member probabilities (ddof=0)",
-    "aleatoric_variance": "mean member-conditional Bernoulli p(1-p); interpretation requires calibration and a defensible label model",
-    "predictive_variance": "ensemble_mean * (1 - ensemble_mean)",
-    "identity": "predictive = epistemic + aleatoric, up to float32 tolerance"
+  {
+   "path": "member-01-seed-74200.pt",
+   "sha256": "e9b704866ebcc037efb04f19e3fe012cdd4a04db35b37b371f0f86bc60cfdfa0"
   },
-  "files": {
-    "mean_probability": "mean_probability.npy",
-    "mean_probability_sha256": "954996c3402e72f64f58dc2e7b1a23816ae2470fbf0c08e10e956dca0a6a15f9",
-    "epistemic_variance": "epistemic_variance.npy",
-    "epistemic_variance_sha256": "ef3388d2005285655e5e37fdd68fa1a36e4bf206c72b246094680a1ab89ddb33",
-    "aleatoric_variance": "aleatoric_variance.npy",
-    "aleatoric_variance_sha256": "c4ddf4106d5a23f5a8d9061167cfcdca025a4daac4b74b917ffa2fa41333781a",
-    "predictive_variance": "predictive_variance.npy",
-    "predictive_variance_sha256": "dcf0c1e952ebd159210f38f3af312b3965c28660c2c40e1ff43c9cace68c7534"
+  {
+   "path": "member-02-seed-75209.pt",
+   "sha256": "20fc887cd49ce0d275662135b13bd142281d3c39795423be7590c9e829220a94"
   },
-  "footprint_pixels": 5167373
+  {
+   "path": "member-03-seed-76218.pt",
+   "sha256": "449a280660611b92351967f7bda2901987dcbd5cdaa598f4e4845fff98c348ad"
+  },
+  {
+   "path": "member-04-seed-77227.pt",
+   "sha256": "9bd69eb213cc2fb9f9ffe9278b09f3c62d4492c5a4a4f3ee51c45d7aa9c307ba"
+  }
+ ],
+ "temperature": 1.0,
+ "calibrated": false,
+ "calibration_report": null,
+ "inference": "eval/inference_mode; model contains no dropout; same raster grid for each independently trained member",
+ "uncertainty": {
+  "epistemic_variance": "population variance across member probabilities (ddof=0)",
+  "aleatoric_variance": "mean member-conditional Bernoulli p(1-p); interpretation requires calibration and a defensible label model",
+  "predictive_variance": "ensemble_mean * (1 - ensemble_mean)",
+  "identity": "predictive = epistemic + aleatoric, up to float32 tolerance"
+ },
+ "files": {
+  "mean_probability": "mean_probability.npy",
+  "mean_probability_sha256": "954996c3402e72f64f58dc2e7b1a23816ae2470fbf0c08e10e956dca0a6a15f9",
+  "epistemic_variance": "epistemic_variance.npy",
+  "epistemic_variance_sha256": "ef3388d2005285655e5e37fdd68fa1a36e4bf206c72b246094680a1ab89ddb33",
+  "aleatoric_variance": "aleatoric_variance.npy",
+  "aleatoric_variance_sha256": "c4ddf4106d5a23f5a8d9061167cfcdca025a4daac4b74b917ffa2fa41333781a",
+  "predictive_variance": "predictive_variance.npy",
+  "predictive_variance_sha256": "dcf0c1e952ebd159210f38f3af312b3965c28660c2c40e1ff43c9cace68c7534"
+ },
+ "footprint_pixels": 5167373
 }
