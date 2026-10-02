@@ -107,3 +107,11 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 1.5rem 0; }
   .section-head { display: block; }
   .copy-row { flex-direction: column; }
 }
+
+/* figures and compact tables used by the clustering-audit page */
+figure { margin: 1.2rem 0; }
+figure img { width: 100%; height: auto; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: .5rem; }
+figcaption { font-size: .88rem; color: var(--muted); margin-top: .4rem; }
+table.compact td, table.compact th { padding: .35rem .55rem; font-size: .86rem; }
+.tag-flag { color: var(--red); font-weight: 700; }
+.tag-ok { color: var(--forest-2); font-weight: 700; }
