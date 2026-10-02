@@ -58,8 +58,12 @@ jobs:
           # parser end to end and prints the diagnostics, so a bot-wall, a markup change or a
           # JS-only table shows up in the run log instead of silently leaving a stale board
           # published. continue-on-error keeps a third-party change from blocking unrelated work.
+          # No `|| true` here: continue-on-error already keeps the job green, and swallowing the
+          # exit code would hide the one signal this step exists to produce - whether a GitHub
+          # runner is served the real table or a challenge page. A red step with a green job means
+          # "the automated feed is down; the published board is a dated snapshot".
           python scripts/update_leaderboard.py --strict --timeout 60 \
-            --output /tmp/leaderboard-live.json --status /tmp/leaderboard-status.json || true
+            --output /tmp/leaderboard-live.json --status /tmp/leaderboard-status.json
           echo "--- live refresh status ---"
           cat /tmp/leaderboard-status.json
           echo "--- first rows of what was parsed ---"
