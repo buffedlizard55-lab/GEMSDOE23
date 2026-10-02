@@ -355,3 +355,24 @@ here produced it, `INFERENCE` = argued, not measured.
 H-29 audit-matched arrangement (historical build; H29/H30 files are QA-only) · H-30 along-strike continuation beyond tips (proxy-only tie-break; not independent validation) · H-31 survey-aware low-pass of magnetic inputs (not implemented; bands must be restored) · H-32 controlled slot experiments (not authorized; conflicts with the current no-slot rule) · H-33 completeness-corrected short-fault deficit (not implemented; requires independent completeness data). H-25 was tested on the aggregate and is not supported. H-26 in its simplest form (hot springs more than 500 m from any mapped fault,
 `springs_hot_offmapped_*`, already in the 95-layer bank) shows no signal (density ρ = +0.08, p = 0.71; inverse distance −0.22, p = 0.31, against −0.52 for raw hot springs; superseded
 attribution record, sign and order only): the residual removes the anti-predictive sign but adds no skill. A fitted-residual form (anomaly given distance to the nearest fault) is still open.
+
+## Session 3 additions (2026-10-02, branch `arena/01a0fdcb-gemsdoe23`)
+
+- **Twice-reproduced negative result (deep detector).** The 18-channel U-Net ensemble trained on SGMC-proxy
+  faults loses to a seed-matched random emission of the same budget on 5/5 blocked folds, reproduced across
+  independent retrains with fresh seeds (mean OOF DTI 0.0450/0.0440 vs random 0.1012). The 100 m pixel
+  placement of that proxy is not learnable from these channels. Do not retrain the same architecture on the
+  same proxy expecting a different verdict; a redesigned target (object-level, or multi-resolution) is needed.
+- **H-38 (orientation coherence) rejected; H-39 (shallow-residual edges) rejected as standalone but positive
+  as a feature signal.** H-39's live-score consistency (ρ = +0.39, family-LOO min +0.23, top-4 enrichment
+  +0.09) is the strongest of any layer family measured to date — the one permitted follow-up is a nested-CV
+  habitat refit with h39 as a feature (baseline ρ = 0.437).
+- **Placement-skill algebra is the correct language for "can we beat the leaders".** With K̄ = mean reward and
+  η = TP/px efficiency measured from an emission, beating score S at |G| needs skill
+  = S·(0.2·relief·A + 0.8|G|)/((1−0.2S)·|G|·K̄), infeasible whenever the implied TP exceeds |G|. At H30's
+  geometry beating 0.3195 needs skill 5.7/5.0/4.3 at |G| = 10k/12k/15k (best measured anywhere: 6.3).
+- **All four top live artefacts emit zero pixels on the masked catalogue and sit 0.9–1.5 km from it** —
+  enrichment comes from proximity + oriented scarp morphology, not from re-drawing known faults.
+- **Sandbox discipline:** never run two heavy numpy jobs concurrently on the 3.8 GB box (OOM kill);
+  `get_process_output` polls advance wall-clock far less than they appear to — use bash `sleep` loops to
+  advance time while waiting on background processes.

@@ -21,7 +21,7 @@
   "ok_to_upload": false,
   "release_approved": false,
   "format_preflight_passed": true,
-  "format_preflight_scope": "Prior template comparison is recorded as passed; it was not rerun because the sample template is absent."
+  "format_preflight_scope": "Re-run this session against the restored official template: all hard requirements pass (docs/data/current-template-validation.json). Format only; not release approval."
  },
  "compatibility": {
   "name": "gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif",
@@ -32,7 +32,7 @@
   "ok_to_upload": false,
   "release_approved": false,
   "format_preflight_passed": true,
-  "format_preflight_scope": "Prior template comparison is recorded as passed; it was not rerun because the sample template is absent."
+  "format_preflight_scope": "Re-run this session against the restored official template: all hard requirements pass (docs/data/current-template-validation.json). Format only; not release approval."
  },
  "note": "GEMSDOE23 H30 | QA-only, unscored; no score forecast; release blocked pending independent uncatalogued-fault holdout | 91,533 dots | sha256 38539dc6",
  "geometry": {
@@ -219,10 +219,11 @@
  "expected_dti_semantics": "Conditional metric-algebra sensitivity only. Assumed hidden-truth sizes and skill transfer are not validated; these values are not score forecasts or release criteria.",
  "current_tiff_audit_record": "docs/data/current-tiff-audit.json",
  "template_validation_context": {
-  "status": "RECORDED_PASS_NOT_RERUN",
+  "status": "PASS_RERUN_WITH_RESTORED_TEMPLATE",
   "report": "docs/data/current-template-validation.json",
-  "sample_template_present": false,
-  "note": "The main-branch manifest records prior strict template checks; the sample template is absent from this checkout, so no current template comparison was possible."
+  "sample_template_present": true,
+  "note": "Strict template comparison was re-run this session after the official sample_submission.tif was restored through the git data bridge (SHA-256 2176d08e...). Both H30 variants pass all hard requirements; the all-finite twin differs only on the advisory NaN-nodata-tag convention.",
+  "checked_utc": "2026-10-02T18:46:51Z"
  },
  "release_decision": {
   "status": "BLOCKED",

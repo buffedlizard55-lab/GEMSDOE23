@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-10-02T05:49:46Z",
+ "generated_utc": "2026-10-02T18:56:05Z",
  "config": {
   "n_members_oof": 3,
   "n_members_full": 5,
@@ -35,12 +35,12 @@
    "holdout_px": 624085,
    "target_px": 10599,
    "members": 3,
-   "dti_prob": 0.11698359893556773,
-   "dti_topk": 0.028022821669352615,
-   "topk_px": 7617,
-   "mean_epistemic": 0.014244361780583858,
-   "mean_aleatoric": 0.053523190319538116,
-   "mean_prob": 0.45425423979759216
+   "dti_prob": 0.11717427980102234,
+   "dti_topk": 0.027467620480294108,
+   "topk_px": 7615,
+   "mean_epistemic": 0.01465810276567936,
+   "mean_aleatoric": 0.053697820752859116,
+   "mean_prob": 0.45333442091941833
   },
   {
    "fold": 1,
@@ -48,12 +48,12 @@
    "holdout_px": 1410184,
    "target_px": 5218,
    "members": 3,
-   "dti_prob": 0.041403994894480045,
-   "dti_topk": 0.028942332102224008,
-   "topk_px": 17205,
-   "mean_epistemic": 0.004715257789939642,
-   "mean_aleatoric": 0.036669351160526276,
-   "mean_prob": 0.2691618502140045
+   "dti_prob": 0.04140506006306869,
+   "dti_topk": 0.0288081048345899,
+   "topk_px": 17206,
+   "mean_epistemic": 0.004731516819447279,
+   "mean_aleatoric": 0.036648452281951904,
+   "mean_prob": 0.26894548535346985
   },
   {
    "fold": 2,
@@ -61,12 +61,12 @@
    "holdout_px": 1811071,
    "target_px": 23357,
    "members": 3,
-   "dti_prob": 0.12202333916981042,
-   "dti_topk": 0.07318705103976259,
+   "dti_prob": 0.12244609229751188,
+   "dti_topk": 0.07430348556575664,
    "topk_px": 22096,
-   "mean_epistemic": 0.004079232923686504,
-   "mean_aleatoric": 0.04038816690444946,
-   "mean_prob": 0.36261188983917236
+   "mean_epistemic": 0.004478515591472387,
+   "mean_aleatoric": 0.03991609066724777,
+   "mean_prob": 0.3582017421722412
   },
   {
    "fold": 3,
@@ -74,12 +74,12 @@
    "holdout_px": 755778,
    "target_px": 13504,
    "members": 3,
-   "dti_prob": 0.1602412254145259,
-   "dti_topk": 0.04896534305946841,
+   "dti_prob": 0.15934502634127204,
+   "dti_topk": 0.04747643067924451,
    "topk_px": 9221,
-   "mean_epistemic": 0.006562430877238512,
-   "mean_aleatoric": 0.05108609050512314,
-   "mean_prob": 0.4381832480430603
+   "mean_epistemic": 0.0065582627430558205,
+   "mean_aleatoric": 0.05136033892631531,
+   "mean_prob": 0.4418562650680542
   },
   {
    "fold": 4,
@@ -87,19 +87,19 @@
    "holdout_px": 505267,
    "target_px": 9444,
    "members": 3,
-   "dti_prob": 0.1680703674902452,
-   "dti_topk": 0.04089553284924157,
-   "topk_px": 6165,
-   "mean_epistemic": 0.007485813926905394,
-   "mean_aleatoric": 0.04567975550889969,
-   "mean_prob": 0.345234215259552
+   "dti_prob": 0.1687085840877794,
+   "dti_topk": 0.04688186311832067,
+   "topk_px": 6167,
+   "mean_epistemic": 0.010174090974032879,
+   "mean_aleatoric": 0.04592594876885414,
+   "mean_prob": 0.3418804705142975
   }
  ],
  "full_domain": {
-  "mean_prob": 0.3464658260345459,
-  "mean_epistemic": 0.0068269697949290276,
-  "mean_aleatoric": 0.041003696620464325,
-  "epistemic_share_of_total": 0.14273208379745483,
+  "mean_prob": 0.3469110131263733,
+  "mean_epistemic": 0.006905294023454189,
+  "mean_aleatoric": 0.040856074541807175,
+  "epistemic_share_of_total": 0.14457906782627106,
   "member_seeds": [
    1172500541,
    823731262,
@@ -108,7 +108,7 @@
    1303265575
   ]
  },
- "runtime_s": 3216.9,
+ "runtime_s": 2222.5,
  "identity": "Var(Y)=E_m[p_m(1-p_m)] + Var_m(p_m); epistemic uses ddof=0 across members",
  "reference": "Lakshminarayanan, Pritzel & Blundell, NeurIPS 2017 (deep ensembles)"
 }

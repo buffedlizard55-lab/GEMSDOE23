@@ -62,3 +62,70 @@ This log records deliberate implementation/review passes. It is not evidence tha
 4. Acquire independent uncatalogued-fault truth, freeze buffered spatial folds and equal-budget baselines, and register exact current-best OOF hashes. Until then, the release gate stays BLOCKED and no slot is used.
 5. Implement H-34 first after restoring/validating its input bands; evaluate H-35–H-37 as separate pre-registered tests. Numeric score benefit is not forecastable without valid holdout evidence.
 6. Retrain/calibrate independent ensemble members and regenerate Phase 2 uncertainty/coverage outputs before reuse; saved reports are historical.
+
+---
+
+## Continuation session #3 (2026-10-02, branch `arena/01a0fdcb-gemsdoe23`) — three passes
+
+### Pass 1 — implementation
+
+- Restored every input through the documented public git data bridge (3 core rasters, 12 external layers,
+  24 live-scored anchor artefacts; SHA-256 re-verified) and refit the habitat model on them:
+  reproducible on key fields (24 anchors, 95 layers, g=6000, k=8, α=0.3, nested-CV ρ=0.437).
+- Implemented H-38 (cross-family azimuth coherence) and H-39 (shallow-residual potential-field edges) in
+  `src/gems/orientation.py` with a 7-test physics-derived suite (analytic exp(−2πh/λ) attenuation targets).
+- Built `scripts/analyze_h19_placement.py` → `docs/data/h19-placement-analysis.json`: per-artefact placement
+  skill across admissible |G|, the h19-5 − h19-4 delta attribution, and exact leader-target algebra.
+- Built `scripts/validate_new_hypotheses.py` (blocked SGMC-proxy protocol, same folds/target/budgets as the
+  deep-ensemble admission gate; fixed-weight blends only, nothing fitted on the folds).
+- Verified H-40 obtainability against the live USGS FDSN service (15,802 events M≥2.5 in the exact AOI box,
+  1960→2026-10-01) and automated acquisition in `.github/workflows/seismicity.yml` (weekly, fail-closed).
+- Wrote `docs/data/new-hypotheses.json`: the H-38…H-42 register with sources, transforms, stop rules.
+
+### Pass 2 — adversarial review (what it caught)
+
+- A cos²(2Δθ) azimuth kernel that scored *perpendicular* lines as agreeing — caught by the unit tests,
+  corrected to cos²(Δθ); the erroneous form is recorded and must not be reintroduced.
+- A hallucinated Coolbaugh DOI (10.1016/j.geothermics.2005.09.010) caught by web verification before it was
+  published; replaced with the verifiable Coolbaugh 2002 GRC GIS study and 2005 NBMG Map 151. Coolbaugh 2002
+  also measured earthquakes as the *lowest-weighted* evidence layer — recorded as a caution on H-40.
+- First validation run OOM-killed (exit 137) when launched concurrently with ensemble training: rewritten to
+  incremental pair/lidar means and bbox-cropped holdout scoring (identical score, ~1/5 RAM); heavy jobs then
+  run strictly sequentially.
+- `live_consistency` used a whole-raster mean (including zeros) as the enrichment base — fixed to the
+  domain-only mean; and a str-vs-Path bug in the same function crashed the first completed run before the
+  JSON was written — fixed and re-run to completion.
+- Beat-leader feasibility claim on the results page initially overreached ("unreachable at |G| ≤ 10,000 for
+  any emission of h19-5's or H30's size"); corrected to the exact algebra: h19-5's budget needs |G| ≳ 12,000,
+  H30's smaller budget ≳ 8,000.
+- Stale "rasters absent" copy across nine site locations (written for the pre-restore checkout) — all fixed,
+  and the strict template validation was actually re-run against the restored official sample rather than
+  re-worded: both H30 variants pass every hard requirement.
+
+### Pass 3 — results and verification
+
+- **Ensemble retrain (fresh seeds, identical config): admission gate failed a second time** — 0/5 folds beat
+  a seed-matched random emission (mean DTI 0.0450 vs 0.1012; prior run 0.0440). Twice-reproduced negative
+  result; detector weight stays 0 (flag I-08 updated). Phase 2 candidate decomposition regenerated from the
+  fresh members (223 objects, 120 reported, epistemic share 0.145 of total variance).
+- **H-38 rejected**: blocked-proxy mean DTI 0.0075 (1.22 % budget) vs random 0.0995, 0/5 folds; live-score
+  consistency ρ = −0.06 (lidar-gated variant −0.33). Stop rule fired.
+- **H-39 rejected as a standalone emission** (0.0151 vs random 0.0995, 0/5) **but it shows the strongest
+  live-score consistency measured for any layer family**: ρ = +0.39, family-LOO-stable (min +0.23), top-4
+  artefact enrichment +0.09 vs rest. Exactly one follow-up permitted: an h39 feature in the habitat
+  regression under nested CV (compare against 0.437), never an emission.
+- **Placement analysis (why h19-5 leads, what the leaders need)**: h19-5 has the highest placement skill of
+  all 24 artefacts at every admissible |G| (7.2 at |G|=10k) with broad coverage (recall 0.64); the +0.0028
+  delta over h19-4 rewards oriented scarp morphology over generic roughness and SGMC-gap ground; all four top
+  artefacts emit zero pixels on the masked catalogue (median distance 0.86–1.49 km). Beating DARD's 0.3195
+  needs skill ≈ 4.3–5.7 at H30's geometry with |G| = 10–15k — reachable only if |G| is near its upper bound
+  and recall ≳ 0.5; unreachable at h19-5's budget below |G| ≈ 12k.
+- Verification: `python -m unittest discover -s tests` — **97 tests OK** (90 prior + 7 orientation);
+  `scripts/build_site.py` regenerated all 9 pages; `scripts/check_site.py` — PASS; strict submission-template
+  validation re-run for both H30 variants against the restored official sample — all hard requirements pass
+  (`docs/data/current-template-validation.json`); habitat refit reproducibility check — True.
+
+### Stop-rule discipline this session
+
+No submission slot was spent; no upload was made; the release gate stays BLOCKED. Both new mechanisms were
+allowed to fail their pre-registered gates, and the failures are published on the site with the numbers.
