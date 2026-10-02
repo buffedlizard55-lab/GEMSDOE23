@@ -23,6 +23,9 @@ class LeaderboardParserTests(unittest.TestCase):
         self.assertEqual(parsed["rows"][0]["participant"], "DARD")
         self.assertAlmostEqual(parsed["rows"][0]["score"], 0.3168)
         self.assertEqual(parsed["rows"][1]["participant"], "alexoktaba")
+        self.assertIn("SHA-256", parsed["attribution_caveat"])
+        self.assertIn("Phase 1", parsed["phase_caveat"])
+        self.assertIn("Phase 2", parsed["phase_caveat"])
 
     def test_fails_closed_on_unrecognized_page(self):
         with self.assertRaises(ValueError):

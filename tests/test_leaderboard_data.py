@@ -15,6 +15,9 @@ class LeaderboardFeedSchemaTests(unittest.TestCase):
         self.assertIn(feed.get("refresh_status", {}).get("status"), {"live", "stale-snapshot-retained", "unavailable-no-snapshot"})
         self.assertIsInstance(feed.get("retrieved_utc"), str)
         self.assertTrue(feed["retrieved_utc"])
+        self.assertIn("SHA-256", feed.get("attribution_caveat", ""))
+        self.assertIn("Phase 1", feed.get("phase_caveat", ""))
+        self.assertIn("Phase 2", feed.get("phase_caveat", ""))
         self.assertIsInstance(feed.get("rows"), list)
         self.assertTrue(feed["rows"])
         ranks = []

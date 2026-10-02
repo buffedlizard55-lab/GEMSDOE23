@@ -26,7 +26,7 @@ The [Executive Summary & Upload Guide](docs/executive-summary.html) has the exac
 
 ## What we learned from the requested score review
 
-The official public leaderboard was retrieved on **2026-10-01**. It showed a leading public score of **0.3168**, not the `0.3049` stated in the request. The H19-related values in the supplied history, `0.1922` and `0.1894`, appear on the official leaderboard as scores for participants, but the public page does not expose a submission hash that ties either score to the copied H19-5 GeoTIFF. The score match is evidence of a similar result, not proof of artifact ownership.
+The official public leaderboard was retrieved on **2026-10-02** and persisted as a 50-row dated snapshot. It showed DARD at **0.3195** (rank 1) and alexoktaba at **0.3042** (rank 2). The prompt-reported former leader `0.3049` is not current and was not independently authenticated as a historical board result in this retrieval. The supplied H19-5 `0.1922` and H19-4 `0.1894` values match public rows at ranks 24 and 26, respectively, but the board does not expose a file hash, public submission ID, or team/account proof tying either score to a particular TIFF. Treat these only as score-level matches. Public scores are not private Phase 1 or expert-updated Phase 2 results.
 
 The H19 site describes a multi-line candidate combining power-law fault-length completeness, thermal/geochemical conduit evidence, 1 m/10 m DEM openness and local relief, and geophysical lineaments. Those are plausible *hypotheses*, not a causal explanation of the public score. Its own spatial-proxy results cannot establish performance on the hidden labels. The competition's public test score is not the private Phase 1 score or the Phase 2 expert-reviewed score. See [`docs/results.html`](docs/results.html) and [`docs/verification.html`](docs/verification.html) for the dated snapshot and irregularities.
 
@@ -49,7 +49,7 @@ The first term is epistemic disagreement; the second is conditional Bernoulli (a
 
 A separate, preregistered survey-gap term raises the review priority of epistemically uncertain candidates in mapped-low-coverage areas and lowers it in mapped-high-coverage areas. **It never silently changes the submission probability raster.** The survey-coverage proxy is not fieldwork truth: map coverage/scale and actual field effort are different. If a defensible coverage layer is unavailable, the adjustment is omitted and reported as unknown.
 
-The five proposed experiments and their ranking are recorded in [`docs/hypotheses.html`](docs/hypotheses.html). The initial top-ranked idea is a multi-sensor geophysical edge-consensus test using already-listed GeoDAWN/INGENIOUS bands. It is **not validated**: the required competition rasters are unavailable in this checkout. No weekly slot should be spent until the candidate beats the incumbent on frozen, spatially blocked folds.
+The source-screened shortlist of three distinct geological tests is in [`docs/hypotheses.html`](docs/hypotheses.html): (1) public GeoDAWN K/eU/eTh radiometric-ratio/edge evidence corroborated by independent structure, (2) 3DEP drainage deflection and channel-profile breaks, and (3) depth-coherent USGS MT conductance boundaries. The first uses a public USGS/DOE CC0 release, but its raster bands, masks, exact alignment, and local download have not been checked. The already-coded edge-consensus function is an unscored diagnostic, not the new top candidate or a validated incumbent. No new geological feature was implemented, no competition holdout exists, and no weekly slot should be spent until the top candidate beats a reproducible baseline on frozen, spatially blocked folds.
 
 ## Core values
 
@@ -84,8 +84,10 @@ The detailed source-checked charter and complete user-supplied score history are
 | Current public leaderboard | Public participants' current public scores (a moving snapshot) | [DrivenData leaderboard](https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/) |
 | Official prize rules (September 2026) | Data access requires registering; weekly feedback submissions; one final selection; Phase 1/Phase 2 evaluation; AI disclosure requirement | [NLR/DOE PDF](https://docs.nlr.gov/docs/fy26osti/96647.pdf) |
 | Competition data tab | Official data page; unauthenticated access redirects to login | [DrivenData data page](https://www.drivendata.org/competitions/306/competition-doe-gems/data/) |
-| GeoDAWN data release | Public official magnetic/radiometric survey release and DOI `10.5066/P93LGLVQ` | [USGS GeoDAWN](https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and) |
-| 3DEP products | Free official lidar/DEM products and availability resources | [USGS 3DEP products](https://www.usgs.gov/3d-elevation-program/about-3dep-products-services) |
+| GeoDAWN data release | Public USGS/DOE magnetic and radiometric grids; DOI `10.5066/P93LGLVQ`; USGS marks the release CC0 1.0 | [USGS GeoDAWN](https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and) |
+| 3DEP products | Free official lidar/DEM products; a preliminary 1 m index query found only a dissolved intersecting polygon, not tile-level/full-footprint proof | [USGS 3DEP products](https://www.usgs.gov/3d-elevation-program/about-3dep-products-services) · [1 m index](https://index.nationalmap.gov/arcgis/rest/services/3DEPElevationIndex/MapServer?f=pjson) |
+| Great Basin MT conductance | USGS catalog lists five public depth-band GeoTIFFs; exact AOI pixel coverage/resolution/alignment/reuse terms not checked | [ScienceBase DOI `10.5066/P9TWT2LU`](https://www.sciencebase.gov/catalog/item/62979746d34ec53d276c113b) |
+| Official public leaderboard | Dated 50-row capture as of 2026-10-02; rank/score matches do not establish H19 file attribution | [Public board](https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/) · [`docs/data/leaderboard.json`](docs/data/leaderboard.json) |
 | Geologic-map coverage | NGMDB map catalog and map-coverage limitations | [USGS NGMDB FAQ](https://www.usgs.gov/faqs/what-national-geologic-map-database) · [NGMDB MapView](https://ngmdb.usgs.gov/mapview/index.html) |
 | Deep ensembles | Independently trained ensembles as a scalable uncertainty estimator | [Lakshminarayanan, Pritzel & Blundell (NeurIPS 2017)](https://proceedings.neurips.cc/paper_files/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf) |
 | Official baseline / input inventory | Organizer reference notebook; it uses `data/numeric_features.tif` while the official problem page calls the feature file `training_features.tif`. Local prep accepts either name and fails if both are present. | [DrivenData reference notebook](https://github.com/drivendataorg/gems-prize-reference-solution/blob/main/unet-mc-cv-reference-solution.ipynb) |
@@ -94,7 +96,7 @@ See [`docs/sources.html`](docs/sources.html) for claim-by-claim scope and source
 
 ## Reproducible workflow
 
-The code is designed to fail closed when inputs are absent or misaligned. It will not download private competition files or ask for credentials. The four-fold workflow is spatial, excludes a training buffer around each validation quadrant, and reports a **known-catalogue proxy**, not the hidden-fault contest score.
+The code is designed to fail closed when inputs are absent or misaligned. It will not download private competition files or ask for credentials. The four-fold workflow is spatial, excludes a training buffer around each validation quadrant, and reports a **known-catalogue proxy**, not the hidden-fault contest score. The commands below exercise only the existing baseline/edge-consensus pipeline; that edge feature is unscored and is not the newly ranked radiometric candidate. The public GeoDAWN radiometric test has not been implemented, and the example does not authorize a submission.
 
 ```bash
 set -euo pipefail
@@ -107,11 +109,12 @@ python -m pip install -r requirements.txt
 python scripts/prepare_data.py
 python -m pip install -r requirements-model.txt
 
-# Build H1's edge-normal consensus feature using actual band descriptions.
-# The script fails closed if the names are missing or ambiguous; it does not guess indexes.
+# Optional legacy edge-consensus diagnostic, using actual band descriptions.
+# It is not the new radiometric shortlist leader and has no holdout score.
+# The script fails closed if names are missing/ambiguous; it does not guess indexes.
 python scripts/build_edge_consensus.py
 
-# Train and infer 4 spatial folds for the baseline and H1 (5 separate networks per fold).
+# Train and infer 4 spatial folds for the baseline and legacy edge-consensus diagnostic (5 separate networks per fold).
 for config in configs/default.json configs/h1-edge-consensus.json; do
   out=$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["output_dir"])' "$config")
   for fold in 0 1 2 3; do
@@ -133,7 +136,8 @@ python scripts/run_spatial_validation.py --candidate outputs/h1-oof.npy \
   --incumbent-metadata outputs/baseline-oof.json \
   --output outputs/h1-validation-report.json
 
-# Only if the gate passes: train the final full-data ensemble, infer, then build the unique TIFF.
+# Generic output-pipeline example only. Do not use the legacy H1 unless it
+# actually passes the frozen spatial holdout gate; it is not validated now.
 python scripts/train_ensemble.py --config configs/h1-edge-consensus.json
 python scripts/predict_ensemble.py --config configs/h1-edge-consensus.json \
   --model-dir outputs/h1-edge-consensus/full-ensemble --out-dir outputs/h1-final

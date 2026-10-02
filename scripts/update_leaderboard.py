@@ -18,6 +18,15 @@ from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 URL = "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/"
+ATTRIBUTION_CAVEAT = (
+    "The official public leaderboard displays participants and scores but does not expose a "
+    "prediction-file SHA-256 or public submission identifier; score equality is not artifact, "
+    "account, or team attribution."
+)
+PHASE_CAVEAT = (
+    "These are public leaderboard results only, not private Initial Prize Round (Phase 1) "
+    "or expert-updated Final Prize Round (Phase 2) scores."
+)
 
 
 class _Cell:
@@ -143,6 +152,8 @@ def parse_leaderboard(html: str, source_url: str = URL) -> dict:
         "retrieved_utc": datetime.now(timezone.utc).isoformat(),
         "source_status": "live",
         "rows": rows,
+        "attribution_caveat": ATTRIBUTION_CAVEAT,
+        "phase_caveat": PHASE_CAVEAT,
     }
 
 
