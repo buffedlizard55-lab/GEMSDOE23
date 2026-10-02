@@ -16,6 +16,7 @@
     <nav class="nav" aria-label="Main navigation">
       <a href="index.html">Overview</a>
       <a href="executive-summary.html">How to submit</a>
+      <a href="clustering.html">Clustering audit</a>
       <a href="hypotheses.html">New hypotheses</a>
       <a href="uncertainty.html">Uncertainty</a>
       <a href="evidence.html">Evidence</a>
@@ -62,10 +63,12 @@
         comparable to the FP term only up to A ≈ 10<sup>5</sup>. <code>h19-5</code> sat at 121,131 px; every artefact above 250,000 px
         scores ≤ 0.046. The score is not a coverage contest.</p></div>
     </div>
-    <div class="callout"><strong>Where H19 left value on the table.</strong> Its dispersion efficiency is η = 0.40: 60 % of the cone weight its
-    pixels could have spread over the domain is wasted on pixels stacked inside one another's 300 m support. q scales with η at fixed
-    alignment, so re-emitting the same ranking at η ≈ 0.95 and a budget chosen from the marginal rule is worth up to 2.4× in q — which is
-    precisely what this submission does, and why the projection reaches above the current leader if the alignment holds.</div>
+    <div class="callout"><strong>What the arrangement audit adds to the H19 answer.</strong>
+    h19-5 sits at signed divergence -0.29 from the catalogue's pair statistics (h19-4 −0.30, h16-1 −0.29), the centre of the bin that holds the best live scores (n = 7, mean live DTI 0.170); it has no 400 m survey-line comb (strength 2), a line-type arrangement (10 % isolated dots) and only mild concentration near long known faults (×1.37 within 0.2–1 km, against ×2.8–4.3 for the catalogue-hugging artefacts that scored ≤ 0.092). The lattices (−0.62) and the catalogue-huggers (+0.2 … +1.25) match the population statistics of faults worse. That is consistent with the arithmetic above; it does not prove it (correlational, post-hoc bins, n = 23).</div>
+    <div class="callout"><strong>Where H19 might have left value on the table — and why that is no longer a claim.</strong> Its dispersion efficiency is η = 0.40: 60 % of the cone weight its
+    pixels could have spread over the domain is spent on pixels stacked inside one another's 300 m support. H24 re-emitted the same ranking at η ≈ 0.95 on the assumption that q scales with η at fixed alignment. The one controlled pair
+    in the group's record contradicts that: pindrop-v4-ridge → pindrop-v4-nodes (same score, same 155,021 pixels) raised η 2.7× and left the implied true-positive mass unchanged (TP/|G| 0.70 → 0.72 at |G| = 6,000), live DTI 0.1152 → 0.1193.
+    H30 therefore carries a central expectation of about h19-5, not a multiple of it (flag I-17).</div>
   </section>
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">This group</div><h2>24 live-scored artefacts, measured geometry</h2>
@@ -75,12 +78,12 @@
   </section>
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">Projection</div><h2>This submission's expected DTI</h2></div></div>
-    <div class="table-wrap"><table class=""><thead><tr><th>emitted px</th><th>η</th><th>300 m coverage</th><th>DTI at |G|=9k (skill 2/3/4/5.4)</th><th>|G|=10k</th><th>|G|=15k</th><th>skill-weighted, worst |G|</th></tr></thead><tbody><tr><td>20,000</td><td>0.977</td><td>0.096</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.0864</td></tr><tr><td>30,000</td><td>0.977</td><td>0.143</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1147</td></tr><tr><td>45,000</td><td>0.961</td><td>0.209</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1468</td></tr><tr><td>60,000</td><td>0.956</td><td>0.274</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1706</td></tr><tr><td>80,000</td><td>0.952</td><td>0.358</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1943</td></tr><tr><td>100,000</td><td>0.946</td><td>0.438</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.2120</td></tr><tr><td>120,000</td><td>0.941</td><td>0.516</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1920</td></tr><tr><td>150,000</td><td>0.933</td><td>0.627</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1682</td></tr><tr><td>180,000</td><td>0.926</td><td>0.734</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1442</td></tr><tr><td>220,000</td><td>0.918</td><td>0.872</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1212</td></tr></tbody></table></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>emitted px (H24 budget table)</th><th>η</th><th>300 m coverage</th><th>DTI at |G| = 6k for q = 0.04 / 0.06 / 0.08 / 0.11</th><th>|G| = 10k</th><th>|G| = 15k</th><th>q-weighted, worst |G|</th></tr></thead><tbody><tr><td>20,000</td><td>0.977</td><td>0.096</td><td>0.090 / 0.133 / 0.176 / 0.239</td><td>0.066 / 0.099 / 0.131 / 0.178</td><td>0.050 / 0.074 / 0.099 / 0.135</td><td>0.0864</td></tr><tr><td>30,000</td><td>0.977</td><td>0.143</td><td>0.109 / 0.162 / 0.214 / 0.290</td><td>0.085 / 0.126 / 0.167 / 0.227</td><td>0.066 / 0.099 / 0.131 / 0.178</td><td>0.1147</td></tr><tr><td>45,000</td><td>0.961</td><td>0.209</td><td>0.128 / 0.190 / 0.250 / 0.337</td><td>0.105 / 0.155 / 0.205 / 0.278</td><td>0.085 / 0.127 / 0.168 / 0.228</td><td>0.1468</td></tr><tr><td>60,000</td><td>0.956</td><td>0.274</td><td>0.140 / 0.207 / 0.272 / 0.336</td><td>0.118 / 0.176 / 0.231 / 0.313</td><td>0.099 / 0.148 / 0.195 / 0.264</td><td>0.1706</td></tr><tr><td>80,000</td><td>0.952</td><td>0.358</td><td>0.150 / 0.222 / 0.275 / 0.275</td><td>0.131 / 0.195 / 0.256 / 0.346</td><td>0.113 / 0.168 / 0.222 / 0.300</td><td>0.1943</td></tr><tr><td>100,000</td><td>0.946</td><td>0.438</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.2120</td></tr><tr><td>120,000</td><td>0.941</td><td>0.516</td><td>0.163 / 0.202 / 0.202 / 0.202</td><td>0.148 / 0.218 / 0.287 / 0.298</td><td>0.132 / 0.196 / 0.258 / 0.347</td><td>0.1920</td></tr><tr><td>150,000</td><td>0.933</td><td>0.627</td><td>0.168 / 0.168 / 0.168 / 0.168</td><td>0.155 / 0.229 / 0.253 / 0.253</td><td>0.142 / 0.209 / 0.275 / 0.339</td><td>0.1682</td></tr><tr><td>180,000</td><td>0.926</td><td>0.734</td><td>0.144 / 0.144 / 0.144 / 0.144</td><td>0.161 / 0.221 / 0.221 / 0.221</td><td>0.149 / 0.220 / 0.289 / 0.300</td><td>0.1442</td></tr><tr><td>220,000</td><td>0.918</td><td>0.872</td><td>0.121 / 0.121 / 0.121 / 0.121</td><td>0.166 / 0.188 / 0.188 / 0.188</td><td>0.156 / 0.230 / 0.259 / 0.259</td><td>0.1212</td></tr></tbody></table></div>
   </section>
 </main>
 <footer class="site-footer">
   <div class="footer-inner">
-    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of 2026-10-02 10:04 UTC</span>
+    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of 2026-10-02 13:30 UTC</span>
     <span><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">Official competition</a> · <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a> · <a href="https://github.com/buffedlizard55-lab/GEMSDOE23">This repository</a></span>
   </div>
 </footer>

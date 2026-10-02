@@ -233,3 +233,36 @@ All three passes were run against real, hash-verified official rasters, not synt
   this session expired mid-run (flag I-12): `gh auth status` reports the token is no longer valid and
   `git ls-remote origin` cannot authenticate. Everything is committed locally on the session branch and
   nothing is lost; pushing and opening the PR is the first action once the connection is restored.
+
+## Next session, in order — updated after the 2026-10-02 clustering session
+
+Status of the previous list: (1) blocked — no live score for H24 was supplied; (2) H-25 tested and **not supported** on the aggregate;
+(3) the north-east lidar gap is **diagnosed but not closed** (flag I-26); (4) ensemble retraining **not done** (no GPU, 2 cores);
+(5) H-26 spring-residual: its simplest form is already in the 95-layer bank and carries **no signal**; a fitted-residual form is open.
+
+1. **Reconnect GitHub, push, open the pull request, merge** (flag I-27). The work is committed locally on `arena/01a0fc3f-gemsdoe23`.
+2. **Record the first live score of this session's file** with `python scripts/record_score.py --score <X> --id 38539dc6` (H30; H29 is `28f30b31`).
+   It now adds the file as a new anchor and refits into `docs/data/habitat-model-refit.json` (flag I-25). Before trusting that refit, apply the fix recommended in
+   flag I-20 (average ranks for ties, layer selection by stability across the leave-family-out folds) — the anchor *order* currently decides near-ties.
+3. **Decide whether to use slots as controlled experiments** (hypothesis H-32): arrangement (H29 vs H30) and near-field band vs a score-matched control. This overrides standing rule 1 and is the owner's call.
+4. **Enumerate the footprint's 1 m 3DEP tiles from the public National Map API** (no key) from a machine with egress and compare with the OCR-recovered 716-tile list (flag I-26); fetch the difference; re-aggregate; refit.
+5. **Survey-aware low-pass of magnetic and radiometric-ratio inputs** (H-31) before any retrain; then retrain the ensemble with a GPU and re-run its admission gate.
+6. **Read the Data-tab terms** (flag I-22) — the official rasters are mirrored in public repositories.
+7. If a vector fault geometry for the INGENIOUS/USGS traces is obtainable (GDR 1391 ships shapefiles; the CSV in `data/external` has centroids and lengths only), repeat the along-strike and edge-distance analyses on true vector tips and test the displaced-subset form of H-25 by `map_scale`.
+
+## Current review record — 2026-10-02 (clustering session, three passes)
+
+- **Pass 1 — implement and verify.** Verified at source: the Bour & Davy and Marrett et al. abstracts (relation x = (a − 1)/D; the normalised correlation count), Wang et al. 2019, Clauset et al. 2009, Bonnet et al. 2001,
+  Ackermann & Schlische 1997 (existence and citation), the staff rulings in forum 11516 / 11536 / 11527 (including the Discourse `.json` for the hidden replies), the rules PDF §1.1, §3.2–§3.6, the competition page (end date, Phase 2 from expert review of all
+  submissions), the Hermant et al. figure caption, the GeoDAWN survey geometry. Built: `faultstats`, `clusterprior`, `audit`, the fit / audit / restore / rebuild / build scripts, 5 SVG figures, the clustering-audit page, flags I-14 … I-27.
+  Reproduced from public inputs: H24 bit-for-bit; all 23 live-scored artefacts with exact pixel-count identity; the full habitat refit exactly (in the committed anchor order).
+- **Pass 2 — adversarial review.** Found and fixed: (i) the 1-D scanline NCC normalised against the full raster width instead of the footprint span; (ii) a CSR-null size mismatch for emissions under 20,000 pixels; (iii) `record_score.py`
+  logged a score that nothing read, so 'record and refit' was a no-op (I-25); (iv) the sibling repository's cumulative-exponent error in the Bour & Davy test (I-14); (v) the symmetric divergence cannot tell a lattice from a catalogue-hugging
+  detector — the signed form can; (vi) the site still showed H24's geometry and a hard-coded scenario range for the new file; (vii) hypothesis IDs did not match their ranks. Errors of my own caught before publication:
+  a CV-prediction 'instability' that was only an anchor-order mismatch in my comparison; 'p ≥ 0.10' for a descriptor with p = 0.096; an unverified submission count on the leaderboard; H24-specific DTI ranges quoted for H30; a failing fixture in the wedge test.
+  Negative results kept: a wider NMS radius or jitter ≤ 0.005 does not remove the comb; the prior as a tie-break moves ~1 % of dots; relocation (H-25) is not visible in the aggregate; the simplest H-26 form carries no signal.
+- **Pass 3 — requirement audit.** README §0: (1) one-click `.tif` on the first screen ✓ (H30); (2) epistemic/aleatoric ensemble unchanged ✓; (3) why H19 scored highest ✓ (results page, plus the arrangement audit); (4) five ranked hypotheses H-29 … H-33 ✓,
+  external data named and its obtainability stated ✓, the 'no slot without a holdout win' rule respected and its limits stated ✓; (5) knowledge base extended with sourced, labelled claims ✓; (6) site: clustering page, executive summary with exact steps, unique filename,
+  short note, automatic leaderboard feed ✓; (7) README carries the brief including the new item 11 ✓; (8) the `[0, 1]` rejection is prevented by construction, by CI and by the all-finite variant ✓; (9) data placement autonomous ✓ (`restore_workspace.py`,
+  `download_competition_data.sh`, `prepare_data.py` run); (10) three passes done; **pull request and merge to `main`: not done — the GitHub token expired (I-27)**; (11) statistic fitted before the model ✓, prior ✓ (measured; tie-break only), audit ✓ (calibrated against 23 live scores).
+  **Not completed:** next steps 1 (no live score) and 4 (compute); the north-east lidar gap (needs egress); validation of anything against hidden labels (impossible offline).
