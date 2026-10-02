@@ -50,7 +50,7 @@
         "ok_to_upload": false,
         "release_approved": false,
         "format_preflight_passed": true,
-        "format_preflight_scope": "Prior template comparison recorded as passed; not rerun in current checkout."
+        "format_preflight_scope": "Re-run this session against the restored official template: all hard requirements pass (docs/data/current-template-validation.json). Format only; not release approval."
       },
       "allfinite": {
         "name": "gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif",
@@ -61,7 +61,7 @@
         "ok_to_upload": false,
         "release_approved": false,
         "format_preflight_passed": true,
-        "format_preflight_scope": "Prior template comparison recorded as passed; not rerun in current checkout."
+        "format_preflight_scope": "Re-run this session against the restored official template: all hard requirements pass (docs/data/current-template-validation.json). Format only; not release approval."
       },
       "note": "GEMSDOE23 H30 | QA-only, unscored; no score forecast; release blocked pending independent holdout | 91,533 dots | sha256 38539dc6",
       "keep_top": 0.3,

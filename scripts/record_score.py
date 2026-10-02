@@ -47,15 +47,19 @@ def find_file(content_id: str, root: str = ROOT):
     seen = []
     cand = os.path.join(root, "docs", "data", "candidates.json")
     if os.path.exists(cand):
-        for c in json.load(open(cand)).get("candidates", []):
+        with open(cand, encoding="utf-8") as fh:
+            cand_data = json.load(fh)
+        for c in cand_data.get("candidates", []):
             for key in ("nan", "allfinite"):
                 f = c.get(key) or {}
                 if f.get("sha256", "").startswith(cid):
                     seen.append(("docs/" + f["href"], f["sha256"]))
     man = os.path.join(root, "docs", "data", "submission-manifest.json")
     if os.path.exists(man):
+        with open(man, encoding="utf-8") as fh:
+            man_data = json.load(fh)
         for key in ("primary", "compatibility"):
-            f = json.load(open(man)).get(key) or {}
+            f = man_data.get(key) or {}
             if f.get("sha256", "").startswith(cid):
                 seen.append(("docs/" + f["href"], f["sha256"]))
     for path in sorted(glob.glob(os.path.join(root, "docs", "downloads", "*.tif"))):
@@ -70,10 +74,15 @@ def find_file(content_id: str, root: str = ROOT):
 
 def add_entry(log_path: str, entry: dict) -> dict:
     os.makedirs(os.path.dirname(log_path), exist_ok=True)
-    log = json.load(open(log_path)) if os.path.exists(log_path) else dict(entries=[])
+    if os.path.exists(log_path):
+        with open(log_path, encoding="utf-8") as fh:
+            log = json.load(fh)
+    else:
+        log = dict(entries=[])
     log["entries"] = [e for e in log["entries"] if e.get("content_id") != entry["content_id"]] + [entry]
     log["generated_utc"] = entry["recorded_utc"]
-    json.dump(log, open(log_path, "w"), indent=1)
+    with open(log_path, "w", encoding="utf-8") as fh:
+        json.dump(log, fh, indent=1)
     return log
 
 

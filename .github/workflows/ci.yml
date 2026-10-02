@@ -2,7 +2,7 @@ name: Verify project
 
 on:
   push:
-    branches: [main, arena/01a0fd30-gemsdoe23]
+    branches: [main, arena/01a0fd30-gemsdoe23, arena/01a0fe19-gemsdoe23]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -84,8 +84,8 @@ jobs:
       - name: Verify the site is regenerable from the evidence records
         run: |
           python scripts/build_site.py
-          if ! git diff --quiet -- docs; then
-            echo "::error::docs/ is out of date with docs/data/*.json - run scripts/build_site.py and commit"
-            git diff --stat -- docs
+          if ! git diff --quiet -- docs *.html; then
+            echo "::error::docs/ or root *.html is out of date with docs/data/*.json - run scripts/build_site.py and commit"
+            git diff --stat -- docs *.html
             exit 1
           fi

@@ -19,19 +19,26 @@
 
   const rows = document.getElementById('leaderboard-rows');
   const leaderScore = document.getElementById('leader-score');
+  const leaderScoreLead = document.getElementById('leader-score-lead');
+  const leaderScore2 = document.getElementById('leader-score-2');
   const leaderName = document.getElementById('leader-name');
+  const leaderName2 = document.getElementById('leader-name-2');
   const feedBadge = document.getElementById('feed-status');
   const retrievedAt = document.getElementById('leaderboard-retrieved');
   if (!rows) return;
 
   fetch('data/leaderboard.json', { cache: 'no-store' })
     .then((response) => {
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return response.json();
+      if (response.ok) return response.json();
+      return fetch('docs/data/leaderboard.json', { cache: 'no-store' }).then((fallback) => {
+        if (!fallback.ok) throw new Error(`HTTP ${fallback.status}`);
+        return fallback.json();
+      });
     })
     .then((data) => {
       const entries = Array.isArray(data.rows) ? data.rows : [];
-      const topRows = entries.filter((entry) => entry.rank <= 10).sort((a, b) => a.rank - b.rank);
+      const maxRank = rows.children.length >= 25 ? 25 : 10;
+      const topRows = entries.filter((entry) => entry.rank <= 10 || entry.rank <= maxRank).sort((a, b) => a.rank - b.rank).slice(0, maxRank);
       rows.replaceChildren();
       for (const entry of topRows) {
         const tr = document.createElement('tr');
@@ -45,8 +52,12 @@
       }
       const leader = topRows[0];
       if (leader) {
-        if (leaderScore) leaderScore.textContent = Number(leader.score).toFixed(4);
+        const scoreText = Number(leader.score).toFixed(4);
+        if (leaderScore) leaderScore.textContent = scoreText;
+        if (leaderScoreLead) leaderScoreLead.textContent = scoreText;
+        if (leaderScore2) leaderScore2.textContent = scoreText;
         if (leaderName) leaderName.textContent = leader.participant;
+        if (leaderName2) leaderName2.textContent = leader.participant;
       }
       if (retrievedAt) retrievedAt.textContent = `Snapshot / refresh: ${data.retrieved_utc || 'date not supplied'}`;
       if (feedBadge) {

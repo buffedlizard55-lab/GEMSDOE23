@@ -1,4 +1,4 @@
-"""A true deep ensemble of convolutional fault detectors.
+r"""A true deep ensemble of convolutional fault detectors.
 
 Lakshminarayanan, Pritzel & Blundell (NeurIPS 2017), "Simple and Scalable Predictive
 Uncertainty Estimation using Deep Ensembles": train M networks from *independent random

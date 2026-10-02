@@ -40,7 +40,7 @@ class RecordScoreTests(unittest.TestCase):
             e1 = dict(recorded_utc="2026-10-02T00:00:00Z", content_id=full[:8], name="demo", public_dti=0.10, file=rel, family="x", sha256=full)
             rs.add_entry(str(log), e1)
             rs.add_entry(str(log), dict(e1, public_dti=0.12, recorded_utc="2026-10-03T00:00:00Z"))
-            entries = json.load(open(log))["entries"]
+            entries = json.loads(log.read_text(encoding="utf-8"))["entries"]
             self.assertEqual(len(entries), 1)                       # re-recording the same file replaces the entry
             self.assertAlmostEqual(entries[0]["public_dti"], 0.12)
 

@@ -1,17 +1,24 @@
+from __future__ import annotations
+
 import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-import numpy as np
-import rasterio
-from affine import Affine
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-from gems.submission import validate_submission, write_submission_raster
+
+try:
+    import numpy as np
+    import rasterio
+    from affine import Affine
+    from gems.submission import validate_submission, write_submission_raster
+    HAVE_RASTERIO = True
+except ImportError:
+    HAVE_RASTERIO = False
 
 
+@unittest.skipUnless(HAVE_RASTERIO, "numpy and rasterio not installed")
 class SubmissionRasterTests(unittest.TestCase):
     def make_template(self, path: Path) -> tuple[np.ndarray, dict]:
         profile = {

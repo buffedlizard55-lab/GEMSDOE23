@@ -529,30 +529,31 @@ def main() -> int:
     # visitor sees. This bypasses nothing: same public URL, anonymous, no credentials, and the
     # signed-in API is never touched.
     if snapshot is None and args.render and not args.from_file:
-        rendered = Path(tempfile.gettempdir()) / "gems-leaderboard-rendered.html"
-        proc = None
-        try:
-            proc = subprocess.run(
-                [sys.executable, str(RENDER_SCRIPT), "--url", args.url, "--output", str(rendered),
-                 "--timeout-ms", str(int(max(args.timeout, 15.0) * 1000))],
-                capture_output=True, text=True, timeout=max(args.timeout * 3.0, 180.0),
-            )
-            fetch_diag["render"] = {
-                "returncode": proc.returncode,
-                "stdout": proc.stdout.strip()[:200],
-                "stderr": proc.stderr.strip()[:400],
-            }
-        except (OSError, subprocess.SubprocessError) as error:
-            fetch_diag["render"] = {"error": "%s: %s" % (type(error).__name__, error)}
-        if proc is not None and proc.returncode == 0 and rendered.exists():
-            html = rendered.read_text(encoding="utf-8", errors="replace")
-            fetch_diag["rendered_bytes"] = len(html)
-            capture_path = "headless-render"
+        with tempfile.TemporaryDirectory() as render_tmp:
+            rendered = Path(render_tmp) / "gems-leaderboard-rendered.html"
+            proc = None
             try:
-                snapshot = parse_leaderboard(html, args.url)
-                failure = ""
-            except ValueError as error:
-                failure = "rendered page: ValueError: %s" % error
+                proc = subprocess.run(
+                    [sys.executable, str(RENDER_SCRIPT), "--url", args.url, "--output", str(rendered),
+                     "--timeout-ms", str(int(max(args.timeout, 15.0) * 1000))],
+                    capture_output=True, text=True, timeout=max(args.timeout * 3.0, 180.0),
+                )
+                fetch_diag["render"] = {
+                    "returncode": proc.returncode,
+                    "stdout": proc.stdout.strip()[:200],
+                    "stderr": proc.stderr.strip()[:400],
+                }
+            except (OSError, subprocess.SubprocessError) as error:
+                fetch_diag["render"] = {"error": "%s: %s" % (type(error).__name__, error)}
+            if proc is not None and proc.returncode == 0 and rendered.exists():
+                html = rendered.read_text(encoding="utf-8", errors="replace")
+                fetch_diag["rendered_bytes"] = len(html)
+                capture_path = "headless-render"
+                try:
+                    snapshot = parse_leaderboard(html, args.url)
+                    failure = ""
+                except ValueError as error:
+                    failure = "rendered page: ValueError: %s" % error
 
     if snapshot is not None:
         live = capture_path != "saved-capture"

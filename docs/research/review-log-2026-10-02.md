@@ -129,3 +129,46 @@ This log records deliberate implementation/review passes. It is not evidence tha
 
 No submission slot was spent; no upload was made; the release gate stays BLOCKED. Both new mechanisms were
 allowed to fail their pre-registered gates, and the failures are published on the site with the numbers.
+
+---
+
+## Continuation session #4 (2026-10-02, branch `arena/01a0fe19-gemsdoe23`) — three passes
+
+### Pass 1 — implementation
+
+- **Audited the live GitHub Pages deployment (`https://buffedlizard55-lab.github.io/GEMSDOE23/`) and found root-cause irregularity `I-33`.** Querying `gh api repos/buffedlizard55-lab/GEMSDOE23/pages` showed the repository uses `"build_type": "legacy"` with `"source": {"branch": "main", "path": "/"}`. Because the integration token cannot `PUT` `/pages` (`HTTP 403`), every push to `main` triggers GitHub's built-in `pages-build-deployment` after `.github/workflows/pages.yml`, serving the repository root `/` via Jekyll (`README.md`) and overwriting the custom `_site` deployment. As a result, `https://buffedlizard55-lab.github.io/GEMSDOE23/` previously had no `.tif` download link and root subpages (`/clustering.html`, etc.) returned 404.
+- **Placed the downloadable `.tif` at the very top of the live site across both `/` and `/docs/` and in `README.md`.**
+  - Updated `scripts/build_site.py` and `docs/assets/site.css` to add a persistent top-of-header `.header-download-bar` on all pages and moved `<section class="section section-top-download" id="download">` to be the **very first element inside `<main>`** (above `<section class="hero">`) on both `index.html` and `executive-summary.html`.
+  - Updated `scripts/build_site.py` to generate all 9 static HTML pages at **both** `docs/<page>.html` and repository root `<page>.html` (with automatic relative-path adjustment to `docs/assets/`, `docs/downloads/`, and `docs/data/`), plus `.nojekyll` and `docs/.nojekyll`.
+  - Updated `docs/assets/site.js` to fetch `data/leaderboard.json` with a fallback to `docs/data/leaderboard.json` so live client-side leaderboard hydration works identically at both `/` and `/docs/`.
+  - Updated `.github/workflows/pages.yml` to run `python scripts/check_site.py`, commit back root `*.html` and `.nojekyll` alongside `docs/*.html`, and stage `_site` with both `docs/.` at `/` and `docs` at `/docs/`.
+  - Added a prominent top-of-file downloadable `.tif` section at the very top of `README.md` (above `## 0. The standing brief`, preserving `## 0` verbatim).
+- **Restored and verified all competition rasters, external layers, and live-scored anchors.**
+  - Ran `python3 scripts/restore_workspace.py --all` (`docs/data/restore-receipt.json`: 3 official rasters, 15 external layers, 24 live-scored anchors, all SHA-256 verified) and verified `bash scripts/download_competition_data.sh` + `scripts/prepare_data.py` run autonomously in 14s with zero manual input.
+  - Re-ran `scripts/validate_submission.py` against `data/sample_submission.tif` for both H30 GeoTIFF variants (`10/10` checks pass).
+- **Executed the one permitted H-39 follow-up: 15-fold leave-one-family-out habitat nested-CV evaluation (`docs/data/new-hypothesis-validation.json`, `scripts/validate_new_hypotheses.py`).**
+  - Baseline 95-layer habitat model reproduced to 16 decimal places (`nested_cv_spearman = 0.437391` at `|G|=6,000` and `8,000`, `0.436522` at `10,000`, `0.395652` at `12,000`, `0.408696` at `15,000`).
+  - Univariate $|\rho|$ of `h39_shallow_residual_edges` (`0.3791` normalized / `0.3843` raw at `|G|=6,000`, rank 38/37 of 96) and `h39_shallow_residual_thickcover` (`0.3643` normalized / `0.3217` raw, rank 40/49 of 96) sit well below the top-$k$ selection cutoffs (`0.5548` at $k=8$, `0.5070` at $k=14$).
+  - In unforced competition (`95 + H-39`), `0/15` leave-one-family-out folds select any `h39_*` layer across all 5 `|G|` trials, leaving nested-CV Spearman identical to baseline (`0.437391`, $\Delta\rho = 0.000000$).
+  - When forced into every fold, raw `h39_*` layers degrade nested-CV Spearman (`0.383478`, $\Delta\rho = -0.053913$ for `thickcover`; `0.403478`, $\Delta\rho = -0.033913$ for `500m`), while `[0, 1]`-normalized forced inclusion moves nested-CV by at most `+0.008696` to `+0.011304` at `|G|=6,000` (10 units of $\sum d_i^2$ out of 2,300 on $n=24$) and degrades at `|G|=15,000` (`-0.024348`).
+  - Verdict: H-39 does not survive unforced nested leave-one-family-out CV (`0/15` folds) and is formally retired without spending a weekly submission slot.
+
+### Pass 2 — adversarial review (what it caught)
+
+- **Caught contradictory checkout/template strings left over from PR #9 across JSON manifests, HTML pages, `README.md`, `docs/PROJECT_BRIEF.md`, and `docs/research/knowledge_base.md`.**
+  - `docs/data/current-tiff-audit.json` still said `"exact sample-template comparison unavailable in this checkout"` while `docs/data/current-template-validation.json` recorded a 10/10 pass against `data/sample_submission.tif`. Reconciled `docs/data/current-tiff-audit.json`, `docs/data/submission-build.json`, `docs/data/submission-manifest.json`, `docs/data/candidates.json`, and `docs/data/irregularities.json` (`I-31` resolved, `I-33` added).
+  - Caught duplicate consecutive template-validation sentences in `dl_block` on `index.html` and `executive-summary.html` and tightened the paragraph.
+  - Caught stale H-36/H-37 wording on `hypotheses.html` claiming `"External rasters are not locally present"` right below the H-24–H-28 callout stating all 15 external bridge layers were restored; clarified that the 15 external bridge layers in `data/external/` (including the 100 m lidar-scarp product) are restored and verified, whereas raw 1 m/10 m 3DEP DEM tiles (H-36) and USGS MT conductance grids (H-37) are outside the bridge.
+  - Caught a hardcoded `"rows 27 and 29"` string on `results.html` that drifted when `.github/workflows/pages.yml` refreshed `docs/data/leaderboard.json` at `2026-10-02T19:22:06+00:00` (where `0.1922` and `0.1894` are at ranks 28 and 30); replaced with dynamic rank lookup from `leaderboard.json`.
+- **Caught test-suite hygiene issues under system Python and `-W default`.**
+  - Fixed `ModuleNotFoundError: No module named 'numpy'` when running `python3 -m unittest discover -s tests` in system Python (without `.venv`) by adding `from __future__ import annotations`, `try/except ImportError` guards, and `@unittest.skipUnless(...)` in `tests/test_orientation.py`, `tests/test_spatial_pipeline_integration.py`, and `tests/test_submission_raster.py`.
+  - Fixed a `SyntaxWarning` (`\d` in docstring of `src/gems/ensemble.py`), unclosed file `ResourceWarning`s in `scripts/record_score.py`, `scripts/update_leaderboard.py`, `tests/test_leaderboard.py`, and `tests/test_site.py`, and `/tmp/gems-leaderboard-rendered.html` temporary-file pollution in `tests/test_leaderboard.py`.
+  - Added automated assertions in `scripts/check_site.py` and `tests/test_site.py` checking all 18 HTML pages (`docs/` + root), verifying `.header-download-bar` and `#download` placement before `<section class="hero">`, and forbidding contradictory checkout/template strings.
+
+### Pass 3 — full verification against every requirement in the standing brief
+
+- Regenerated all 18 static HTML pages (`docs/*.html` + root `/*.html`) and `docs/downloads/latest.json` via `.venv/bin/python scripts/build_site.py`.
+- Ran `.venv/bin/python scripts/check_site.py`: `PASS: 18 HTML pages (docs/ + root); all local href/src targets, fragments, and top-of-page .tif download placement verified.`
+- Ran `.venv/bin/python -W default -m unittest discover -s tests -v`: **102 tests ran in 23s — OK (0 skipped, 0 project warnings)**.
+- Ran system `python3 -m unittest discover -s tests -v`: **102 tests ran — OK (numpy/rasterio-dependent tests cleanly skipped when run outside `.venv`)**.
+- Ran `python3 -m compileall -q src scripts tests`, validated all JSON files in `docs/data/` and `docs/downloads/latest.json`, ran `node --check docs/assets/site.js`, `bash -n scripts/download_competition_data.sh`, and `git diff --check`: all passed.

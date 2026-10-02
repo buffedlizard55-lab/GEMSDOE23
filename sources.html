@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Official competition pages, staff rulings and public-domain USGS/DOE sources with links.">
   <title>Sources · GEMSDOE23</title>
-  <link rel="stylesheet" href="assets/site.css">
-  <script defer src="assets/site.js"></script>
+  <link rel="stylesheet" href="docs/assets/site.css">
+  <script defer src="docs/assets/site.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -15,9 +15,9 @@
     <div class="header-download-inner">
       <div class="header-download-actions">
         <span class="header-download-label">Submission GeoTIFF (.tif):</span>
-        <a class="header-download-btn" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif" download>⬇ Download primary .tif (1.69 MB · NaN outside footprint)</a>
-        <a class="header-download-link" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif" download>⬇ All-finite .tif (0.92 MB)</a>
-        <a class="header-download-link" href="downloads/gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif" download>⬇ Reference h19-5 .tif (0.1922)</a>
+        <a class="header-download-btn" href="docs/downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif" download>⬇ Download primary .tif (1.69 MB · NaN outside footprint)</a>
+        <a class="header-download-link" href="docs/downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif" download>⬇ All-finite .tif (0.92 MB)</a>
+        <a class="header-download-link" href="docs/downloads/gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif" download>⬇ Reference h19-5 .tif (0.1922)</a>
       </div>
       <span class="header-download-meta"><code>EPSG:32611 · 3292×3730 float32 · [0, 1] · SHA-256 38539dc6…</code> · Gate: <strong>BLOCKED</strong> (QA only)</span>
     </div>
@@ -47,7 +47,7 @@
   </section>
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">Input manifest</div><h2>Core rasters · restored and hash-verified this session</h2></div></div>
-    <p class="small">The three core competition rasters and <code>data/external/</code> were restored through the documented public git data bridge this session and every SHA-256 below was re-verified against the live files (<a href="data/restore-receipt.json">restore receipt</a>).</p>
+    <p class="small">The three core competition rasters and <code>data/external/</code> were restored through the documented public git data bridge this session and every SHA-256 below was re-verified against the live files (<a href="docs/data/restore-receipt.json">restore receipt</a>).</p>
     <div class="table-wrap"><table class=""><thead><tr><th>expected file path</th><th>bytes in prior restore</th><th>historical SHA-256</th></tr></thead><tbody><tr><td><code>data/training_features.tif</code> (official 19-band stack)</td><td>418,912,844</td><td><code>4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5</code></td></tr><tr><td><code>data/labels.tif</code> (rasterised known faults)</td><td>425,830</td><td><code>7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093</code></td></tr><tr><td><code>data/sample_submission.tif</code> (official template)</td><td>1,599,597</td><td><code>2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc</code></td></tr></tbody></table></div>
     <div class="callout">The competition originals live behind a login-gated data tab. A previous restore reassembled copies from the group's public git data bridge and verified part- and whole-file SHA-256 against its manifest (<code>scripts/fetch_data_bridge.py</code>); that receipt documents historical verification only. Restore and verify the files again before local analysis. Nothing here bypasses the organizer's access controls.</div>
   </section>

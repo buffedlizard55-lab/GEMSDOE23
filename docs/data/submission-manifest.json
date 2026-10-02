@@ -63,8 +63,8 @@
   "found": true,
   "passed": false,
   "reason": "out-of-fold DTI did not beat the random-emission control",
-  "mean_dti": 0.04400261614400984,
-  "mean_random": 0.10118601266663155,
+  "mean_dti": 0.04498750516603945,
+  "mean_random": 0.10234873943464891,
   "folds_beating_random": 0,
   "n_folds": 5
  },
@@ -234,5 +234,5 @@
   "current_best_registry_sha256": "ef9ae8f326d5a886320c0d07b0f4e6711ea8501095b4b02dc885d1f9c822412c",
   "reviewed_utc": "2026-10-02T17:48:17Z"
  },
- "format_preflight_scope": "Format only. Prior template checks are retained as history; current independent TIFF audit does not compare to the missing template."
+ "format_preflight_scope": "Re-run this session against the restored official template (data/sample_submission.tif, SHA-256 2176d08e...): all hard requirements pass (docs/data/current-template-validation.json), paired with the stdlib LZW/value audit (docs/data/current-tiff-audit.json). Format only; not release approval."
 }
