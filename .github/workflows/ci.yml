@@ -2,7 +2,7 @@ name: Verify project
 
 on:
   push:
-    branches: [main, arena/01a0f9ce-gemsdoe23]
+    branches: [main, arena/01a0f9ff-gemsdoe23]
   pull_request:
     branches: [main]
   workflow_dispatch:

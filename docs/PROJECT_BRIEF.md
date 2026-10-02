@@ -1,6 +1,6 @@
 # Persistent project brief — read before every project session
 
-**Last evidence check:** 2026-10-01 (UTC). This file is the standing brief for GEMSDOE23. It is intentionally maintained in-repository so future sessions start from the same goal, evidence, limitations, and decision rules rather than repeating research from memory.
+**Last evidence check:** 2026-10-02 (UTC). This file is the standing brief for GEMSDOE23. It is intentionally maintained in-repository so future sessions start from the same goal, evidence, limitations, and decision rules rather than repeating research from memory.
 
 ## Mission and success criteria
 
@@ -47,6 +47,10 @@ Own the result end-to-end: data access, model, validation, geospatial format, in
 | Provided features | The competition describes GeoDAWN/INGENIOUS-derived features and 1 m DEM links; the data tab is account-gated. | [Problem/data page](https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/) · [data tab](https://www.drivendata.org/competitions/306/competition-doe-gems/data/) |
 | Reference baseline | A public reference implementation is maintained by DrivenData. | [Reference repository](https://github.com/drivendataorg/gems-prize-reference-solution) |
 
+## Current research shortlist — 2026-10-02
+
+After comparing newly discovered USGS data leads with the supplied H19/H20 methods and this repository's code, the ranked unvalidated geological tests are: **(1)** GeoDAWN radiometric K/eU/eTh ratio/gradient features corroborated by independent structure (official USGS/DOE DOI `10.5066/P93LGLVQ`, CC0; public GeoTIFF archives listed, but not downloaded/aligned); **(2)** 3DEP drainage deflection and channel-profile breaks (public-domain source; the 1 m index query found only an intersecting dissolved polygon, not exact tile/full-footprint coverage); **(3)** depth-coherent upper-crustal MT conductance boundaries (USGS DOI `10.5066/P9TWT2LU`, five public GeoTIFFs listed; exact valid-pixel support/alignment/reuse terms not checked). Ranking, layer transforms, physical rationale, prior-art differences, cost, and stop conditions are in [`docs/hypotheses.html`](hypotheses.html) and the source register in [`docs/sources.html`](sources.html). No new geological feature has been implemented or validated. The previously coded edge-consensus path is an unscored diagnostic, not the top-ranked hypothesis or a real holdout incumbent. The radiometric test must beat a reproducible baseline on frozen, buffered spatial folds before a weekly slot is considered.
+
 ## Supplied submission-score history (user-provided; not all artifact/account links independently verified)
 
 The entries below preserve the score list in the project request. A blank or dash means the request supplied no score; it is not zero. The project/research pages linked by the user are not official score provenance. Where possible, compare them with the official leaderboard and record the date and identity confidence.
@@ -88,11 +92,12 @@ The entries below preserve the score list in the project request. A blank or das
 
 ## Score interpretation and research question
 
-The request calls `0.1894` the best local score, while also listing H19-5 at `0.1922`. The full listed local history's highest numeric value is therefore `0.1922`. In the official public leaderboard snapshot retrieved 2026-10-01, the highest score was `0.3168` (participant DARD); `0.1922` appeared lower on the board. Thus:
+The request calls `0.1894` the best local score, while also listing H19-5 at `0.1922`. The full listed local history's highest numeric value is therefore `0.1922`. The official public leaderboard page retrieved 2026-10-02 showed DARD at `0.3195` (rank 1) and alexoktaba at `0.3042` (rank 2); public rows at ranks 24 and 26 displayed `0.1922` and `0.1894`, respectively. Thus:
 
-- **The old `.3049` figure is stale as of this retrieval:** the visible leader was `.3168`.
-- **A local H19 result exists above `.1894` in the supplied values:** `.1922`, a `+0.0028` absolute difference.
-- **The official leaderboard score alone cannot explain why a model scored as it did.** The board shows a result, not feature ablations, hidden-label composition, or a file-hash-to-account mapping.
+- **The prompt-reported former leader `.3049` is not the current leader.** Its historical provenance was not authenticated in this retrieval; the current visible rank 1 and rank 2 are `.3195` and `.3042`.
+- **A local H19 result exists above `.1894` in the supplied values:** `.1922`, a `+0.0028` absolute difference. Its matching public score is a score-level match only; the page exposes no file digest, public submission ID, or verified account/team mapping.
+- **The official public board is not the private Initial Prize Round (Phase 1) score or the expert-updated Final Prize Round (Phase 2) score.** It also cannot explain why a model scored as it did: it shows no ablations, hidden-label composition, or file-hash-to-account mapping.
+- A complete dated 50-row capture, retrieval method, attribution caveat, and phase caveat are stored in `docs/data/leaderboard.json`; direct shell refresh failed TLS/SSL, but the official page was read through the web reader.
 - **No reliable causal statement about H19 is warranted from scores alone.** The old H19 pages claim a power-law completeness budget, thermal/geochemical conduit inversion, high-resolution topographic openness/local relief, and geophysical lineaments, plus a sparse emission budget. The exact file's independently observed values are binary (`0`/`1`) inside its finite area; the page's score and mechanism claims are not official evaluation evidence.
 - Under the official distance-weighted Tversky metric, false negatives carry the larger coefficient (`beta=0.8` versus `alpha=0.2`), with distance tolerance around ground-truth/predicted traces. A limited budget of thin, structurally plausible traces could trade precision for recall, but this is a rationale to test—not an explanation proven by the public result.
 
@@ -115,7 +120,7 @@ For discovery triage, let `c` be a validated mapped-survey-coverage score in `[0
 2. **Pass 2 — adversarial review:** inspect missing-data paths, raster masks/nodata, value range, CRS/geotransform equality, spatial leakage, unknown survey coverage, calibration, duplicate artifacts, and stale leaderboard data; fix findings.
 3. **Pass 3 — requirement audit:** compare the final tree and outputs to this brief, rerun tests and validators, record what ran and what could not run, and stop short of claiming success where inputs are absent.
 
-## Current review record — 2026-10-01 (local)
+## Prior review record — 2026-10-01 (local)
 
 All three code-review passes for this implementation were completed; the following are code and synthetic checks only, not competition evidence.
 
@@ -124,12 +129,22 @@ All three code-review passes for this implementation were completed; the followi
 - **Pass 3 — requirement audit:** static HTML links/fragments passed (`7` pages); `node --check` passed for site JS; `bash -n` passed for the gated-data script; both GitHub Actions YAML files parsed; `git diff --check` passed before staging. The public leaderboard refresh attempt failed with TLS/SSL EOF; the last official snapshot is retained with a stale badge.
 - **Scope limitation:** there is no authorized competition data, no PyTorch, no trained model, no genuine spatial holdout, no fitted calibration report, and no new submission raster. A synthetic pass only verifies interface contracts. Do not claim H1 is viable or spend a competition slot on it.
 
+## Current review record — 2026-10-02 (local)
+
+All three review passes for this documentation/CI/feed update are complete. They are code, source, and synthetic checks—not competition validation.
+
+- **Pass 1 — build and test:** corrected the CI push branch from the mistyped `arena/01a0f9ce-gemsdoe23` to the active `arena/01a0f9ff-gemsdoe23`; captured all 50 rows from the official leaderboard through the Arena web reader; updated the dated score/source pages and ranked three genuinely distinct geological candidates after screening duplicate/previously attempted leads. The leaderboard updater now writes public/private Phase 1/Phase 2 and file-attribution caveats on successful refreshes too.
+- **Pass 2 — adversarial review:** confirmed the data page still redirects to login; checked official USGS/ScienceBase listings, licenses where stated, geographic metadata, and the limits of the preliminary 3DEP query. Preserved unknowns for tile coverage, local downloads, actual feature tags, and external-raster alignment. A feed-schema test caught an unsupported refresh-status value during the update; the snapshot now uses the existing schema and its captured-page/failed-shell-refresh provenance is explicit. Prior H19 score matches remain un-attributed.
+- **Pass 3 — requirement audit:** `python -m unittest discover -s tests -v` passed **29 tests** in a temporary `/tmp` environment with NumPy/SciPy/rasterio; Python compilation, 7-page local-link/fragment checks, JavaScript syntax, shell syntax, JSON parsing, YAML workflow parsing, active-branch assertion, and `git diff --check` passed. The independent reference-TIFF audit re-read all 12,279,160 pixels and reconfirmed one float32 band, EPSG:32611, 100 m, finite `[0,1]`, and NaN nodata; it still cannot check the absent official sample template.
+- **Scope limitation:** no competition data or labels, model training, PyTorch ensemble, real spatial holdout, calibrated uncertainty report, external-raster download/alignment, or new submission was produced. The local public-board refresh still fails TLS/SSL; the dated public snapshot came from the official page via the web reader. Do not claim a new result or spend a weekly slot.
+
 ## Current blockers and next work
 
-- **Competition data placement:** the official data page redirects to DrivenData login (observed on 2026-10-01). This sandbox has no authorized competition session. The model data, label raster, sample submission, and 1 m DEM link CSV are absent. Do not ask for or store a password/token in chat; do not circumvent the login.
+- **Competition data placement:** the official data page redirected to DrivenData login when rechecked on 2026-10-02. This sandbox has no authorized competition session. The model data, label raster, sample submission, and 1 m DEM link CSV are absent. Do not ask for or store a password/token in chat; do not circumvent the login.
+- **External-data coverage:** the USGS GeoDAWN radiometric release is public and CC0, with GeoTIFF archives listed, but no file was downloaded and band units/masks/grid alignment remain unknown. The 3DEP index query produced one dissolved 1 m coverage feature only; exact tiles/full AOI coverage remain unknown. USGS MT conductance rasters are publicly listed and their broad geographic extent overlaps the region, but exact valid-pixel coverage, resolution, alignment, and reuse terms have not been checked.
 - **Train/validation:** no training data means no model can be fitted and no spatially blocked holdout can be scored. A code path or synthetic unit test is not a real validation result.
 - **Reference artifact:** the H19-5 GeoTIFF is hosted here for convenience and its SHA-256 is pinned. Its finite pixels are within `[0,1]`, but its exact equality to the official sample template has not been independently tested in this checkout.
 - **Coverage proxy:** NGMDB makes map catalog coverage and map-scale information public, but mapped area is not direct evidence of field-survey effort. Extract and validate the relevant coverage product, then preregister sensitivity tests before using it to alter review priority.
 - **Score attribution:** official leaderboard participants/scores are visible, but a public file hash or submission ID for the H19 artifact was not returned. Treat the matching score as a score-level match, not confirmed attribution.
 
-Next data-enabled sequence: place legitimate competition files in `data/` → run the geospatial contract/data-profile checks → derive and freeze spatial folds → train independent ensemble members → calibrate and evaluate the uncertainty decomposition → compare the top preregistered geological hypothesis with the incumbent at equal emission budget → export reviewer uncertainty sidecars and a one-band GeoTIFF → re-read, hash, and validate against the exact sample template → only then consider a weekly submission.
+Next data-enabled sequence: obtain the official files only through authorized access → run the geospatial contract/data-profile checks and inspect actual band metadata → assemble and QA the public GeoDAWN radiometric grids under CC0 → derive and freeze buffered spatial folds and a reproducible baseline → train independently initialized/optimized ensemble members → calibrate and evaluate epistemic, conditional/aleatoric, and total uncertainty → compare the top radiometric hypothesis against baseline at equal compute and emission budget (then evaluate ranks 2–3 only if warranted) → export reviewer uncertainty sidecars and a one-band GeoTIFF → re-read, hash, and validate against the exact sample template → only after the frozen spatial gate passes consider a weekly submission.
