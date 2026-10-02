@@ -1,5 +1,5 @@
 {
-  "checked_utc": "2026-10-02T10:04:16+00:00",
+  "checked_utc": "2026-10-02T15:19:28+00:00",
   "status": "live",
   "capture_path": "headless-render",
   "row_count": 50,
@@ -22,9 +22,9 @@
     ],
     "render": {
       "returncode": 0,
-      "stdout": "rendered 158571 bytes of HTML to /tmp/gems-leaderboard-rendered.html",
+      "stdout": "rendered 158570 bytes of HTML to /tmp/gems-leaderboard-rendered.html",
       "stderr": ""
     },
-    "rendered_bytes": 158571
+    "rendered_bytes": 158570
   }
 }
