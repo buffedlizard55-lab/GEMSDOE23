@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import hashlib
 import json
 import subprocess
@@ -6,9 +8,13 @@ import tempfile
 import unittest
 from pathlib import Path
 
-import numpy as np
-import rasterio
-from affine import Affine
+try:
+    import numpy as np
+    import rasterio
+    from affine import Affine
+    HAVE_RASTERIO = True
+except ImportError:
+    HAVE_RASTERIO = False
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -26,6 +32,7 @@ def write_json(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
 
 
+@unittest.skipUnless(HAVE_RASTERIO, "numpy and rasterio not installed")
 class SpatialPipelineIntegrationTests(unittest.TestCase):
     def test_oof_maps_gate_and_manifest_provenance_interoperate(self):
         with tempfile.TemporaryDirectory() as tmp:

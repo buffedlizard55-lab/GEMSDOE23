@@ -20,10 +20,10 @@
     "sha256": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc"
   },
   "format_preflight": {
-    "status": "PASS_RECORDED_NOT_RERUN",
+    "status": "PASS_VERIFIED_AGAINST_RESTORED_TEMPLATE",
     "report": "docs/data/current-template-validation.json",
     "current_tiff_audit": "docs/data/current-tiff-audit.json",
-    "scope": "Historical exact-template check is recorded in the manifest; current standalone file audit passes structure and range, but exact comparison is not checked because the template is absent."
+    "scope": "Strict 10/10 template comparison re-run and passed against restored official data/sample_submission.tif (SHA-256 2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc), paired with independent stdlib LZW/tag/value audit."
   },
   "spatial_holdout": {
     "status": "BLOCKED",

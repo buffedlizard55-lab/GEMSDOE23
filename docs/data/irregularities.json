@@ -350,16 +350,18 @@
   {
    "id": "I-31",
    "severity": "medium",
-   "status": "open",
-   "title": "External-data availability in the historical restore receipt is not current local availability",
-   "evidence": "The historical restore receipt and analysis document prior retrieval of USGS/DOE external layers, but `data/external/` is absent in the current post-merge checkout. No current AOI or valid-pixel coverage check was possible.",
-   "action": "Do not describe external layers as locally present or coverage-checked. Restore from documented free/official sources only when needed; verify hashes, licensing, CRS, AOI overlap and valid-pixel coverage before analysis.",
-   "how_established": "filesystem check of data/external/ and comparison with docs/data/restore-receipt.json",
+   "status": "resolved",
+   "title": "External-data availability in the restore receipt vs gitignored local cache",
+   "evidence": "Large rasters in data/ and data/external/ (420 MB+) are gitignored by repository policy, so a bare git checkout does not populate data/external/ until scripts/restore_workspace.py runs. Running python scripts/restore_workspace.py --all restores and SHA-256-verifies all 3 official rasters, all 15 external USGS/DOE layers and metadata files, and all 24 live-scored anchor artefacts into data/ and .cache/ (docs/data/restore-receipt.json).",
+   "action": "Resolved. Always run python scripts/restore_workspace.py --all (or bash scripts/download_competition_data.sh) before running raster/external-layer audits, and distinguish git-tracked docs/data/*.json records from gitignored data/ cache files.",
+   "how_established": "re-verified by running python scripts/restore_workspace.py --all and bash scripts/download_competition_data.sh in this session",
    "links": [
     "https://www.usgs.gov/3d-elevation-program",
     "https://doi.org/10.5066/P93LGLVQ",
-    "https://doi.org/10.5066/P9TWT2LU"
-   ]
+    "https://doi.org/10.5066/P9TWT2LU",
+    "../data/restore-receipt.json"
+   ],
+   "resolved_utc": "2026-10-02"
   },
   {
    "id": "I-32",
@@ -373,6 +375,21 @@
     "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/#submission-format",
     "../data/current-tiff-audit.json",
     "../data/current-holdout-best.json"
+   ],
+   "resolved_utc": "2026-10-02"
+  },
+  {
+   "id": "I-33",
+   "severity": "high",
+   "status": "fixed",
+   "title": "GitHub Pages legacy root-branch build overwrote workflow deployment and served README.md instead of the static site",
+   "evidence": "Inspection of the live GitHub Pages endpoint (https://buffedlizard55-lab.github.io/GEMSDOE23/) and the GitHub Pages API (repos/buffedlizard55-lab/GEMSDOE23/pages) revealed build_type='legacy' with source={'branch': 'main', 'path': '/'} (and PUT /repos/.../pages returns HTTP 403 to the integration token). On every push to main, GitHub's built-in pages-build-deployment workflow ran after .github/workflows/pages.yml and deployed the repository root '/'. Because index.html and subpages existed only inside docs/, the root Pages URL rendered README.md via Jekyll (with no clickable .tif download at the top) and returned 404 for /clustering.html and other subpages.",
+   "action": "Fixed. scripts/build_site.py now emits all 9 static HTML pages at BOTH docs/*.html and the repository root /*.html (with relative asset/data/download paths mapped automatically) plus root .nojekyll, places the downloadable submission .tif card (#download) at the very top of <main> and in the persistent site header across all pages, and adds a prominent .tif download block at the very top of README.md.",
+   "how_established": "live HTTP fetch of https://buffedlizard55-lab.github.io/GEMSDOE23/ + gh api repos/buffedlizard55-lab/GEMSDOE23/pages + workflow run audit",
+   "links": [
+    "https://buffedlizard55-lab.github.io/GEMSDOE23/",
+    "../downloads/latest.json",
+    "../data/submission-manifest.json"
    ],
    "resolved_utc": "2026-10-02"
   }

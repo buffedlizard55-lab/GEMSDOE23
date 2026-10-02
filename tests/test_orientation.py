@@ -5,12 +5,11 @@ import sys
 import unittest
 from pathlib import Path
 
-import numpy as np
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 try:
+    import numpy as np
     import scipy  # noqa: F401
     HAVE_SCIPY = True
 except ImportError:

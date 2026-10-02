@@ -887,5 +887,200 @@
    "enrichment_rest_mean": 0.19390417359536513,
    "top4_minus_rest": 0.09658371187979356
   }
- }
+ },
+ "habitat_nested_cv_check": {
+  "baseline_nested_cv_spearman_G6000": 0.4373913043478261,
+  "unforced_nested_cv_spearman_G6000": 0.4373913043478261,
+  "forced_append_norm_cv_spearman_G6000": 0.44608695652173913,
+  "forced_append_raw_cv_spearman_G6000": 0.3834782608695652,
+  "per_g_scenario": {
+   "6000": {
+    "baseline_cv_spearman": 0.4373913043478261,
+    "top8_univariate_abs_rho_cutoff": 0.5547826086956522,
+    "top14_univariate_abs_rho_cutoff": 0.5069565217391304,
+    "h39_thickcover_norm_abs_rho": 0.36434782608695654,
+    "h39_thickcover_norm_rank_of_96": 40,
+    "h39_thickcover_raw_abs_rho": 0.3217391304347826,
+    "h39_thickcover_raw_rank_of_96": 49,
+    "unforced_norm_cv_spearman": 0.4373913043478261,
+    "unforced_norm_selected_in_refit": false,
+    "unforced_raw_cv_spearman": 0.4373913043478261,
+    "unforced_raw_selected_in_refit": false,
+    "forced_append_norm": {
+     "cv_spearman": 0.44608695652173913,
+     "k": 8,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.2725655783850129
+    },
+    "forced_replace_norm": {
+     "cv_spearman": 0.44869565217391305,
+     "k": 10,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.2756656057456287
+    },
+    "forced_append_raw": {
+     "cv_spearman": 0.3834782608695652,
+     "k": 8,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.13503245712983888
+    },
+    "forced_replace_raw": {
+     "cv_spearman": 0.3982608695652174,
+     "k": 10,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.13913289585416197
+    }
+   },
+   "8000": {
+    "baseline_cv_spearman": 0.4373913043478261,
+    "top8_univariate_abs_rho_cutoff": 0.5547826086956522,
+    "top14_univariate_abs_rho_cutoff": 0.5069565217391304,
+    "h39_thickcover_norm_abs_rho": 0.36434782608695654,
+    "h39_thickcover_norm_rank_of_96": 40,
+    "h39_thickcover_raw_abs_rho": 0.3217391304347826,
+    "h39_thickcover_raw_rank_of_96": 49,
+    "unforced_norm_cv_spearman": 0.4373913043478261,
+    "unforced_norm_selected_in_refit": false,
+    "unforced_raw_cv_spearman": 0.4373913043478261,
+    "unforced_raw_selected_in_refit": false,
+    "forced_append_norm": {
+     "cv_spearman": 0.44608695652173913,
+     "k": 8,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.2659613442223938
+    },
+    "forced_replace_norm": {
+     "cv_spearman": 0.4504347826086956,
+     "k": 10,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.2694553825414863
+    },
+    "forced_append_raw": {
+     "cv_spearman": 0.3834782608695652,
+     "k": 8,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.127555423806578
+    },
+    "forced_replace_raw": {
+     "cv_spearman": 0.3982608695652174,
+     "k": 10,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.1321702076938707
+    }
+   },
+   "10000": {
+    "baseline_cv_spearman": 0.4365217391304348,
+    "top8_univariate_abs_rho_cutoff": 0.5591304347826087,
+    "top14_univariate_abs_rho_cutoff": 0.5060869565217392,
+    "h39_thickcover_norm_abs_rho": 0.3695652173913043,
+    "h39_thickcover_norm_rank_of_96": 41,
+    "h39_thickcover_raw_abs_rho": 0.32608695652173914,
+    "h39_thickcover_raw_rank_of_96": 48,
+    "unforced_norm_cv_spearman": 0.4365217391304348,
+    "unforced_norm_selected_in_refit": false,
+    "unforced_raw_cv_spearman": 0.4365217391304348,
+    "unforced_raw_selected_in_refit": false,
+    "forced_append_norm": {
+     "cv_spearman": 0.4434782608695652,
+     "k": 8,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.25976713524598266
+    },
+    "forced_replace_norm": {
+     "cv_spearman": 0.4504347826086956,
+     "k": 10,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.26362321140145095
+    },
+    "forced_append_raw": {
+     "cv_spearman": 0.3834782608695652,
+     "k": 8,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.1205626480374231
+    },
+    "forced_replace_raw": {
+     "cv_spearman": 0.40347826086956523,
+     "k": 10,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.12564989171530078
+    }
+   },
+   "12000": {
+    "baseline_cv_spearman": 0.39565217391304347,
+    "top8_univariate_abs_rho_cutoff": 0.5460869565217391,
+    "top14_univariate_abs_rho_cutoff": 0.48695652173913045,
+    "h39_thickcover_norm_abs_rho": 0.3356521739130435,
+    "h39_thickcover_norm_rank_of_96": 43,
+    "h39_thickcover_raw_abs_rho": 0.29043478260869565,
+    "h39_thickcover_raw_rank_of_96": 49,
+    "unforced_norm_cv_spearman": 0.39565217391304347,
+    "unforced_norm_selected_in_refit": false,
+    "unforced_raw_cv_spearman": 0.39565217391304347,
+    "unforced_raw_selected_in_refit": false,
+    "forced_append_norm": {
+     "cv_spearman": 0.4017391304347826,
+     "k": 8,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.2539413295767219
+    },
+    "forced_replace_norm": {
+     "cv_spearman": 0.39652173913043476,
+     "k": 10,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.2581316071621779
+    },
+    "forced_append_raw": {
+     "cv_spearman": 0.3591304347826087,
+     "k": 8,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.11400232034130862
+    },
+    "forced_replace_raw": {
+     "cv_spearman": 0.3765217391304348,
+     "k": 4,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.1677329155426716
+    }
+   },
+   "15000": {
+    "baseline_cv_spearman": 0.40869565217391307,
+    "top8_univariate_abs_rho_cutoff": 0.551304347826087,
+    "top14_univariate_abs_rho_cutoff": 0.48695652173913045,
+    "h39_thickcover_norm_abs_rho": 0.3278260869565217,
+    "h39_thickcover_norm_rank_of_96": 44,
+    "h39_thickcover_raw_abs_rho": 0.2852173913043478,
+    "h39_thickcover_raw_rank_of_96": 50,
+    "unforced_norm_cv_spearman": 0.40869565217391307,
+    "unforced_norm_selected_in_refit": false,
+    "unforced_raw_cv_spearman": 0.40869565217391307,
+    "unforced_raw_selected_in_refit": false,
+    "forced_append_norm": {
+     "cv_spearman": 0.3843478260869565,
+     "k": 8,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.24581572904732768
+    },
+    "forced_replace_norm": {
+     "cv_spearman": 0.3843478260869565,
+     "k": 8,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.24443041554527234
+    },
+    "forced_append_raw": {
+     "cv_spearman": 0.3591304347826087,
+     "k": 10,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.11101781427389858
+    },
+    "forced_replace_raw": {
+     "cv_spearman": 0.34,
+     "k": 10,
+     "alpha": 0.3,
+     "h39_ridge_beta": 0.10487851414053889
+    }
+   }
+  },
+  "conclusion": "In unforced 15-fold leave-one-family-out nested CV, h39_shallow_residual_thickcover ranks 40/96 (normalized |rho|=0.3643) and 49/96 (raw |rho|=0.3217) at |G|=6,000 - below the top-k cutoffs (0.5548 at k=8, 0.5070 at k=14) - so it is selected in 0/15 folds and leaves nested-CV Spearman unchanged at 0.437391 (delta = 0.000000). When force-appended to the ridge regression inside every fold, the raw layer degrades CV across all |G| (0.383478, delta = -0.053913 at |G|=6,000), while the [0,1]-normalized layer changes CV by only +0.008696 (0.446087, k=8, beta = +0.2726; 10 units of sum(d_i^2) out of 2,300 on n=24 points) at |G|=6,000 and degrades at |G|=15,000 (0.384348, delta = -0.024348). H-39 does not survive unforced nested CV and is therefore not promoted into the habitat model."
+ },
+ "verdict": "HOLD THE WEEKLY SLOT. H-38 fails the blocked SGMC-proxy gate (0/5 folds vs random at both budgets: 1.22% mean DTI 0.0075 / 0.0494 lidar-gated vs random 0.0995) AND shows null or negative live-score consistency (Spearman rho = -0.0600, lidar-gated rho = -0.3339 with |G|=10k log-skill). H-39 also fails the blocked SGMC-proxy gate as a standalone emission (0/5 folds vs random: 1.22% mean DTI 0.0151 / 0.0174 thick-cover vs random 0.0995); although its live-score correlation is positive (rho = +0.3904 for 500 m residual edges, +0.3261 for thick-cover; top-4 minus rest = +0.0902 / +0.0966 log units), in the 15-fold leave-one-family-out habitat nested-CV follow-up it ranks 37-50/96 by univariate |Spearman| (well below the k=8 cutoff 0.5548 and k=14 cutoff 0.5070), is selected in 0/15 folds (unforced CV unchanged at 0.437391), and degrades CV when the raw layer is force-appended (0.383478, delta = -0.053913 at |G|=6,000) while the [0,1]-normalized layer shifts CV by only +0.008696 (0.446087, k=8, beta = +0.2726) at |G|=6,000 and -0.024348 at |G|=15,000. Both H-38 and H-39 are therefore closed and neither is emitted into a submission raster."
 }

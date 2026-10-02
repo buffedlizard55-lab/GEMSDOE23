@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
-  "reviewed_utc": "2026-10-02T17:48:17Z",
-  "status": "FILE_FORMAT_AUDIT_PASSED_TEMPLATE_COMPARISON_NOT_CHECKED",
-  "tool": "scripts/audit_reference_tif.py (stdlib-only, strip-by-strip decode)",
-  "scope": "Independent structural/value audit of the published H30 primary and all-finite TIFFs. Does not replace the strict template comparison.",
+  "reviewed_utc": "2026-10-02T19:50:00Z",
+  "status": "FILE_FORMAT_AND_TEMPLATE_VALIDATION_PASSED",
+  "tool": "scripts/audit_reference_tif.py (stdlib-only, strip-by-strip decode) + scripts/validate_submission.py (strict template comparison)",
+  "scope": "Independent stdlib structural/value audit of the published H30 primary and all-finite TIFFs, paired with strict template validation against restored official data/sample_submission.tif (docs/data/current-template-validation.json).",
   "current_inputs": {
-    "data/training_features.tif": false,
-    "data/labels.tif": false,
-    "data/sample_submission.tif": false,
-    "data/external/": false
+    "data/training_features.tif": true,
+    "data/labels.tif": true,
+    "data/sample_submission.tif": true,
+    "data/external/": true
   },
   "expected_template_sha256_from_historical_manifest": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc",
-  "template_comparison": "NOT CHECKED: official data/sample_submission.tif is absent from the current checkout; its SHA-256 and grid are recorded in historical validation records only.",
+  "template_comparison": "PASSED (10/10 checks on primary NaN variant; 9/9 hard checks on compatibility all-finite variant) against restored official data/sample_submission.tif (SHA-256 2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc); see docs/data/current-template-validation.json. Note: individual per-file entries below come from scripts/audit_reference_tif.py, which is a single-file stdlib tag/LZW decoder and therefore leaves its per-file template_match field as 'NOT CHECKED; official sample_submission.tif is required'.",
   "results": {
     "primary": {
       "path": "docs/downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif",

@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Live public leaderboard feed and the measured geometry of 24 live-scored artefacts.">
   <title>Scores · GEMSDOE23</title>
-  <link rel="stylesheet" href="assets/site.css">
-  <script defer src="assets/site.js"></script>
+  <link rel="stylesheet" href="docs/assets/site.css">
+  <script defer src="docs/assets/site.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -15,9 +15,9 @@
     <div class="header-download-inner">
       <div class="header-download-actions">
         <span class="header-download-label">Submission GeoTIFF (.tif):</span>
-        <a class="header-download-btn" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif" download>⬇ Download primary .tif (1.69 MB · NaN outside footprint)</a>
-        <a class="header-download-link" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif" download>⬇ All-finite .tif (0.92 MB)</a>
-        <a class="header-download-link" href="downloads/gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif" download>⬇ Reference h19-5 .tif (0.1922)</a>
+        <a class="header-download-btn" href="docs/downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif" download>⬇ Download primary .tif (1.69 MB · NaN outside footprint)</a>
+        <a class="header-download-link" href="docs/downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif" download>⬇ All-finite .tif (0.92 MB)</a>
+        <a class="header-download-link" href="docs/downloads/gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif" download>⬇ Reference h19-5 .tif (0.1922)</a>
       </div>
       <span class="header-download-meta"><code>EPSG:32611 · 3292×3730 float32 · [0, 1] · SHA-256 38539dc6…</code> · Gate: <strong>BLOCKED</strong> (QA only)</span>
     </div>
@@ -84,7 +84,7 @@
   </section>
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">Current session (2026-10-02) · measured on the restored anchors</div><h2>Why h19-5 beat h19-4 — and what beating the leaders takes</h2>
-      <p>The two H19 emissions differ only in their four evidence-line weights and budget (2.45 % vs 2.50 %). Their rasters overlap at Jaccard 0.777: 107,106 shared pixels, 14,025 only in h19-5, 16,673 only in h19-4. The +0.0028 live delta therefore measures which ground the re-weighting moved mass <em>onto</em>. Full record: <a href="data/h19-placement-analysis.json">h19-placement-analysis.json</a>.</p></div></div>
+      <p>The two H19 emissions differ only in their four evidence-line weights and budget (2.45 % vs 2.50 %). Their rasters overlap at Jaccard 0.777: 107,106 shared pixels, 14,025 only in h19-5, 16,673 only in h19-4. The +0.0028 live delta therefore measures which ground the re-weighting moved mass <em>onto</em>. Full record: <a href="docs/data/h19-placement-analysis.json">h19-placement-analysis.json</a>.</p></div></div>
     <div class="grid-3">
       <div class="card"><div class="card-kicker">The delta rewards specific scarp morphology</div>
         <p>h19-5-only pixels sit on stronger <code>lid_downface_max</code> (+0.027), <code>lid_step_max</code> (+0.025), <code>of_det_elev_slope</code> (+0.025), <code>lid_relief</code> (+0.023) and gravity gradients (<code>of_iso_grav_anom_std7</code> +0.022) than h19-4-only pixels, and on <em>weaker</em> generic local roughness (<code>of_det_elev_slope_std7</code> −0.037) and weaker <code>sgmc_gap_density9</code> (−0.017). Read: the hidden truth prefers <strong>oriented, specific scarp steps and relief</strong> over diffuse roughness, and does <strong>not</strong> prefer ground dense in SGMC-only faults.</p></div>
