@@ -26,7 +26,9 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import sys
+import tempfile
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
@@ -34,6 +36,7 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 URL = "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/"
+RENDER_SCRIPT = Path(__file__).resolve().parent / "render_leaderboard.py"
 COMPETITION = "DOE GEMS Prize / DrivenData #306"
 ATTRIBUTION_CAVEAT = (
     "The official public leaderboard displays participants and scores but does not expose a "
@@ -468,6 +471,12 @@ def main() -> int:
     parser.add_argument("--status", type=Path, default=Path("docs/data/leaderboard-status.json"))
     parser.add_argument("--timeout", type=float, default=45.0)
     parser.add_argument(
+        "--render",
+        action="store_true",
+        help="if a plain GET yields no parseable table, re-fetch through headless Chromium "
+             "(scripts/render_leaderboard.py); the official board is built by JavaScript",
+    )
+    parser.add_argument(
         "--from-file",
         type=Path,
         help="parse a saved HTML capture instead of fetching (same validation, source_status=snapshot)",
@@ -475,7 +484,7 @@ def main() -> int:
     parser.add_argument(
         "--strict",
         action="store_true",
-        help="exit non-zero if the live page could not be refreshed (CI gate)",
+        help="exit non-zero if the board could not be refreshed (CI gate)",
     )
     args = parser.parse_args()
 
@@ -490,10 +499,11 @@ def main() -> int:
         except (OSError, ValueError):
             old_snapshot = {}
 
+    capture_path = "saved-capture" if args.from_file else "plain-http"
     if args.from_file:
         try:
             html = args.from_file.read_text(encoding="utf-8", errors="replace")
-            fetch_diag = {"attempts": [], "source_file": str(args.from_file), "bytes": len(html)}
+            fetch_diag: dict = {"attempts": [], "source_file": str(args.from_file), "bytes": len(html)}
             failure = ""
         except OSError as error:
             html, fetch_diag = "", {"attempts": [], "source_file": str(args.from_file)}
@@ -511,28 +521,70 @@ def main() -> int:
     if html:
         try:
             snapshot = parse_leaderboard(html, args.url)
-            if args.from_file:
-                snapshot["source_status"] = "snapshot"
-                snapshot["capture_method"] = (
-                    "Parsed from a saved capture of the official public leaderboard page "
-                    "(%s) by scripts/update_leaderboard.py; strategy: %s."
-                    % (args.from_file.name, snapshot.get("parse_strategy", "table"))
-                )
-            snapshot.setdefault("refresh_status", {})
         except ValueError as error:
             failure = "ValueError: %s" % error
 
+    # The official board is client-rendered, so a plain GET can legitimately return a page shell
+    # with no table at all. --render retries through headless Chromium, which sees what an ordinary
+    # visitor sees. This bypasses nothing: same public URL, anonymous, no credentials, and the
+    # signed-in API is never touched.
+    if snapshot is None and args.render and not args.from_file:
+        rendered = Path(tempfile.gettempdir()) / "gems-leaderboard-rendered.html"
+        proc = None
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(RENDER_SCRIPT), "--url", args.url, "--output", str(rendered),
+                 "--timeout-ms", str(int(max(args.timeout, 15.0) * 1000))],
+                capture_output=True, text=True, timeout=max(args.timeout * 3.0, 180.0),
+            )
+            fetch_diag["render"] = {
+                "returncode": proc.returncode,
+                "stdout": proc.stdout.strip()[:200],
+                "stderr": proc.stderr.strip()[:400],
+            }
+        except (OSError, subprocess.SubprocessError) as error:
+            fetch_diag["render"] = {"error": "%s: %s" % (type(error).__name__, error)}
+        if proc is not None and proc.returncode == 0 and rendered.exists():
+            html = rendered.read_text(encoding="utf-8", errors="replace")
+            fetch_diag["rendered_bytes"] = len(html)
+            capture_path = "headless-render"
+            try:
+                snapshot = parse_leaderboard(html, args.url)
+                failure = ""
+            except ValueError as error:
+                failure = "rendered page: ValueError: %s" % error
+
     if snapshot is not None:
+        live = capture_path != "saved-capture"
+        snapshot["capture_path"] = capture_path
+        snapshot["source_status"] = "live" if live else "snapshot"
+        if capture_path == "headless-render":
+            snapshot["capture_method"] = (
+                "Rendered by headless Chromium (scripts/render_leaderboard.py) because the official "
+                "page builds its table with JavaScript, then parsed and validated by "
+                "scripts/update_leaderboard.py (strategy: %s)." % snapshot.get("parse_strategy", "table")
+            )
+        elif capture_path == "saved-capture":
+            snapshot["capture_method"] = (
+                "Parsed from a saved capture of the official public leaderboard page (%s) by "
+                "scripts/update_leaderboard.py (strategy: %s)."
+                % (args.from_file.name, snapshot.get("parse_strategy", "table"))
+            )
         status = {
             "checked_utc": now,
-            "status": "live",
+            "status": "live" if live else "dated-snapshot",
+            "capture_path": capture_path,
             "row_count": len(snapshot["rows"]),
             "source_url": args.url,
             "top": snapshot["rows"][0],
             "diagnostics": fetch_diag,
         }
         snapshot["refresh_status"] = status
-        snapshot["source_note"] = "Retrieved live from the official public leaderboard page."
+        snapshot["source_note"] = (
+            "Retrieved live from the official public leaderboard page."
+            if live
+            else "Parsed from a saved capture of the official public leaderboard page."
+        )
         if output_path:
             output_path.parent.mkdir(parents=True, exist_ok=True)
             output_path.write_text(json.dumps(snapshot, indent=2) + "\n", encoding="utf-8")
@@ -545,6 +597,8 @@ def main() -> int:
         "status": "stale-snapshot-retained" if old_snapshot else "unavailable-no-snapshot",
         "source_url": args.url,
         "error": failure,
+        "capture_path": capture_path,
+        "render_attempted": bool(args.render),
         "retained_retrieved_utc": old_snapshot.get("retrieved_utc"),
         "retained_row_count": len(old_snapshot.get("rows") or []),
         "diagnostics": dict(fetch_diag, **(_diagnostics(html) if html else {})),

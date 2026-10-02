@@ -15,7 +15,31 @@
 
 The official public leaderboard page was retrieved through the Arena web reader twice on 2026-10-02 (02:38 UTC and 09:33 UTC). Both retrievals showed DARD at **0.3195 (rank 1)** and alexoktaba at **0.3042 (rank 2)**. At 09:33 UTC the supplied H19-5 value **0.1922** matched a displayed public row at **rank 26 (smrtdoog5)** and H19-4 **0.1894** matched **rank 28 (SDCF9)**; at 02:38 UTC the same two scores displayed at ranks 24 and 26. The board moved by two rows inside seven hours - `kinghorton42` (0.2635) and `Ehimenathan` (0.1949) entered above them - so rank is a fast-decaying quantity here and only the score is worth quoting. `docs/data/leaderboard.json` now carries all 50 displayed rows with the retrieval timestamp, and its attribution caveat is recomputed from those rows on every refresh so a rank claim can never go stale silently. The `+0.0028` difference is a score-level comparison only. The board does not expose the evaluated TIFF digest or public submission identifier, so neither match verifies account/team/file attribution. The prompt-reported former leader **0.3049** is not the current leader and was not independently authenticated as a historical board result in this retrieval. Public rows do not establish either private Initial Prize Round or expert-updated Final Prize Round scores.
 
-The 50-row dated capture, retrieval method, and attribution/phase caveats are persisted in [`../data/leaderboard.json`](../data/leaderboard.json). Direct shell `urllib` refresh failed with TLS/SSL EOF; the dated official page capture was still readable in the web tool. The automated workflow remains a fallback and should mark the feed stale if its next direct refresh fails.
+The 50-row dated capture, retrieval method, and attribution/phase caveats are persisted in [`../data/leaderboard.json`](../data/leaderboard.json), and the machine-readable health of the last refresh in [`../data/leaderboard-status.json`](../data/leaderboard-status.json).
+
+### How to refresh the feed (measured procedure, 2026-10-02)
+
+Three facts were measured, not assumed, and they determine the only workable procedure:
+
+1. **A plain HTTP GET cannot see the board.** From a GitHub Actions runner: `HTTP 200`, `30,166 bytes`, correct page title, and then `tables: 0, rows: 0, cell_text_bytes: 0, user_links: 0, tversky_mentions: 0, loading_placeholder: true`. The table is built by client-side JavaScript; the server ships a shell with a `Loading...` placeholder. Any parser that only reads the GET response will always report "no leaderboard table", which is what silently froze the published board at an earlier capture.
+2. **There is no anonymous JSON endpoint.** `https://www.drivendata.org/api/competitions/306/leaderboard/` → `404 Page not found` with "please make sure that you are signed in and signed up for that competition". `?format=json` on the HTML URL returns the same page. Signed-in endpoints are out of scope here: no credentials, no bypassing access controls.
+3. **The development sandbox has no TLS egress to `drivendata.org`** (`SSL_ERROR_SYSCALL`), while GitHub Actions does. So the automatic path must live in CI, and the manual path must live in a tool that renders JavaScript.
+
+Therefore:
+
+```bash
+# Automatic (CI, on every push to main and daily at 12:00 UTC) - pages.yml installs the browser:
+pip install playwright==1.63.0 && python -m playwright install --with-deps chromium
+python scripts/update_leaderboard.py --render --timeout 90   --output docs/data/leaderboard.json --status docs/data/leaderboard-status.json
+
+# Anywhere else, if you can save the rendered page (a JS-capable reader, or your own browser):
+python scripts/update_leaderboard.py --from-file saved-leaderboard.html   --output docs/data/leaderboard.json --status docs/data/leaderboard-status.json
+python scripts/build_site.py     # re-render every page from the evidence records
+```
+
+`--render` executes the page's own public JavaScript in anonymous headless Chromium (`scripts/render_leaderboard.py`), waits for at least 25 populated rows, and hands the rendered HTML to the same parser as everything else; rendering is a replaceable front end and the parser is the single authority. Both paths validate before publishing (≥10 rows, unique ascending ranks, every score in `[0, 1]`), so a challenge page or a half-rendered table is rejected rather than served. Neither path is `--strict` in `pages.yml`, because publication must survive a leaderboard outage; on failure the last verified rows are retained and the status sidecar records the HTTP status, final URL, bytes per attempt, page title, table/row/link counts and a text excerpt. Read that sidecar on `main` to learn the feed's health without needing CI log access.
+
+**Quoting rule.** Because the board moved two rows in seven hours, quote scores with a retrieval timestamp and never quote a rank as a durable fact. The attribution caveat in the snapshot is computed from the rows at refresh time, so it states the current coincidence (rank 26 / rank 28 as of 09:33 UTC) instead of a hard-coded one.
 
 ## Official source notes and data-lead screening
 

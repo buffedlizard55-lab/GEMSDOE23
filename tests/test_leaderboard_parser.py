@@ -1,5 +1,8 @@
 import importlib.util
 import json
+import subprocess
+import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -123,6 +126,83 @@ class LeaderboardParserTests(unittest.TestCase):
         self.assertEqual(diag["tables"], 0)
         self.assertEqual(diag["user_links"], 0)
         self.assertIn("JavaScript", diag["text_excerpt"])
+
+
+class RenderFallbackTests(unittest.TestCase):
+    """--render must recover the board when a plain GET returns only the JavaScript shell."""
+
+    STUB = '''import sys, pathlib
+out = pathlib.Path(sys.argv[sys.argv.index("--output") + 1])
+rows = "".join(
+    "<tr><td>#%d</td><td><a href='/users/u%d/'><img src='g' alt=''></a></td>"
+    "<td><a href='/users/u%d/'>Team %d</a><br>2d ago</td><td>0.%04d</td></tr>"
+    % (i, i, i, i, 4000 - 7 * i) for i in range(1, 13))
+out.write_text("<table><tr><th>Rank</th><th>Team members</th><th>Participant</th>"
+               "<th>Best public DW-Tversky</th></tr>" + rows + "</table>", encoding="utf-8")
+'''
+
+    def _run(self, tmp, stub_body, extra_args=()):
+        stub = tmp / "stub_render.py"
+        stub.write_text(stub_body, encoding="utf-8")
+        output, status = tmp / "lb.json", tmp / "st.json"
+        argv = ["update_leaderboard.py", "--url", "http://127.0.0.1:1/unreachable", "--timeout", "3",
+                "--output", str(output), "--status", str(status), *extra_args]
+        previous_script, previous_argv = MODULE.RENDER_SCRIPT, sys.argv
+        MODULE.RENDER_SCRIPT = stub
+        sys.argv = argv
+        try:
+            code = MODULE.main()
+        finally:
+            MODULE.RENDER_SCRIPT, sys.argv = previous_script, previous_argv
+        return code, output, status
+
+    def test_render_path_publishes_a_live_board(self):
+        with tempfile.TemporaryDirectory() as raw:
+            tmp = Path(raw)
+            code, output, status = self._run(tmp, self.STUB, ("--render", "--strict"))
+            self.assertEqual(code, 0)
+            written = json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(written["source_status"], "live")
+            self.assertEqual(written["capture_path"], "headless-render")
+            self.assertEqual(len(written["rows"]), ROWS)
+            self.assertEqual(written["rows"][0]["participant"], "Team 1")
+            self.assertIn("headless Chromium", written["capture_method"])
+            sidecar = json.loads(status.read_text(encoding="utf-8"))
+            self.assertEqual(sidecar["status"], "live")
+            self.assertEqual(sidecar["diagnostics"]["render"]["returncode"], 0)
+
+    def test_a_renderer_without_a_browser_degrades_instead_of_crashing(self):
+        """Playwright missing -> renderer exits 3 -> snapshot retained, diagnostics recorded."""
+        with tempfile.TemporaryDirectory() as raw:
+            tmp = Path(raw)
+            (tmp / "lb.json").write_text(json.dumps({
+                "rows": [{"rank": 1, "participant": "Kept", "score": 0.5}],
+                "retrieved_utc": "2026-10-02T00:00:00+00:00",
+            }), encoding="utf-8")
+            code, output, status = self._run(tmp, "import sys; sys.exit(3)", ("--render",))
+            self.assertEqual(code, 0)  # publication must survive a missing browser
+            retained = json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(retained["rows"][0]["participant"], "Kept")
+            self.assertEqual(retained["source_status"], "snapshot")
+            sidecar = json.loads(status.read_text(encoding="utf-8"))
+            self.assertEqual(sidecar["status"], "stale-snapshot-retained")
+            self.assertTrue(sidecar["render_attempted"])
+            self.assertEqual(sidecar["diagnostics"]["render"]["returncode"], 3)
+
+    def test_strict_mode_still_fails_when_nothing_can_be_parsed(self):
+        with tempfile.TemporaryDirectory() as raw:
+            tmp = Path(raw)
+            code, _output, _status = self._run(tmp, "import sys; sys.exit(3)", ("--render", "--strict"))
+            self.assertEqual(code, 1)
+
+    def test_renderer_reports_a_missing_browser_with_an_actionable_exit_code(self):
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/render_leaderboard.py"), "--output", "/tmp/x.html"],
+            capture_output=True, text=True, timeout=60,
+        )
+        self.assertIn(result.returncode, (0, 3))  # 3 here (no Playwright), 0 where it is installed
+        if result.returncode == 3:
+            self.assertIn("playwright install", result.stderr)
 
 
 if __name__ == "__main__":
