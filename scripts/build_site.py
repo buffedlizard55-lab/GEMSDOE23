@@ -42,7 +42,28 @@ NAV = [("index.html", "Overview"), ("executive-summary.html", "How to submit"),
        ("sources.html", "Sources"), ("verification.html", "Audit")]
 
 
-def page(title, body, current, description):
+def evidence_stamp() -> str:
+    """Newest `generated_utc` across the evidence records.
+
+    Deliberately not the wall clock: `build_site.py` must be idempotent, because CI fails
+    when the committed site differs from a freshly generated one. A timestamp that changes
+    on every run would make that check fire on nothing.
+    """
+    stamps = []
+    for name in os.listdir(DATA) if os.path.isdir(DATA) else []:
+        if not name.endswith(".json"):
+            continue
+        try:
+            rec = json.load(open(os.path.join(DATA, name)))
+        except Exception:
+            continue
+        for key in ("generated_utc", "retrieved_utc", "reviewed_utc"):
+            if isinstance(rec, dict) and isinstance(rec.get(key), str):
+                stamps.append(rec[key])
+    return max(stamps)[:16].replace("T", " ") + " UTC" if stamps else "date not recorded"
+
+
+def page(title, body, current, description, stamp=""):
     links = []
     for h, t in NAV:
         cur = ' aria-current="page"' if h == current else ""
@@ -73,7 +94,7 @@ def page(title, body, current, description):
 </main>
 <footer class="site-footer">
   <div class="footer-inner">
-    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · page rebuilt {esc(time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime()))}</span>
+    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of {esc(stamp)}</span>
     <span><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">Official competition</a> · <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a> · <a href="https://github.com/buffedlizard55-lab/GEMSDOE23">This repository</a></span>
   </div>
 </footer>
@@ -95,6 +116,7 @@ def table(headers, rows, cls="", tbody_id=""):
 
 
 def build():
+    stamp = evidence_stamp()
     man = j("submission-manifest.json", {}) or {}
     bld = j("submission-build.json", {}) or {}
     hab = j("habitat-model.json", {}) or {}
@@ -231,7 +253,7 @@ def build():
   <section class="hero">
     <div class="hero-grid">
       <div>
-        <div class="eyebrow">DOE GEMS Prize · DrivenData #306 · evidence rebuilt {esc(time.strftime('%Y-%m-%d', time.gmtime()))}</div>
+        <div class="eyebrow">DOE GEMS Prize · DrivenData #306 · evidence records of {esc(stamp)}</div>
         <h1>The score is a covering problem, and we finally measured it.</h1>
         <p class="lead">Twenty-four live public scores from this group's own uploads were inverted through the
         official metric. The result overturns two working assumptions: the public test set holds only
@@ -702,7 +724,7 @@ python scripts/build_site.py                  # this site</pre>
     }
     for name, (title, body, current, desc) in pages.items():
         with open(os.path.join(DOCS, name), "w") as fh:
-            fh.write(page(title, body, current, desc))
+            fh.write(page(title, body, current, desc, stamp))
         print("wrote docs/" + name)
 
     # machine-readable pointer for the download button
