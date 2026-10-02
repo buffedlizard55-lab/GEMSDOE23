@@ -4,7 +4,7 @@
   "retrieved_utc": "2026-10-02T02:38:00Z",
   "source_status": "snapshot",
   "capture_method": "Official leaderboard page retrieved with Arena web reader; shell urllib refresh remained blocked by TLS/SSL EOF.",
-  "source_note": "The rows were captured from the official public leaderboard via Arena's web reader on 2026-10-02. The subsequent local urllib refresh failed with TLS/SSL EOF, so this dated capture was retained; it is not a private Phase 1 or Phase 2 result.",
+  "source_note": "Live refresh failed; the last verified official leaderboard rows were retained.",
   "rows": [
     {
       "rank": 1,
@@ -260,9 +260,9 @@
   "attribution_caveat": "The official public leaderboard displays participants and scores but does not expose a prediction-file SHA-256 or a public submission identifier. The user-supplied H19-5 score of 0.1922 matches rank 24 (smrtdoog5), and H19-4's 0.1894 matches rank 26 (SDCF9); these are score-level matches only and do not verify either participant, account, team, or file attribution.",
   "phase_caveat": "These are public leaderboard results only. They are not private Initial Prize Round (Phase 1) scores or expert-updated Final Prize Round (Phase 2) scores.",
   "refresh_status": {
-    "checked_utc": "2026-10-02T00:36:14.504404+00:00",
+    "checked_utc": "2026-10-02T09:20:31.099774+00:00",
     "status": "stale-snapshot-retained",
     "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-    "error": "URLError: <urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>"
+    "error": "ValueError: Could not find a leaderboard table with rank and Tversky headers"
   }
 }

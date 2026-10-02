@@ -1,6 +1,6 @@
 {
-  "checked_utc": "2026-10-02T00:36:14.504404+00:00",
+  "checked_utc": "2026-10-02T09:20:31.099774+00:00",
   "status": "stale-snapshot-retained",
   "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-  "error": "URLError: <urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>"
+  "error": "ValueError: Could not find a leaderboard table with rank and Tversky headers"
 }
