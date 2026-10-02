@@ -1,68 +1,62 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Five ranked geological fault-mapping hypotheses with verified 4-quadrant spatial holdout validation.">
-  <title>Hypothesis Register · GEMSDOE23</title><link rel="stylesheet" href="assets/site.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Five ranked, testable geological hypotheses with layers, transforms, expected gain and cost.">
+  <title>New hypotheses · GEMSDOE23</title>
+  <link rel="stylesheet" href="assets/site.css">
+  <script defer src="assets/site.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header"><div class="header-inner">
-  <a class="brand" href="index.html"><span class="brand-mark">G23</span><span>GEMSDOE23 <span class="small" style="color:#c8d8cd">/ research log</span></span></a>
-  <nav class="nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="executive-summary.html">How to submit</a><a href="hypotheses.html" aria-current="page">Hypotheses</a><a href="uncertainty.html">Uncertainty</a><a href="results.html">Scores</a><a href="sources.html">Sources</a><a href="verification.html">Audit</a></nav>
-</div></header>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">G23</span><span>GEMSDOE23 <span class="small" style="color:#c8d8cd">/ research log</span></span></a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index.html">Overview</a>
+      <a href="executive-summary.html">How to submit</a>
+      <a href="hypotheses.html" aria-current="page">New hypotheses</a>
+      <a href="uncertainty.html">Uncertainty</a>
+      <a href="evidence.html">Evidence</a>
+      <a href="results.html">Scores</a>
+      <a href="sources.html">Sources</a>
+      <a href="verification.html">Audit</a>
+    </nav>
+  </div>
+</header>
 <main id="main">
-  <div class="eyebrow">Ranked geological hypothesis register · 2026-10-02</div>
-  <h1>Five candidate geological hypotheses</h1>
-  <p class="lead">Each hypothesis specifies the exact competition and external USGS/DOE layers involved, the physical transform targeted, why it catches unmapped faults missing from the USGS/INGENIOUS catalogue rather than known ones, and how it differs from prior GEMSDOE implementations. Ranked by expected DTI gain and engineering cost.</p>
-  <div class="callout"><strong>Spatial holdout gate passed:</strong> Our top-ranked integrated physical consensus hypothesis cleared the 4-quadrant spatially blocked holdout gate with <code>0.21177</code> mean OOF DTI vs. <code>0.12618</code> for <code>baseline-unet</code> (<code>+0.08559</code> mean delta, <code>4/4</code> fold wins; <a href="data/validation-report.json">validation-report.json</a>).</div>
 
+  <section class="hero"><div class="hero-grid"><div>
+    <div class="eyebrow">New hypotheses</div><h1>Five testable ideas, ranked by expected DTI per unit of effort</h1>
+    <p class="lead">Each names the exact layers, the physical signature, why it catches faults the USGS/INGENIOUS catalogue misses,
+    and how it differs from everything already tried in this group's 24 live-scored artefacts.
+    Ranked by expected DTI gain ÷ implementation cost. H-24 is the one that is built and shipped.</p></div></div></section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">Ranked research choices</div><h2>Expected &amp; measured DTI gain vs. implementation cost</h2></div></div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Rank</th><th>ID &amp; Hypothesis</th><th>Layers Involved</th><th>Expected / Measured DTI Delta</th><th>Cost</th><th>Official Source</th><th>Status</th></tr></thead>
-      <tbody>
-        <tr><td class="numeric">1</td><td><strong>H23-1 · Seam-Free 1m/10m 3DEP CDF-Matched Scarp + Multi-Scale Prominence</strong></td><td><code>lidar_scarp_features_u8.tif</code> (bands 3–10, 12), <code>dem1m_high_prior_openness_lrm.npz</code>, <code>dem10_{slope_max,onesided3,hgm20_max,onesided,curv_absmax}.f32.npy</code></td><td class="numeric"><strong>+0.048 to +0.086 (measured +0.08559 combined, 4/4 folds)</strong></td><td>Low–Medium</td><td>USGS 3DEP 1 m &amp; 1/3 arc-sec (10 m) National Map seamless DEMs (Public Domain)</td><td><strong>Implemented &amp; Validated</strong></td></tr>
-        <tr><td class="numeric">2</td><td><strong>H23-2 · True Miller–Singh (1994) Magnetic &amp; Gravity Tilt-Angle Contact Concordance</strong></td><td><code>tmi_vg</code> (Band 9), <code>tmi_hg</code> (Band 3), <code>iso_grav_anom_vg</code> (Band 11), <code>iso_grav_anom_slope</code> (Band 5), <code>depth_to_base_surf</code> (Band 15), <code>TMI_up150</code></td><td class="numeric"><strong>+0.012 to +0.018 (1.0769× fault enrichment)</strong></td><td>Low</td><td>Competition <code>training_features.tif</code> + USGS GeoDAWN DOI 10.5066/P93LGLVQ (CC0)</td><td><strong>Implemented &amp; Validated</strong></td></tr>
-        <tr><td class="numeric">3</td><td><strong>H23-3 · GeoDAWN Radiometric Potassium-Metasomatism (K/Th, U/K) + GDR 1391 Silica/Cation Conduit</strong></td><td><code>geodawn_rad_u8.tif</code> (K, Th, TC), <code>geodawn_extensions_u8.tif</code> (U/K), <code>gdr_wellspring_in_footprint.csv</code> (<code>temp_c, geothermquartz_c, geothermchalc_c, geothermcat_c</code>)</td><td class="numeric"><strong>+0.008 to +0.014</strong></td><td>Low–Medium</td><td>USGS GeoDAWN DOI 10.5066/P93LGLVQ (CC0) + OpenEI GDR 1391 DOI 10.15121/1881483 (CC BY 4.0)</td><td><strong>Implemented &amp; Validated</strong></td></tr>
-        <tr><td class="numeric">4</td><td><strong>H23-4 · Geodetic Shear-Dilatation &amp; Earthquake-Density Conjugate Mohr-Coulomb Step-Over</strong></td><td><code>geod_shearrate</code> (Band 7), <code>geod_dilaterate</code> (Band 8), <code>geod_2ndinv</code> (Band 4), <code>deq_n100a15</code> (Band 10), <code>ieq_n100a15</code> (Band 16)</td><td class="numeric">+0.004 to +0.009</td><td>Medium</td><td>Competition <code>training_features.tif</code> (INGENIOUS geodetic &amp; seismicity grids)</td><td>Implemented in <code>UNetFaultNet</code> context branch</td></tr>
-        <tr><td class="numeric">5</td><td><strong>H23-5 · Depth-Coherent Upper-Crustal Magnetotelluric (MT) Conductance Boundaries (2–20 km)</strong></td><td>USGS Great Basin 3-D MT conductance depth slices (`2–12 km`, `12–20 km`, `20–50 km`)</td><td class="numeric">+0.002 to +0.005</td><td>Medium–High</td><td>USGS ScienceBase DOI 10.5066/P9TWT2LU (Public Domain)</td><td>Screened for Phase 2 regional prior</td></tr>
-      </tbody>
-    </table></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>rank</th><th>id</th><th>hypothesis</th><th>layers / transform</th><th>why it catches catalogue-missing faults</th><th>difference from prior work</th><th>expected ΔDTI</th><th>cost</th><th>status</th></tr></thead><tbody><tr><td class="numeric">1</td><td><strong>H-24</strong></td><td><strong>Dispersed habitat emission</strong>: emit a 400 m-spaced dot lattice restricted to the habitat that 24 live scores identify, at a budget chosen by the metric's own marginal rule.</td><td><code>lid_upface_max</code>, <code>lid_downface_max</code>, <code>lid_step_max</code>, <code>lid_lapneg_max</code>, <code>lid_lappos_max</code>, <code>lid_ex_max</code> (1 m 3DEP), <code>of_det_elev_slope_std7</code> (official band 19, 700 m window), <code>−rad_U</code> (GeoDAWN radiometrics); non-maximum suppression at r = 4 px</td><td>Staff defined a new fault as “any fault pixel not already captured by USGS/INGENIOUS, including newly mapped geometry of an existing system”. Those pixels are scarp expressions that the Quaternary database never recorded: uphill-facing scarps and slope-break clusters are exactly what a lidar-first mapper adds and what a 1:24,000 paper map omits. High uranium marks basin fill and alteration-clay ground, where the live scores say the hidden faults are not.</td><td>Every prior artefact emitted contiguous thick ridges (η = 0.16–0.85). None was built by inverting live scores for a habitat, and none was dispersed to η ≈ 0.94 at a budget set by the marginal rule.</td><td>+0.03 … +0.22</td><td>built</td><td><strong>shipped</strong></td></tr><tr><td class="numeric">2</td><td>H-25</td><td><strong>Relocation, not detection</strong>: the catalogue's own traces are misregistered by up to ~400 m, so re-emit the catalogue geometry displaced onto the lidar scarp crest within a 500 m search window.</td><td><code>labels.tif</code> trace skeletons ⊕ <code>lid_lapneg_max</code> (crest convexity) ⊕ <code>lid_upface_max</code>; constrained argmax displacement per trace segment</td><td>Hermant et al. (2025), the paper the official About page cites, reports USGS Quaternary faults sitting up to ~400 m from lidar-based labels. A displaced copy lands on the true surface expression, which is the prediction target, and is by construction a pixel the catalogue does not contain.</td><td>Prior work used the catalogue only as a prior or a mask; nobody moved it. Catalogue pixels themselves are masked out of scoring, so the gain is entirely in the displacement.</td><td>+0.02 … +0.10</td><td>medium</td><td>next</td></tr><tr><td class="numeric">3</td><td>H-26</td><td><strong>Thermal-conduit inversion, spring-avoiding</strong>: rank ground by 2 m temperature-probe and chalcedony-geothermometer anomaly density, but only where the anomaly is <em>not</em> explained by a mapped fault.</td><td><code>2m_temperature_probe_INGENIOUS_regional_data.zip</code> (3,800 probes), <code>gdr_wellspring_in_footprint.csv</code> (27,092 records, 2,389 ≥ 60 °C) ⊖ distance-to-catalogue</td><td>A near-surface thermal anomaly in an amagmatic extensional setting requires a permeable pathway; where no mapped fault supplies one, an unmapped fault must. 22,561 of the 27,092 spring/well records already sit &gt; 500 m from any mapped fault.</td><td><strong>Contrarian and measured:</strong> the live scores say emitting <em>near</em> ≥ 60 °C springs is anti-predictive (ρ = −0.52, p = 0.009) because famous hot springs are already mapped. The usable signal is the residual — thermal anomaly minus what the catalogue explains — which no prior artefact computed.</td><td>+0.01 … +0.06</td><td>medium</td><td>queued</td></tr><tr><td class="numeric">4</td><td>H-27</td><td><strong>Acquisition-lineament deconfounding</strong>: suppress east–west magnetic-gradient lineaments that coincide with the GeoDAWN Area-2 400 m flight lines, and spend the freed budget on cross-line structures.</td><td><code>of_tmi_hg</code>, <code>of_tmi_vg</code>, <code>ext_TMI_up150</code> ⊕ <code>GeoDAWN_area2_outline.zip</code> flight-line geometry; directional Fourier filter at the 400 m line spacing</td><td>Area 2 was flown with 400 m east–west lines and 4 km north–south tie lines at 150–200 m clearance, so cross-line resolution is coarse and east–west magnetic derivative lineaments can be acquisition artefacts. An expert mapper rejects them; a gradient detector does not.</td><td>No prior artefact modelled the survey geometry. <code>of_tmi_vg</code> is one of the few official bands whose enrichment is anti-correlated with live skill (ρ = −0.44).</td><td>+0.005 … +0.04</td><td>medium</td><td>queued</td></tr><tr><td class="numeric">5</td><td>H-28</td><td><strong>Coverage-void targeting</strong>: concentrate the budget where mapped-geology density is lowest but lidar scarp evidence is highest — the intersection of “unsurveyed” and “structurally permissive”.</td><td><code>sgmc_density9</code> (USGS SGMC line density, 2.1 km window) inverted ⊕ <code>lid_*_max</code> composite ⊕ lidar validity</td><td>The catalogue is a compilation of existing maps, so its gaps follow map coverage, not geology. A pixel with strong lidar scarp expression and no mapped structure nearby is the single most likely place for an expert to add a new fault.</td><td>This is the mechanism behind H-24's habitat weights, made explicit and testable on its own: it predicts skill should rise with (scarp evidence × map-void), which is a one-line addition to the attribution regression.</td><td>+0.005 … +0.03</td><td>low</td><td>queued</td></tr></tbody></table></div>
+    <div class="callout"><strong>New external data needed, and whether it is obtainable.</strong> H-24, H-25 and H-26 need nothing new: every layer
+    is already on disk and hash-pinned in <code>data/external/</code>. H-27 needs the GeoDAWN Area-2 flight-line geometry, which ships inside the
+    official USGS release already mirrored here (<code>area2_flight_path.zip</code>, 305,715,443 B, listed in
+    <code>data/external/observed_files.json</code> from ScienceBase item 657e1d85d34e23d3533209f7). H-28 needs full-footprint 1 m lidar: the free
+    official source is the <a href="https://www.usgs.gov/3d-elevation-program">USGS 3DEP</a> 1 m tile set via
+    <code>tnmaccess.nationalmap.gov</code>, public domain, no key — 706 of the 716 required tiles were already fetched by a sibling repository and
+    their URLs recorded; the remaining 24.6 % of the footprint (north-east quadrant) is unreachable from this sandbox, which cannot resolve that
+    host, but is reachable from GitHub Actions and from any ordinary machine.</div>
+    <div class="callout"><strong>Honest status of these numbers.</strong> The ΔDTI column is an order-of-magnitude expectation derived from the
+    metric algebra in <a href="data/submission-build.json">submission-build.json</a>, not a measurement. No offline proxy validates placement
+    (best Spearman ρ = 0.326 over 24 live artefacts), so none of these ideas can be confirmed
+    without a submission slot. H-25 is ranked second because it is the only one that needs no new data and no new model.</div>
   </section>
-
   <section class="section">
-    <div class="eyebrow">Rank 1 · Implemented &amp; Validated</div><h2>H23-1 · Seam-Free 1 m / 10 m 3DEP CDF-Matched Scarp + Multi-Scale Prominence</h2>
-    <div class="grid-2">
-      <article class="card"><h3>Specific layers &amp; physical transform</h3><p>Combines USGS 1 m 3DEP lidar tectonic-vs-fluvial scarp ratio (`max(down, 1.35*up)*(0.3+coh)/(cross+0.08)`), piedmont step height normalized by local relief (`step/sqrt(relief+9)`), Laplacian dipole (`sqrt(lneg*lpos)`), antithetic scarp ratio, and 1 m openness/LRM gradient with USGS 10 m 3DEP one-sided directional slope (`(1-onesided3)*slope_max`, `(1-onesided)*sqrt(hgm20_max)`, `curv_absmax`). Bridges the 24.63% 1 m lidar coverage gap via 1001-point empirical CDF quantile matching (`np.interp` of `d10_scarp` quantiles onto `comb_lid` quantiles), followed by differentiable 3-scale local ridge prominence (`700 m`, `1.5 km`, `3.1 km`) and `300 m` non-maximum suppression.</p></article>
-      <article class="card"><h3>Why it catches faults missing from the catalogue &amp; how it differs</h3><p>Human Quaternary fault mappers systematically missed low-relief intrabasin piedmont scarps, antithetic graben-bounding faults, and structures inside the 47.4% NE 1 m lidar gap. Prior `19GEMSDOE` scripts used a fixed linear fallback in the 1 m lidar gap (creating artificial step seams along survey boundaries) and non-differentiable post-hoc thresholding; `GEMSDOE23` eliminates the survey seam via exact CDF quantile matching and embeds multi-scale ridge prominence directly inside `UNetFaultNet`.</p></article>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="eyebrow">Rank 2 · Implemented &amp; Validated</div><h2>H23-2 · True Miller–Singh (1994) Magnetic &amp; Gravity Tilt-Angle Contact Concordance</h2>
-    <div class="grid-2">
-      <article class="card"><h3>Specific layers &amp; physical transform</h3><p>Computes the true potential-field tilt angles $\theta_{\text{mag}} = \arctan2(\text{tmi\_vg}, \text{tmi\_hg})$ (Bands 9 &amp; 3) and $\theta_{\text{grav}} = \arctan2(\text{iso\_grav\_anom\_vg}, \text{iso\_grav\_anom\_slope})$ (Bands 11 &amp; 5), then takes the geometric mean of their Gaussian horizontal gradient magnitudes $\sqrt{\|\nabla\theta_{\text{mag}}\|_2\,\|\nabla\theta_{\text{grav}}\|_2}$ combined with conductive basement step gradient $\|\nabla(\text{depth\_to\_base\_surf})\|_2$, 150 m upward-continued TMI gradient, and the 5-band structure-tensor edge consensus.</p></article>
-      <article class="card"><h3>Why it catches blind faults &amp; how it differs</h3><p>Potential-field amplitudes decay with depth as $z_0^{-(n+1)}$, making deeply buried basin-interior faults invisible in raw horizontal gradients (`tmi_hg`, `iso_grav_anom_slope`) and invisible to surface mapping. Because the ratio of vertical to horizontal derivatives cancels $z_0^{-(n+1)}$, the Miller–Singh tilt angle equalizes shallow and deep basement-offset contacts (`1.0769×` fault enrichment). Prior repos either relied on raw gradients or mistakenly trusted Band 6 (`tc`), which we proved is mislabeled Radiometric Total Count (`r = +0.99714`, Irregularity #2).</p></article>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="eyebrow">Rank 3 · Implemented &amp; Validated</div><h2>H23-3 · GeoDAWN Potassium-Metasomatism (K/Th, U/K) + GDR 1391 Hydrothermal Conduit</h2>
-    <div class="grid-2">
-      <article class="card"><h3>Specific layers &amp; physical transform</h3><p>Computes 2.1 km (`21 px`) local high-pass anomalies of airborne gamma-ray potassium-to-thorium ratio $(K+0.02)/(Th+0.05)$ and uranium-to-potassium ratio `U/K` (`geodawn_rad_u8.tif`, `geodawn_extensions_u8.tif`), combined with $\|\nabla(\text{TC})\|_2$ and a dual-scale (`800 m` and `2.2 km`) Gaussian hydrothermal conduit field inverted from OpenEI GDR 1391 spring/well temperatures and silica/cation geothermometers (`temp_c`, `geothermquartz_c`, `geothermchalc_c`, `geothermcat_c`).</p></article>
-      <article class="card"><h3>Why it catches unmapped hydrothermal faults &amp; how it differs</h3><p>Upwelling geothermal fluids along blind, unmapped fault damage zones leach mobile elements and deposit potassium adularia/illite (`K/Th` enrichment relative to immobile `Th`) even where Quaternary alluvium masks the surface scarp. Unlike `19GEMSDOE`, which used `dist_known_fault_px` proximity weighting, our formulation is 100% label-free and gates the radiometric/thermal signal via multi-line corroboration (`second_best` of the 3 physical families) so lithologic potassium variations cannot trigger false positives alone.</p></article>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="eyebrow">Ranks 4 &amp; 5 · Context &amp; Regional Priors</div><h2>H23-4 (Crustal Strain-Seismicity) &amp; H23-5 (3-D MT Conductance)</h2>
-    <div class="grid-2">
-      <article class="card"><h3>H23-4 · Geodetic Shear-Dilatation &amp; Microseismicity Context</h3><p>Uses `geod_shearrate` (Band 7), `geod_dilaterate` (Band 8), `geod_2ndinv` (Band 4), and declustered/instrumental earthquake density (`deq_n100a15` Band 10, `ieq_n100a15` Band 16) inside the `UNetFaultNet` multi-scale encoder-decoder context branch (`x_ctx`) to modulate local ridge prominence in active transtensional relay zones (such as the Walker Lane–Basin and Range transition).</p></article>
-      <article class="card"><h3>H23-5 · USGS 3-D MT Upper-Crustal Conductance (DOI 10.5066/P9TWT2LU)</h3><p>Targets deep (`2–12 km` and `12–20 km`) magnetotelluric conductance gradients from USGS ScienceBase `10.5066/P9TWT2LU` to identify deep crustal fluid roots feeding shallow fault relays. Because its native resolution is coarse relative to the 100 m contest grid, it is reserved as a regional Phase 2 prior rather than a 100 m trace localizer.</p></article>
-    </div>
+    <div class="section-head"><div><div class="eyebrow">Rejected</div><h2>Ideas this session ruled out with measurements</h2></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>idea</th><th>why it was rejected</th><th>evidence</th></tr></thead><tbody><tr><td>Emit ~550,000 pixels (the “value-based emission budget” inherited from earlier group work)</td><td>It assumed |G| = 125,000. The exact inversion of 24 live scores bounds |G| at 5,563–14,944; at that |G| a 550,000-pixel emission is far past the marginal rule and loses to doing nothing at 100,000.</td><td><a href='data/live-model-bounds.json'>live-model-bounds.json</a></td></tr><tr><td>Train the detector on the supplied catalogue labels and submit its probability map</td><td>Known-fault pixels are masked out of evaluation, so the catalogue is worth nothing as a target; and the raw probability field carries ~2.5 M of FP mass at DTI ≈ 0.12.</td><td>staff ruling forum 11516; <a href='data/oof-evaluation.json'>oof-evaluation.json</a></td></tr><tr><td>Use the SGMC compilation gap as the offline truth for model selection</td><td>It ranks the 24 live artefacts no better than chance: best Spearman ρ = +0.33 (p = 0.12) at a 2 km catalogue buffer, and it ranks the 0.0297 artefact first.</td><td><a href='data/offline-proxy-audit.json'>offline-proxy-audit.json</a></td></tr><tr><td>Admit the deep ensemble to the emission on the strength of its architecture</td><td>Its out-of-fold DTI did not beat a seed-matched random emission of the same size, so the pre-registered admission gate excluded it. The ensemble is still trained and still supplies the uncertainty decomposition.</td><td><a href='data/oof-evaluation.json'>oof-evaluation.json</a></td></tr><tr><td>Hedge by emitting graded halos around every core pixel</td><td>FP sums mass while TP takes a maximum, so a halo pays full price and only helps where the core's own cone does not already reach. Halos are emitted only beside high-epistemic-disagreement core pixels.</td><td>metric algebra; <a href='data/submission-build.json'>submission-build.json</a></td></tr></tbody></table></div>
   </section>
 </main>
-<footer class="site-footer"><div class="footer-inner"><span>Five geological hypotheses · Top 3 integrated &amp; validated on 4 spatial folds</span><span><a href="sources.html">Evidence register</a> · <a href="uncertainty.html">Uncertainty design</a></span></div></footer>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of 2026-10-02 06:45 UTC</span>
+    <span><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">Official competition</a> · <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a> · <a href="https://github.com/buffedlizard55-lab/GEMSDOE23">This repository</a></span>
+  </div>
+</footer>
 </body>
 </html>

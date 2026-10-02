@@ -1,0 +1,132 @@
+{
+ "generated_utc": "2026-10-02T05:54:58Z",
+ "target": {
+  "sgmc_px": 83593,
+  "catalogue_px": 60988,
+  "target_px": 62122,
+  "min_d_cat_m": 300.0,
+  "source": "USGS SGMC_Structure (Horton, San Juan & Stoeser 2017, DS 1052, DOI 10.3133/ds1052)",
+  "target_frac_of_domain": 0.012165553517801733
+ },
+ "budget_frac": 0.0122,
+ "folds": [
+  {
+   "fold": 0,
+   "holdout_px": 624085,
+   "truth_px": 10599,
+   "budget": 7614,
+   "emitted_px": 7617,
+   "dti": 0.028022821669352615,
+   "recall": 0.026306165606298233,
+   "tp": 278.819049261155,
+   "fp": 7073.748841403394,
+   "fn": 10320.180950738846,
+   "random_control_dti": [
+    0.1116350609268389,
+    0.10578693770721623,
+    0.10436080657118282
+   ],
+   "random_control_mean": 0.10726093506841265,
+   "beats_random": false,
+   "mean_epistemic": 0.014244361780583858,
+   "mean_aleatoric": 0.053523190319538116,
+   "epistemic_share": 0.2101944386959076
+  },
+  {
+   "fold": 1,
+   "holdout_px": 1410184,
+   "truth_px": 5218,
+   "budget": 17204,
+   "emitted_px": 17205,
+   "dti": 0.028942332102224008,
+   "recall": 0.04196734553260549,
+   "tp": 218.98560898913544,
+   "fp": 16740.383372556753,
+   "fn": 4999.0143910108645,
+   "random_control_dti": [
+    0.07100094755777406,
+    0.07898330788732824,
+    0.07404374604593739
+   ],
+   "random_control_mean": 0.07467600049701323,
+   "beats_random": false,
+   "mean_epistemic": 0.004715257789939642,
+   "mean_aleatoric": 0.036669351160526276,
+   "epistemic_share": 0.11393746733665466
+  },
+  {
+   "fold": 2,
+   "holdout_px": 1811071,
+   "truth_px": 23357,
+   "budget": 22095,
+   "emitted_px": 22096,
+   "dti": 0.07318705103976259,
+   "recall": 0.07148344254154128,
+   "tp": 1669.6387674427797,
+   "fp": 18968.903313591713,
+   "fn": 21687.361232557218,
+   "random_control_dti": [
+    0.10301525569417229,
+    0.10830378474706837,
+    0.1015386845958284
+   ],
+   "random_control_mean": 0.1042859083456897,
+   "beats_random": false,
+   "mean_epistemic": 0.004079232923686504,
+   "mean_aleatoric": 0.04038816690444946,
+   "epistemic_share": 0.0917353704571724
+  },
+  {
+   "fold": 3,
+   "holdout_px": 755778,
+   "truth_px": 13504,
+   "budget": 9220,
+   "emitted_px": 9221,
+   "dti": 0.04896534305946841,
+   "recall": 0.04559643204827208,
+   "tp": 615.7342183798662,
+   "fp": 8242.758219266985,
+   "fn": 12888.265781620135,
+   "random_control_dti": [
+    0.10625876159646959,
+    0.1080247798969671,
+    0.10808687620073791
+   ],
+   "random_control_mean": 0.10745680589805821,
+   "beats_random": false,
+   "mean_epistemic": 0.006562430877238512,
+   "mean_aleatoric": 0.05108609050512314,
+   "epistemic_share": 0.11383519321680069
+  },
+  {
+   "fold": 4,
+   "holdout_px": 505267,
+   "truth_px": 9444,
+   "budget": 6164,
+   "emitted_px": 6165,
+   "dti": 0.04089553284924157,
+   "recall": 0.03775885930049728,
+   "tp": 356.5946672338963,
+   "fp": 5465.647290935076,
+   "fn": 9087.405332766102,
+   "random_control_dti": [
+    0.11289068201723786,
+    0.11004706943635258,
+    0.11381348911836141
+   ],
+   "random_control_mean": 0.11225041352398395,
+   "beats_random": false,
+   "mean_epistemic": 0.007485813926905394,
+   "mean_aleatoric": 0.04567975550889969,
+   "epistemic_share": 0.14080190658569336
+  }
+ ],
+ "folds_beating_random": 0,
+ "n_folds": 5,
+ "gate": "detector admitted to the emission only if folds_beating_random >= ceil(n_folds/2)+1",
+ "gate_passed": false,
+ "mean_dti": 0.04400261614400984,
+ "mean_random": 0.10118601266663155,
+ "mean_epistemic_share": 0.13410087525844575,
+ "runtime_s": 48.6
+}

@@ -1,64 +1,86 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Deep-ensemble epistemic and aleatoric uncertainty decomposition and survey-aware candidate-review priorities.">
-  <title>Uncertainty &amp; Reviewer Handoff · GEMSDOE23</title><link rel="stylesheet" href="assets/site.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Deep-ensemble epistemic/aleatoric decomposition, survey-coverage priority rule and Phase 2 candidates.">
+  <title>Uncertainty · GEMSDOE23</title>
+  <link rel="stylesheet" href="assets/site.css">
+  <script defer src="assets/site.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header"><div class="header-inner">
-  <a class="brand" href="index.html"><span class="brand-mark">G23</span><span>GEMSDOE23 <span class="small" style="color:#c8d8cd">/ research log</span></span></a>
-  <nav class="nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="executive-summary.html">How to submit</a><a href="hypotheses.html">Hypotheses</a><a href="uncertainty.html" aria-current="page">Uncertainty</a><a href="results.html">Scores</a><a href="sources.html">Sources</a><a href="verification.html">Audit</a></nav>
-</div></header>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">G23</span><span>GEMSDOE23 <span class="small" style="color:#c8d8cd">/ research log</span></span></a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index.html">Overview</a>
+      <a href="executive-summary.html">How to submit</a>
+      <a href="hypotheses.html">New hypotheses</a>
+      <a href="uncertainty.html" aria-current="page">Uncertainty</a>
+      <a href="evidence.html">Evidence</a>
+      <a href="results.html">Scores</a>
+      <a href="sources.html">Sources</a>
+      <a href="verification.html">Audit</a>
+    </nav>
+  </div>
+</header>
 <main id="main">
-  <div class="eyebrow">Every candidate gets an uncertainty explanation</div>
-  <h1>Deep Ensemble epistemic vs. aleatoric decomposition</h1>
-  <p class="lead">Following Lakshminarayanan, Pritzel &amp; Blundell (NeurIPS 2017), we train 5 independently initialized, independently optimized <code>UNetFaultNet</code> members (no MC dropout at inference) and decompose predictive Bernoulli variance into epistemic disagreement and conditional aleatoric ambiguity across all 5,167,373 footprint pixels (<a href="data/uncertainty-report.json">uncertainty-report.json</a>, <a href="data/phase2-candidate-review.csv">phase2-candidate-review.csv</a>).</p>
 
-  <section class="grid-3">
-    <div class="card metric-card"><span>Mean / Max Epistemic Variance</span><strong>0.00143 / 0.23993</strong><span>Between-member disagreement across 5 independent U-Net models</span></div>
-    <div class="card metric-card"><span>Mean / Max Aleatoric Variance</span><strong>0.00263 / 0.24449</strong><span>Mean conditional Bernoulli ambiguity E<sub>m</sub>[p<sub>m</sub>(1−p<sub>m</sub>)]</span></div>
-    <div class="card metric-card"><span>Phase 2 Candidates Exported</span><strong>150 structures</strong><span>44 under-surveyed (+gap boost up to +0.0537) · 106 well-surveyed (−gap penalty)</span></div>
-  </section>
-
+  <section class="hero"><div class="hero-grid"><div>
+    <div class="eyebrow">Uncertainty</div><h1>Epistemic versus aleatoric, from a true deep ensemble</h1>
+    <p class="lead">5 independently initialised, independently trained convolutional members; no test-time dropout anywhere.
+    For Bernoulli outputs the total predictive variance decomposes exactly as
+    <span class="formula">Var(Y) = E<sub>m</sub>[p<sub>m</sub>(1 − p<sub>m</sub>)] + Var<sub>m</sub>(p<sub>m</sub>)</span>
+    — aleatoric first, epistemic second (population variance, ddof = 0) — per Lakshminarayanan, Pritzel &amp; Blundell, NeurIPS 2017.</p></div>
+    <aside class="hero-aside"><span class="status status-neutral">Reported for every candidate</span>
+      <strong style="margin:.8rem 0 .45rem">Epistemic share 0.143</strong>
+      <p class="small">of total predictive variance over the scored domain, 5 members,
+      5 blocked folds × 3 members out-of-fold.</p></aside></div></section>
   <section class="section">
-    <div class="eyebrow">Variance decomposition</div><h2>Exact law of total variance for the 5-member Deep Ensemble</h2>
-    <p>For ensemble member $m \in \{1,\dots,5\}$ with seed $73191 + 1009(m-1)$, let $p_m(x) \in [0,1]$ be that member's deterministic fault probability at pixel $x$. Treating the ensemble as a uniform mixture over member identity followed by a Bernoulli outcome yields the exact identity:</p>
-    <div class="formula" role="math" aria-label="Total predictive variance equals the variance across member probabilities plus the average within-member Bernoulli variance">
-      p̄(x) = (1/M) Σ<sub>m=1..M</sub> p<sub>m</sub>(x)<br>
-      U<sub>epi</sub>(x) = Var<sub>m</sub>(p<sub>m</sub>(x)) = (1/M) Σ<sub>m=1..M</sub> (p<sub>m</sub>(x) − p̄(x))²<br>
-      U<sub>alea</sub>(x) = E<sub>m</sub>[p<sub>m</sub>(x)(1 − p<sub>m</sub>(x))]<br>
-      U<sub>total</sub>(x) = p̄(x)(1 − p̄(x)) = U<sub>epi</sub>(x) + U<sub>alea</sub>(x) &nbsp;&nbsp;(max float32 residual across 5,167,373 px: 7.45 × 10⁻⁸)
+    <div class="section-head"><div><div class="eyebrow">The brief's rule, implemented literally</div><h2>How survey coverage changes a candidate's priority</h2></div></div>
+    <div class="grid-2">
+      <div class="card"><div class="card-kicker">High epistemic variance in under-surveyed terrain → a finding</div>
+        <p>The members disagree because the data does not constrain the answer. Where independent survey coverage is low, that is exactly
+        where a structure can exist and never have been recorded, so the disagreement <em>raises</em> review priority.
+        14 of the reported candidates fall in this class.</p></div>
+      <div class="card"><div class="card-kicker">High epistemic variance in well-surveyed terrain → suspicion</div>
+        <p>If the ground has been flown, lidar-mapped and geologically mapped and the members still disagree, the disagreement is more
+        likely a model artefact than a missing fault, so priority is damped.
+        13 candidates are flagged this way.</p></div>
+      <div class="card"><div class="card-kicker">Aleatoric variance never changes priority</div>
+        <p>E<sub>m</sub>[p<sub>m</sub>(1 − p<sub>m</sub>)] is irreducible noise in the observations — 100 m pixels mixing a 3 m scarp with its
+        footwall, 400 m flight-line spacing, misregistered source maps. Adding members cannot reduce it, so it is reported but not acted on.</p></div>
+      <div class="card"><div class="card-kicker">Coverage is measured, not assumed</div>
+        <p>coverage = 0.5 · (1 m 3DEP lidar validity, band 12 of <code>lidar_scarp_features_u8.tif</code>, 0.754 of the footprint)
+        + 0.5 · (rank of USGS SGMC structure-line density in a 2.1 km window). Two independent official products, both hash-pinned in
+        <code>data/external</code>. Priority never modifies the submitted raster — it is a reviewer-ranking aid only.</p></div>
     </div>
-    <div class="grid-2" style="margin-top:1rem">
-      <article class="card"><div class="card-kicker">Epistemic Uncertainty (U<sub>epi</sub>)</div><h3>Ensemble disagreement from missing evidence</h3><p>High epistemic variance occurs when independently initialized and trained members assign different probabilities to a structure—for example, when 1 m 3DEP lidar is absent and members weight 10 m directional slope, tilt-angle gradients, and multi-scale context differently.</p></article>
-      <article class="card"><div class="card-kicker">Aleatoric Uncertainty (U<sub>alea</sub>)</div><h3>Ensemble agreement on an intrinsically ambiguous signal</h3><p>High conditional Bernoulli variance with low epistemic variance occurs when all 5 members agree on an intermediate probability ($p_m(x) \approx 0.5$), indicating an intrinsically diffuse or partially buried structure where all modalities see a moderate signal.</p></article>
-    </div>
   </section>
-
   <section class="section">
-    <div class="eyebrow">Survey-coverage triage rule</div><h2>Raising priority in under-surveyed terrain; lowering priority in heavily surveyed terrain</h2>
-    <p>Using our verified `[0, 1]` historical survey-coverage proxy $c(x) \in [0, 1]$ (`data/processed/survey_coverage.npy`, combining 75% USGS 1 m 3DEP lidar survey coverage with 25% OpenEI GDR 1391 field geothermal well/spring sampling density), we compute for every Phase 2 candidate ($\lambda = 0.12$):</p>
-    <div class="formula">A(x) = λ · min(√U<sub>epi</sub>(x) / 0.5, 1) · (1 − 2c(x)), &nbsp;&nbsp;&nbsp; Priority(x) = p̄(x) + A(x)</div>
-    <p>When high epistemic uncertainty is concentrated in historically under-surveyed terrain ($c(x) &lt; 0.5$, such as the NE 1 m lidar gap), $1 - 2c(x) &gt; 0$ and $A(x) &gt; 0$ treats ensemble disagreement as positive evidence for human-mapper catalogue gaps, raising review priority. Conversely, in heavily surveyed terrain ($c(x) &gt; 0.5$), $A(x) &lt; 0$ treats ensemble disagreement with suspicion and lowers review priority.</p>
+    <div class="section-head"><div><div class="eyebrow">Out-of-fold honesty check</div><h2>Did the detector beat a random emission?</h2>
+      <p>detector admitted to the emission only if folds_beating_random &gt;= ceil(n_folds/2)+1 → <strong>NOT PASSED</strong>
+      (0/5 folds). Mean ensemble DTI 0.0440 versus
+      mean random-control DTI 0.1012. Because the gate did not pass, the detector's weight in the submitted
+      emission was set to 0 and the reason is recorded in <a href="data/submission-build.json">submission-build.json</a>.</p></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>fold</th><th>target px</th><th>budget px</th><th>ensemble DTI</th><th>random control DTI</th><th>beats random</th><th>epistemic share</th></tr></thead><tbody><tr><td class="numeric">0</td><td>10,599</td><td>7,614</td><td>0.0280</td><td>0.1073</td><td><strong>no</strong></td><td>0.210</td></tr><tr><td class="numeric">1</td><td>5,218</td><td>17,204</td><td>0.0289</td><td>0.0747</td><td><strong>no</strong></td><td>0.114</td></tr><tr><td class="numeric">2</td><td>23,357</td><td>22,095</td><td>0.0732</td><td>0.1043</td><td><strong>no</strong></td><td>0.092</td></tr><tr><td class="numeric">3</td><td>13,504</td><td>9,220</td><td>0.0490</td><td>0.1075</td><td><strong>no</strong></td><td>0.114</td></tr><tr><td class="numeric">4</td><td>9,444</td><td>6,164</td><td>0.0409</td><td>0.1123</td><td><strong>no</strong></td><td>0.141</td></tr></tbody></table></div>
   </section>
-
   <section class="section">
-    <div class="eyebrow">Phase 2 geological reviewer handoff</div><h2>Sample records from <code>docs/data/phase2-candidate-review.csv</code> (150 candidates)</h2>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Candidate ID</th><th>Pixels</th><th>UTM Easting (m)</th><th>UTM Northing (m)</th><th>Mean Prob (p̄)</th><th>Epistemic Var</th><th>Aleatoric Var</th><th>Survey Coverage</th><th>Gap Adjustment</th><th>Review Priority</th></tr></thead>
-      <tbody>
-        <tr><td class="numeric">39 (Under-surveyed gap boost)</td><td class="numeric">52</td><td class="numeric">548,630.8</td><td class="numeric">4,431,219.2</td><td class="numeric">0.88451</td><td class="numeric">0.05094</td><td class="numeric">0.01434</td><td class="numeric">0.00424</td><td class="numeric"><strong>+0.05371</strong></td><td class="numeric"><strong>0.93821</strong></td></tr>
-        <tr><td class="numeric">123 (Under-surveyed gap boost)</td><td class="numeric">29</td><td class="numeric">572,293.1</td><td class="numeric">4,484,920.7</td><td class="numeric">0.91081</td><td class="numeric">0.03340</td><td class="numeric">0.00528</td><td class="numeric">0.00424</td><td class="numeric"><strong>+0.04349</strong></td><td class="numeric"><strong>0.95430</strong></td></tr>
-        <tr><td class="numeric">120 (Under-surveyed gap boost)</td><td class="numeric">29</td><td class="numeric">526,437.9</td><td class="numeric">4,431,279.3</td><td class="numeric">0.91486</td><td class="numeric">0.03260</td><td class="numeric">0.01102</td><td class="numeric">0.00587</td><td class="numeric"><strong>+0.04283</strong></td><td class="numeric"><strong>0.95768</strong></td></tr>
-        <tr><td class="numeric">1 (Well-surveyed penalty)</td><td class="numeric">241</td><td class="numeric">275,151.9</td><td class="numeric">4,485,694.2</td><td class="numeric">0.97480</td><td class="numeric">0.00826</td><td class="numeric">0.00517</td><td class="numeric">0.65357</td><td class="numeric">−0.00670</td><td class="numeric">0.96810</td></tr>
-        <tr><td class="numeric">2 (Well-surveyed penalty)</td><td class="numeric">195</td><td class="numeric">471,639.0</td><td class="numeric">4,190,079.5</td><td class="numeric">0.97287</td><td class="numeric">0.01010</td><td class="numeric">0.00700</td><td class="numeric">0.68716</td><td class="numeric">−0.00903</td><td class="numeric">0.96384</td></tr>
-      </tbody>
-    </table></div>
-    <p><a class="button button-secondary" href="data/phase2-candidate-review.csv" download>Download full 150-candidate CSV ↓</a> &nbsp; <a class="button button-secondary" href="data/uncertainty-report.json">View uncertainty-report.json</a></p>
+    <div class="section-head"><div><div class="eyebrow">Phase 2 reviewer hand-off</div><h2>Top candidates with the variance split</h2>
+      <p>150 of 441 candidate objects, ranked by the priority rule. Full list:
+      <a href="data/phase2-candidate-review.csv">phase2-candidate-review.csv</a> · <a href="data/phase2-candidates.json">JSON</a>.</p></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>#</th><th>px</th><th>UTM 11N</th><th>m to catalogue</th><th>p̄</th><th>epistemic</th><th>aleatoric</th><th>epi share</th><th>survey coverage</th><th>reading</th><th>priority</th></tr></thead><tbody><tr><td class="numeric">1</td><td>27</td><td>494,500 E / 4,490,100 N</td><td>200</td><td>0.1829</td><td>0.02925</td><td>0.09748</td><td>0.147</td><td>0.762</td><td>well-surveyed + high epistemic: treat with suspicion</td><td>0.7163</td></tr><tr><td class="numeric">2</td><td>132</td><td>328,500 E / 4,404,050 N</td><td>1281</td><td>0.2978</td><td>0.05112</td><td>0.08260</td><td>0.252</td><td>0.500</td><td>well-surveyed + high epistemic: treat with suspicion</td><td>0.6680</td></tr><tr><td class="numeric">3</td><td>74</td><td>395,122 E / 4,362,691 N</td><td>100</td><td>0.0189</td><td>0.00001</td><td>0.01857</td><td>0.001</td><td>0.820</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.6312</td></tr><tr><td class="numeric">4</td><td>5</td><td>426,300 E / 4,247,000 N</td><td>100</td><td>0.0000</td><td>0.00000</td><td>0.00000</td><td>0.000</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.6147</td></tr><tr><td class="numeric">5</td><td>81</td><td>406,800 E / 4,163,400 N</td><td>900</td><td>0.0261</td><td>0.00007</td><td>0.02533</td><td>0.003</td><td>0.525</td><td>well-surveyed + high epistemic: treat with suspicion</td><td>0.5749</td></tr><tr><td class="numeric">6</td><td>3,988,623</td><td>393,926 E / 4,380,677 N</td><td>3100</td><td>0.4027</td><td>0.00738</td><td>0.04400</td><td>0.042</td><td>0.489</td><td>under-surveyed + high epistemic: raises priority</td><td>0.5424</td></tr><tr><td class="numeric">7</td><td>198</td><td>436,576 E / 4,213,439 N</td><td>4738</td><td>0.0349</td><td>0.00118</td><td>0.03170</td><td>0.013</td><td>0.500</td><td>well-surveyed + high epistemic: treat with suspicion</td><td>0.5424</td></tr><tr><td class="numeric">8</td><td>119</td><td>395,565 E / 4,360,335 N</td><td>300</td><td>0.0181</td><td>0.00001</td><td>0.01773</td><td>0.000</td><td>0.874</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.5298</td></tr><tr><td class="numeric">9</td><td>353</td><td>444,964 E / 4,168,065 N</td><td>1838</td><td>0.0150</td><td>0.00002</td><td>0.01475</td><td>0.001</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.5275</td></tr><tr><td class="numeric">10</td><td>152</td><td>417,526 E / 4,222,574 N</td><td>4478</td><td>0.0232</td><td>0.00005</td><td>0.02260</td><td>0.002</td><td>0.722</td><td>well-surveyed + high epistemic: treat with suspicion</td><td>0.5227</td></tr><tr><td class="numeric">11</td><td>76</td><td>472,887 E / 4,436,584 N</td><td>100</td><td>0.0000</td><td>0.00000</td><td>0.00000</td><td>0.000</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.5196</td></tr><tr><td class="numeric">12</td><td>257</td><td>372,762 E / 4,290,907 N</td><td>4061</td><td>0.0203</td><td>0.00003</td><td>0.01983</td><td>0.001</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.5063</td></tr><tr><td class="numeric">13</td><td>81</td><td>384,900 E / 4,469,200 N</td><td>6237</td><td>0.0226</td><td>0.00003</td><td>0.02205</td><td>0.001</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.5021</td></tr><tr><td class="numeric">14</td><td>6</td><td>398,100 E / 4,196,550 N</td><td>100</td><td>0.0194</td><td>0.00002</td><td>0.01901</td><td>0.001</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.5016</td></tr><tr><td class="numeric">15</td><td>8</td><td>260,275 E / 4,464,400 N</td><td>100</td><td>0.0360</td><td>0.00013</td><td>0.03452</td><td>0.004</td><td>0.079</td><td>under-surveyed + high epistemic: raises priority</td><td>0.5005</td></tr><tr><td class="numeric">16</td><td>122</td><td>378,200 E / 4,309,950 N</td><td>6021</td><td>0.0194</td><td>0.00213</td><td>0.01441</td><td>0.017</td><td>0.303</td><td>under-surveyed + high epistemic: raises priority</td><td>0.4984</td></tr><tr><td class="numeric">17</td><td>276</td><td>409,948 E / 4,385,237 N</td><td>3859</td><td>0.0225</td><td>0.00001</td><td>0.02202</td><td>0.000</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4951</td></tr><tr><td class="numeric">18</td><td>81</td><td>341,000 E / 4,473,200 N</td><td>1897</td><td>0.0208</td><td>0.00002</td><td>0.02034</td><td>0.001</td><td>0.674</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4889</td></tr><tr><td class="numeric">19</td><td>81</td><td>395,500 E / 4,448,600 N</td><td>1200</td><td>0.0216</td><td>0.00002</td><td>0.02113</td><td>0.001</td><td>0.586</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4888</td></tr><tr><td class="numeric">20</td><td>260</td><td>393,300 E / 4,342,062 N</td><td>1253</td><td>0.0173</td><td>0.00001</td><td>0.01695</td><td>0.000</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4797</td></tr><tr><td class="numeric">21</td><td>122</td><td>436,350 E / 4,231,900 N</td><td>6407</td><td>0.0227</td><td>0.00002</td><td>0.02216</td><td>0.001</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4795</td></tr><tr><td class="numeric">22</td><td>81</td><td>457,000 E / 4,506,400 N</td><td>1131</td><td>0.0171</td><td>0.00001</td><td>0.01675</td><td>0.001</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4724</td></tr><tr><td class="numeric">23</td><td>81</td><td>323,800 E / 4,412,200 N</td><td>3448</td><td>0.0164</td><td>0.00000</td><td>0.01604</td><td>0.000</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4702</td></tr><tr><td class="numeric">24</td><td>122</td><td>451,550 E / 4,437,000 N</td><td>1503</td><td>0.0219</td><td>0.00001</td><td>0.02141</td><td>0.000</td><td>0.504</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4698</td></tr><tr><td class="numeric">25</td><td>81</td><td>330,800 E / 4,335,000 N</td><td>700</td><td>0.0186</td><td>0.00002</td><td>0.01823</td><td>0.001</td><td>0.573</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4681</td></tr><tr><td class="numeric">26</td><td>262</td><td>472,658 E / 4,184,690 N</td><td>6653</td><td>0.0000</td><td>0.00000</td><td>0.00000</td><td>0.000</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4659</td></tr><tr><td class="numeric">27</td><td>146</td><td>446,450 E / 4,238,050 N</td><td>14329</td><td>0.0000</td><td>0.00000</td><td>0.00000</td><td>0.000</td><td>0.504</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4651</td></tr><tr><td class="numeric">28</td><td>273</td><td>448,552 E / 4,225,053 N</td><td>10253</td><td>0.0229</td><td>0.00001</td><td>0.02235</td><td>0.001</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4640</td></tr><tr><td class="numeric">29</td><td>239</td><td>371,999 E / 4,303,866 N</td><td>510</td><td>0.0191</td><td>0.00001</td><td>0.01876</td><td>0.000</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4619</td></tr><tr><td class="numeric">30</td><td>63</td><td>431,900 E / 4,508,200 N</td><td>7376</td><td>0.0174</td><td>0.00001</td><td>0.01706</td><td>0.001</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4603</td></tr><tr><td class="numeric">31</td><td>132</td><td>320,550 E / 4,391,000 N</td><td>2720</td><td>0.0171</td><td>0.00001</td><td>0.01675</td><td>0.000</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4597</td></tr><tr><td class="numeric">32</td><td>81</td><td>358,600 E / 4,327,000 N</td><td>3397</td><td>0.0000</td><td>0.00000</td><td>0.00000</td><td>0.000</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4592</td></tr><tr><td class="numeric">33</td><td>127</td><td>406,800 E / 4,208,500 N</td><td>1100</td><td>0.0175</td><td>0.00001</td><td>0.01722</td><td>0.001</td><td>0.513</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4589</td></tr><tr><td class="numeric">34</td><td>787</td><td>390,410 E / 4,403,284 N</td><td>2508</td><td>0.0248</td><td>0.00002</td><td>0.02412</td><td>0.001</td><td>0.362</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4582</td></tr><tr><td class="numeric">35</td><td>922</td><td>467,511 E / 4,462,743 N</td><td>5261</td><td>0.0158</td><td>0.00002</td><td>0.01549</td><td>0.001</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4567</td></tr><tr><td class="numeric">36</td><td>81</td><td>384,200 E / 4,292,100 N</td><td>985</td><td>0.0118</td><td>0.00001</td><td>0.01150</td><td>0.000</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4549</td></tr><tr><td class="numeric">37</td><td>54</td><td>426,278 E / 4,424,878 N</td><td>1204</td><td>0.0000</td><td>0.00000</td><td>0.00000</td><td>0.000</td><td>0.601</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4531</td></tr><tr><td class="numeric">38</td><td>162</td><td>302,500 E / 4,433,200 N</td><td>1005</td><td>0.0193</td><td>0.00001</td><td>0.01888</td><td>0.001</td><td>0.658</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4523</td></tr><tr><td class="numeric">39</td><td>54</td><td>409,350 E / 4,227,600 N</td><td>3536</td><td>0.0177</td><td>0.00002</td><td>0.01737</td><td>0.001</td><td>0.500</td><td>epistemic disagreement below the candidate 75th percentile</td><td>0.4508</td></tr><tr><td class="numeric">40</td><td>185</td><td>270,737 E / 4,395,125 N</td><td>412</td><td>0.3278</td><td>0.05810</td><td>0.12130</td><td>0.250</td><td>0.248</td><td>under-surveyed + high epistemic: raises priority</td><td>0.4501</td></tr></tbody></table></div>
+  </section>
+  <section class="section">
+    <div class="section-head"><div><div class="eyebrow">Training configuration</div><h2>Reproduce it</h2></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>parameter</th><th>value</th></tr></thead><tbody><tr><td>batch</td><td>16</td></tr><tr><td>channels</td><td>16</td></tr><tr><td>epochs</td><td>5</td></tr><tr><td>lr</td><td>0.001</td></tr><tr><td>n_folds</td><td>5</td></tr><tr><td>n_members_full</td><td>5</td></tr><tr><td>n_members_oof</td><td>3</td></tr><tr><td>patch</td><td>64</td></tr><tr><td>patches_per_epoch</td><td>1536</td></tr><tr><td>positive_frac</td><td>0.5</td></tr><tr><td>seed_base</td><td>20261002</td></tr><tr><td>spatial_buffer_px</td><td>15</td></tr><tr><td>threads</td><td>2</td></tr><tr><td>tile</td><td>512</td></tr><tr><td>tile_stride</td><td>448</td></tr><tr><td>tversky_alpha</td><td>0.2</td></tr><tr><td>tversky_beta</td><td>0.8</td></tr><tr><td>weight_decay</td><td>0.0001</td></tr></tbody></table></div>
   </section>
 </main>
-<footer class="site-footer"><div class="footer-inner"><span>Uncertainty: reported separately, interpreted cautiously</span><span><a href="hypotheses.html">Hypothesis register</a> · <a href="sources.html">NeurIPS &amp; official sources</a></span></div></footer>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of 2026-10-02 06:45 UTC</span>
+    <span><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">Official competition</a> · <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a> · <a href="https://github.com/buffedlizard55-lab/GEMSDOE23">This repository</a></span>
+  </div>
+</footer>
 </body>
 </html>

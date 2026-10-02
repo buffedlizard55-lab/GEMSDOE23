@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Inversion of 24 live public scores: |G| bounds, dispersion, habitat regression, proxy negative result.">
+  <title>Evidence · GEMSDOE23</title>
+  <link rel="stylesheet" href="assets/site.css">
+  <script defer src="assets/site.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">G23</span><span>GEMSDOE23 <span class="small" style="color:#c8d8cd">/ research log</span></span></a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index.html">Overview</a>
+      <a href="executive-summary.html">How to submit</a>
+      <a href="hypotheses.html">New hypotheses</a>
+      <a href="uncertainty.html">Uncertainty</a>
+      <a href="evidence.html" aria-current="page">Evidence</a>
+      <a href="results.html">Scores</a>
+      <a href="sources.html">Sources</a>
+      <a href="verification.html">Audit</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+
+  <section class="hero"><div class="hero-grid"><div>
+    <div class="eyebrow">Evidence</div><h1>Inverting 24 live public scores</h1>
+    <p class="lead">Every artefact this group uploaded returned one scalar: its public distance-weighted Tversky index.
+    Together with the artefact's own geometry, that scalar is invertible through the official metric. This page is the whole
+    derivation, with the artefacts, so it can be checked line by line.</p></div></div></section>
+  <section class="section">
+    <div class="section-head"><div><div class="eyebrow">Step 1</div><h2>The metric, as published</h2></div></div>
+    <div class="formula">TP<sub>w</sub> = Σ<sub>g∈G</sub> max<sub>x: d(x,g)≤R</sub> p(x)·k(d(x,g)) &nbsp;&nbsp;
+      FP<sub>w</sub> = Σ<sub>x: p(x)&gt;0</sub> p(x)·[1 − max<sub>g∈G</sub> k(d(x,g))] &nbsp;&nbsp;
+      FN<sub>w</sub> = Σ<sub>g∈G</sub> [1 − max<sub>x</sub> p(x)·k(d(x,g))]</div>
+    <div class="formula">DTI = TP<sub>w</sub> / (TP<sub>w</sub> + 0.2·FP<sub>w</sub> + 0.8·FN<sub>w</sub>), &nbsp; k(d) = max(1 − d/300 m, 0)</div>
+    <p>Because FN<sub>w</sub> = |G| − TP<sub>w</sub> and α + β = 1, this collapses to
+    <span class="formula">DTI = TP<sub>w</sub> / (0.2·TP<sub>w</sub> + 0.2·FP<sub>w</sub> + 0.8·|G|)</span>
+    and, writing FP<sub>w</sub> = fp_relief(|G|)·A where fp_relief = 1 − E[max<sub>g</sub> k] is computed
+    self-consistently from |G| itself, inverts to
+    <span class="formula">TP<sub>w</sub> = DTI·(0.2·fp_relief·A + 0.8·|G|) / (1 − 0.2·DTI)</span>.
+    At the |G| measured here fp_relief ≈ 0.985, so an emitted pixel costs ≈ 0.197 of denominator —
+    <strong>21 % more</strong> than the 0.1626 a |G| = 125,000 assumption would imply. That single
+    correction is why the inherited large-area plan fails.
+    Verified against the organiser's own worked example (TP<sub>w</sub> 3.00, FP<sub>w</sub> 1.89, FN<sub>w</sub> 2.00 → 0.60) in
+    <code>tests/test_metric.py</code>.</p>
+  </section>
+  <section class="section">
+    <div class="section-head"><div><div class="eyebrow">Step 2</div><h2>|G| is bounded without any placement model</h2>
+      <p>Two exact constraints. (i) TP<sub>w</sub> ≤ |G| gives a lower bound per artefact. (ii) TP<sub>w</sub> = |G|·e<sub>T</sub> where e<sub>T</sub> is the mean
+      kernel envelope over the truth pixels; measuring e<sub>T</sub> on two <em>real</em> fault-trace populations instead of assuming it gives an upper bound.
+      The 98.9 %-coverage lattice artefact is the tightest instrument because its envelope is high nearly everywhere.</p></div></div>
+    <div class="grid-3">
+      <div class="card metric-card"><span>Lower bound (max over artefacts)</span><strong>5,564</strong><span>TP<sub>w</sub> ≤ |G|</span></div>
+      <div class="card metric-card"><span>Upper bound, SGMC-like traces</span><strong>10,103</strong><span>mean envelope measured on 62,122 independent-compilation fault pixels</span></div>
+      <div class="card metric-card"><span>Upper bound, catalogue-like traces</span><strong>14,944</strong><span>mean envelope measured on the 60,988 catalogued fault pixels</span></div>
+    </div>
+    <div class="callout"><strong>This refutes |G| = 125,000</strong>, the value inherited from earlier group work and the premise of its
+    550,000-pixel emission plan. At |G| ≈ 10<sup>4</sup> the 0.8·|G| false-negative floor is small next to 0.197·A once A exceeds ~10<sup>5</sup>,
+    so extra area is bought at a price the truth cannot repay.</div>
+    <div class="table-wrap"><table class=""><thead><tr><th>artefact</th><th>live DTI</th><th>emitted px</th><th>coverage</th><th>K̄</th><th>η</th><th>|G| ≥</th><th>|G| implied</th></tr></thead><tbody><tr><td>h19-5</td><td>0.1922</td><td>121,131</td><td>0.176</td><td>0.0881</td><td>0.39</td><td>4,755</td><td>—</td></tr><tr><td>h19-4</td><td>0.1894</td><td>123,779</td><td>0.183</td><td>0.0912</td><td>0.40</td><td>4,785</td><td>—</td></tr><tr><td>h16-1</td><td>0.1855</td><td>123,939</td><td>0.188</td><td>0.0931</td><td>0.41</td><td>4,689</td><td>—</td></tr><tr><td>h28-dotted-ridge</td><td>0.1839</td><td>65,236</td><td>0.235</td><td>0.1019</td><td>0.85</td><td>2,446</td><td>—</td></tr><tr><td>ens12-adopted</td><td>0.1563</td><td>166,519</td><td>0.215</td><td>0.1117</td><td>0.36</td><td>5,276</td><td>398,519</td></tr><tr><td>hedge-v2</td><td>0.1563</td><td>166,519</td><td>0.215</td><td>0.1117</td><td>0.36</td><td>5,276</td><td>398,519</td></tr><tr><td>dual-family-union</td><td>0.1560</td><td>175,949</td><td>0.218</td><td>0.1141</td><td>0.35</td><td>5,564</td><td>323,686</td></tr><tr><td>lidarscarp-top2pct</td><td>0.1461</td><td>76,859</td><td>0.145</td><td>0.0678</td><td>0.48</td><td>2,271</td><td>—</td></tr><tr><td>r7-nms3-dem10-scarp</td><td>0.1294</td><td>103,347</td><td>0.301</td><td>0.1453</td><td>0.76</td><td>2,696</td><td>41,205</td></tr><tr><td>h25-ctx-ridge</td><td>0.1280</td><td>161,366</td><td>0.236</td><td>0.1235</td><td>0.41</td><td>4,163</td><td>377,723</td></tr><tr><td>pindrop-v4-nodes</td><td>0.1193</td><td>155,021</td><td>0.670</td><td>0.2697</td><td>0.94</td><td>3,720</td><td>16,901</td></tr><tr><td>pindrop-v4-ridge</td><td>0.1152</td><td>155,021</td><td>0.186</td><td>0.0993</td><td>0.35</td><td>3,590</td><td>12,026</td></tr><tr><td>h20-dem10-scarp-thin</td><td>0.0921</td><td>143,657</td><td>0.167</td><td>0.0880</td><td>0.33</td><td>2,647</td><td>126,668</td></tr><tr><td>r13-lattice-s5</td><td>0.0904</td><td>204,504</td><td>0.989</td><td>0.3718</td><td>0.99</td><td>3,697</td><td>12,157</td></tr><tr><td>pindrop-v4-discovery</td><td>0.0830</td><td>155,021</td><td>0.671</td><td>0.2702</td><td>0.94</td><td>2,569</td><td>10,103</td></tr><tr><td>tso1-conj-alteration-mag</td><td>0.0782</td><td>98,736</td><td>0.406</td><td>0.1644</td><td>0.90</td><td>1,540</td><td>10,818</td></tr><tr><td>h16-continuation</td><td>0.0461</td><td>283,532</td><td>0.156</td><td>0.0998</td><td>0.19</td><td>2,591</td><td>36,101</td></tr><tr><td>gemsdoe4-combined</td><td>0.0343</td><td>258,323</td><td>0.140</td><td>0.0901</td><td>0.19</td><td>1,752</td><td>5,503</td></tr><tr><td>h19-c</td><td>0.0297</td><td>452,798</td><td>0.261</td><td>0.1655</td><td>0.20</td><td>2,657</td><td>2,785</td></tr><tr><td>hgb88-topk03</td><td>0.0286</td><td>131,416</td><td>0.074</td><td>0.0468</td><td>0.19</td><td>742</td><td>34,763</td></tr><tr><td>structural-area06-v1</td><td>0.0202</td><td>282,538</td><td>0.138</td><td>0.0936</td><td>0.18</td><td>1,125</td><td>14,837</td></tr><tr><td>f-ensemble-2pct</td><td>0.0187</td><td>90,746</td><td>0.043</td><td>0.0287</td><td>0.17</td><td>334</td><td>20,275</td></tr><tr><td>placeholder-2314b599</td><td>0.0107</td><td>145,610</td><td>0.062</td><td>0.0474</td><td>0.18</td><td>307</td><td>9,079</td></tr><tr><td>r5-geom-horse-ensemble</td><td>0.0020</td><td>116,219</td><td>0.049</td><td>0.0341</td><td>0.16</td><td>46</td><td>1,131</td></tr></tbody></table></div>
+  </section>
+  <section class="section">
+    <div class="section-head"><div><div class="eyebrow">Step 3</div><h2>Dispersion, the model-free lever</h2>
+      <p>η = (K̄/A)/(9.42/D) is the fraction of the theoretically available cone weight an emission actually spreads over the domain:
+      η = 1 for pixels whose 300 m cones do not overlap, η ≈ 0.2 for thick blobs. Across the 24 live artefacts η correlates with
+      TP per emitted pixel at Spearman ρ = +0.61 (p = 0.0015) and with placement skill at ρ = +0.13 (p = 0.54) — dispersion pays and
+      does not measurably cost alignment. Faults are lines, so the optimum is dots along lines, not thickened lines.</p></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>artefact</th><th>live DTI</th><th>emitted px</th><th>K̄</th><th>implied TP</th><th>TP per px</th><th>skill</th><th>CV-predicted skill</th></tr></thead><tbody><tr><td>h19-5</td><td>0.1922</td><td>121,131</td><td>0.0881</td><td>5,749</td><td>0.0475</td><td>10.88</td><td>4.83</td></tr><tr><td>h19-4</td><td>0.1894</td><td>123,779</td><td>0.0912</td><td>5,765</td><td>0.0466</td><td>10.53</td><td>4.80</td></tr><tr><td>h16-1</td><td>0.1855</td><td>123,939</td><td>0.0931</td><td>5,648</td><td>0.0456</td><td>10.11</td><td>5.19</td></tr><tr><td>h28-dotted-ridge</td><td>0.1839</td><td>65,236</td><td>0.1019</td><td>3,380</td><td>0.0518</td><td>5.53</td><td>2.85</td></tr><tr><td>ens12-adopted</td><td>0.1563</td><td>166,519</td><td>0.1117</td><td>6,089</td><td>0.0366</td><td>9.08</td><td>4.03</td></tr><tr><td>hedge-v2</td><td>0.1563</td><td>166,519</td><td>0.1117</td><td>6,089</td><td>0.0366</td><td>9.08</td><td>4.03</td></tr><tr><td>dual-family-union</td><td>0.1560</td><td>175,949</td><td>0.1141</td><td>6,377</td><td>0.0362</td><td>9.32</td><td>4.05</td></tr><tr><td>lidarscarp-top2pct</td><td>0.1461</td><td>76,859</td><td>0.0678</td><td>3,010</td><td>0.0392</td><td>7.40</td><td>7.61</td></tr><tr><td>r7-nms3-dem10-scarp</td><td>0.1294</td><td>103,347</td><td>0.1453</td><td>3,353</td><td>0.0324</td><td>3.85</td><td>3.78</td></tr><tr><td>h25-ctx-ridge</td><td>0.1280</td><td>161,366</td><td>0.1235</td><td>4,824</td><td>0.0299</td><td>6.51</td><td>3.09</td></tr><tr><td>pindrop-v4-nodes</td><td>0.1193</td><td>155,021</td><td>0.2697</td><td>4,334</td><td>0.0280</td><td>2.68</td><td>2.49</td></tr><tr><td>pindrop-v4-ridge</td><td>0.1152</td><td>155,021</td><td>0.0993</td><td>4,182</td><td>0.0270</td><td>7.02</td><td>5.79</td></tr><tr><td>h20-dem10-scarp-thin</td><td>0.0921</td><td>143,657</td><td>0.0880</td><td>3,117</td><td>0.0217</td><td>5.91</td><td>2.95</td></tr><tr><td>r13-lattice-s5</td><td>0.0904</td><td>204,504</td><td>0.3718</td><td>4,166</td><td>0.0204</td><td>1.87</td><td>2.04</td></tr><tr><td>pindrop-v4-discovery</td><td>0.0830</td><td>155,021</td><td>0.2702</td><td>2,993</td><td>0.0193</td><td>1.85</td><td>2.44</td></tr><tr><td>tso1-conj-alteration-mag</td><td>0.0782</td><td>98,736</td><td>0.1644</td><td>1,933</td><td>0.0196</td><td>1.96</td><td>2.89</td></tr><tr><td>h16-continuation</td><td>0.0461</td><td>283,532</td><td>0.0998</td><td>2,833</td><td>0.0100</td><td>4.73</td><td>3.15</td></tr><tr><td>gemsdoe4-combined</td><td>0.0343</td><td>258,323</td><td>0.0901</td><td>1,931</td><td>0.0075</td><td>3.57</td><td>5.34</td></tr><tr><td>h19-c</td><td>0.0297</td><td>452,798</td><td>0.1655</td><td>2,819</td><td>0.0062</td><td>2.84</td><td>7.97</td></tr><tr><td>hgb88-topk03</td><td>0.0286</td><td>131,416</td><td>0.0468</td><td>886</td><td>0.0067</td><td>3.15</td><td>4.02</td></tr><tr><td>structural-area06-v1</td><td>0.0202</td><td>282,538</td><td>0.0936</td><td>1,231</td><td>0.0044</td><td>2.19</td><td>3.60</td></tr><tr><td>f-ensemble-2pct</td><td>0.0187</td><td>90,746</td><td>0.0287</td><td>427</td><td>0.0047</td><td>2.48</td><td>4.44</td></tr><tr><td>placeholder-2314b599</td><td>0.0107</td><td>145,610</td><td>0.0474</td><td>360</td><td>0.0025</td><td>1.27</td><td>1.96</td></tr><tr><td>r5-geom-horse-ensemble</td><td>0.0020</td><td>116,219</td><td>0.0341</td><td>56</td><td>0.0005</td><td>0.27</td><td>5.73</td></tr></tbody></table></div>
+  </section>
+  <section class="section">
+    <div class="section-head"><div><div class="eyebrow">Step 4</div><h2>The habitat regression</h2>
+      <p>skill = TP<sub>w</sub>/(|G|·K̄) removes budget and dispersion, so correlating it with each layer's enrichment inside the emitted pixels
+      identifies where the hidden faults are. 95 layers, 24 artefacts grouped into
+      16 code-base families; layer selection <em>and</em> the ridge penalty are re-fitted inside every
+      leave-one-family-out fold, so the reported ρ = 0.437 is not inflated by selecting on the same 24 points.
+      Best |G| by CV: 6,000.</p></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>layer (higher = more evidence unless signed negative)</th><th>weight β</th><th>domain mean</th><th>reading</th></tr></thead><tbody><tr><td><code>lid_upface_max</code></td><td>0.8883</td><td>0.2391</td><td>more evidence</td></tr><tr><td><code>of_det_elev_slope_std7</code></td><td>0.6387</td><td>0.3142</td><td>more evidence</td></tr><tr><td><code>lid_downface_max</code></td><td>0.4236</td><td>0.2609</td><td>more evidence</td></tr><tr><td><code>rad_U</code></td><td>-0.4097</td><td>0.4565</td><td>avoid</td></tr><tr><td><code>lid_step_max</code></td><td>0.2076</td><td>0.2943</td><td>more evidence</td></tr><tr><td><code>lid_lappos_max</code></td><td>0.1784</td><td>0.2947</td><td>more evidence</td></tr><tr><td><code>lid_lapneg_max</code></td><td>0.1510</td><td>0.2860</td><td>more evidence</td></tr><tr><td><code>lid_ex_max</code></td><td>0.0745</td><td>0.2871</td><td>more evidence</td></tr></tbody></table></div>
+    <div class="callout"><strong>Convergent validity, not circularity.</strong> The layers this regression selects from live scores alone are the same
+    layers in which the independent USGS SGMC compilation's unmapped faults are enriched: 1.45–1.71× for the lidar scarp channels and
+    1.94–2.01× for 700 m detrended-slope heterogeneity, measured on lidar-covered ground. Two independent routes — public scores and an
+    independent map compilation — reach the same habitat.</div>
+    <div class="callout"><strong>Multiplicity.</strong> 95 layers were screened, so a Benjamini–Hochberg reading matters: one layer
+    (<code>lid_upface_max</code>, p = 1×10<sup>−4</sup>) survives FDR &lt; 5% on its own; the rest of the lidar-scarp family is reported as a family
+    (eight correlated channels, all with the same sign, occupying the top of the list), and the radiometric and hot-spring negatives are
+    suggestive rather than individually significant. n = 24 scalar observations is a small sample and the artefacts are not independent experiments.</div>
+  </section>
+  <section class="section">
+    <div class="section-head"><div><div class="eyebrow">Step 5</div><h2>The negative result: no offline proxy ranks artefacts</h2>
+      <p>If an offline proxy truth ranked the 24 artefacts the way the live board does, it could be used for model selection. None does.</p></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>offline proxy truth</th><th>proxy px</th><th>Spearman ρ vs live</th><th>p</th><th>verdict</th></tr></thead><tbody><tr><td><code>sgmc_all</code></td><td>79,615</td><td>0.194</td><td>0.363</td><td><strong>not usable</strong></td></tr><tr><td><code>sgmc_gap_strict</code></td><td>79,615</td><td>0.194</td><td>0.363</td><td><strong>not usable</strong></td></tr><tr><td><code>sgmc_gap_d3</code></td><td>62,122</td><td>0.304</td><td>0.149</td><td><strong>not usable</strong></td></tr><tr><td><code>sgmc_gap_d5</code></td><td>56,822</td><td>0.310</td><td>0.140</td><td><strong>not usable</strong></td></tr><tr><td><code>sgmc_gap_d10</code></td><td>48,393</td><td>0.307</td><td>0.145</td><td><strong>not usable</strong></td></tr><tr><td><code>sgmc_gap_d20</code></td><td>34,492</td><td>0.326</td><td>0.120</td><td><strong>not usable</strong></td></tr><tr><td><code>catalogue</code></td><td>60,988</td><td>0.134</td><td>0.534</td><td><strong>not usable</strong></td></tr></tbody></table></div>
+    <div class="callout">The proxy with the highest correlation still puts <code>h19-c</code> first (proxy 0.295) when its live score is 0.0297 — 24th of 24.
+    This is why the projection on the overview page is a range and why the earlier “4-quadrant gate passed, 4/4 fold wins” claim was withdrawn:
+    it was measured against a truth the live board says carries no information.</div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of 2026-10-02 06:45 UTC</span>
+    <span><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">Official competition</a> · <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a> · <a href="https://github.com/buffedlizard55-lab/GEMSDOE23">This repository</a></span>
+  </div>
+</footer>
+</body>
+</html>

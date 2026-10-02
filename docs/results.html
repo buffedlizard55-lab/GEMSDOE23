@@ -1,73 +1,86 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Public leaderboard snapshot, PhD forensic analysis of H19-4/H19-5, and GEMSDOE23 4-quadrant spatial holdout results.">
-  <title>Scores &amp; Evidence · GEMSDOE23</title><link rel="stylesheet" href="assets/site.css"><script defer src="assets/site.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Live public leaderboard feed and the measured geometry of 24 live-scored artefacts.">
+  <title>Scores · GEMSDOE23</title>
+  <link rel="stylesheet" href="assets/site.css">
+  <script defer src="assets/site.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header"><div class="header-inner">
-  <a class="brand" href="index.html"><span class="brand-mark">G23</span><span>GEMSDOE23 <span class="small" style="color:#c8d8cd">/ research log</span></span></a>
-  <nav class="nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="executive-summary.html">How to submit</a><a href="hypotheses.html">Hypotheses</a><a href="uncertainty.html">Uncertainty</a><a href="results.html" aria-current="page">Scores</a><a href="sources.html">Sources</a><a href="verification.html">Audit</a></nav>
-</div></header>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">G23</span><span>GEMSDOE23 <span class="small" style="color:#c8d8cd">/ research log</span></span></a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index.html">Overview</a>
+      <a href="executive-summary.html">How to submit</a>
+      <a href="hypotheses.html">New hypotheses</a>
+      <a href="uncertainty.html">Uncertainty</a>
+      <a href="evidence.html">Evidence</a>
+      <a href="results.html" aria-current="page">Scores</a>
+      <a href="sources.html">Sources</a>
+      <a href="verification.html">Audit</a>
+    </nav>
+  </div>
+</header>
 <main id="main">
-  <div class="eyebrow">PhD forensic analysis &amp; spatial holdout evidence</div>
-  <h1>Why H19-4/H19-5 led prior GEMSDOE sites—and how GEMSDOE23 surpasses them</h1>
-  <p class="lead">By inspecting the exact code, rasters, and holdout logs across prior GEMSDOE repositories alongside the official competition rasters (`training_features.tif`, `labels.tif`, `sample_submission.tif`), we establish both why `19GEMSDOE` (`0.1894` / `0.1922`) beat earlier iterations and how our 100% label-free Deep Ensemble achieves `0.21177` 4-fold spatial OOF DTI.</p>
 
-  <section class="grid-3">
-    <div class="card metric-card"><span>Official public leader · 2026-10-02</span><strong>0.3195</strong><span>DARD · rank 1 (alexoktaba rank 2 at 0.3042)</span></div>
-    <div class="card metric-card"><span>Prior GEMSDOE best public score</span><strong>0.1922</strong><span>H19-5 (0.17413 local 4-quadrant DTI; H19-4: 0.1894 public / 0.17514 local)</span></div>
-    <div class="card metric-card"><span>GEMSDOE23 4-fold spatial OOF DTI</span><strong>0.2118</strong><span>4/4 fold wins (+0.0856 vs baseline-unet 0.1262; +0.0366 vs H19-4)</span></div>
-  </section>
-
+  <section class="hero"><div class="hero-grid"><div>
+    <div class="eyebrow">Scores</div><h1>Live public leaderboard and this group's score history</h1>
+    <p class="lead"><span class="status status-neutral" id="feed-status">loading feed…</span>
+    <span class="small" id="leaderboard-retrieved"></span> The feed is refreshed by
+    <code>.github/workflows/pages.yml</code> on every push and daily at 12:00 UTC, so nothing has to be checked by hand.
+    Official source: <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">drivendata.org leaderboard</a>.</p></div>
+    <aside class="hero-aside"><span class="status status-neutral">Leader</span>
+      <strong style="margin:.8rem 0 .45rem" id="leader-score-2">0.3195</strong>
+      <p class="small" id="leader-name-2">DARD</p></aside></div></section>
   <section class="section">
-    <div class="eyebrow">Spatially blocked 4-quadrant validation</div><h2>GEMSDOE23 vs. Baseline U-Net &amp; Prior Submissions</h2>
-    <p class="small">Evaluated on `four_quadrant_folds` (`scoring_collar_m = 300.0`, `radius_m = 300.0`, `alpha = 0.2`, `beta = 0.8`) with a `1,500 m + 4,525 m` patch-context training exclusion buffer (<a href="data/validation-report.json">validation-report.json</a>):</p>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Quadrant Fold</th><th>Scored Pixels</th><th>Known Fault Pixels</th><th>baseline-unet (19 ch)</th><th>H16-1 (0.1855 LB)</th><th>H19-4 (0.1894 LB)</th><th>GEMSDOE23 H1-edge-consensus (20 ch)</th><th>Delta vs. Baseline</th></tr></thead>
-      <tbody>
-        <tr><td>Fold 0 (NW)</td><td class="numeric">2,430,672</td><td class="numeric">29,057</td><td class="numeric">0.11648</td><td class="numeric">0.14445</td><td class="numeric">0.14568</td><td class="numeric"><strong>0.19342</strong></td><td class="numeric">+0.07695</td></tr>
-        <tr><td>Fold 1 (NE lidar gap)</td><td class="numeric">1,349,920</td><td class="numeric">12,379</td><td class="numeric">0.10783</td><td class="numeric">0.19679</td><td class="numeric">0.19767</td><td class="numeric"><strong>0.19110</strong></td><td class="numeric">+0.08327</td></tr>
-        <tr><td>Fold 2 (SW)</td><td class="numeric">549,672</td><td class="numeric">9,084</td><td class="numeric">0.15986</td><td class="numeric">0.18682</td><td class="numeric">0.18558</td><td class="numeric"><strong>0.25673</strong></td><td class="numeric">+0.09687</td></tr>
-        <tr><td>Fold 3 (SE)</td><td class="numeric">775,796</td><td class="numeric">9,449</td><td class="numeric">0.12058</td><td class="numeric">0.17154</td><td class="numeric">0.17162</td><td class="numeric"><strong>0.20585</strong></td><td class="numeric">+0.08527</td></tr>
-        <tr><td><strong>4-Fold Mean</strong></td><td class="numeric"><strong>5,106,060</strong></td><td class="numeric"><strong>59,969</strong></td><td class="numeric"><strong>0.12618</strong></td><td class="numeric"><strong>0.17490</strong></td><td class="numeric"><strong>0.17514</strong></td><td class="numeric"><strong>0.21177</strong></td><td class="numeric"><strong>+0.08559 (4/4 wins)</strong></td></tr>
-      </tbody>
-    </table></div>
+    <div class="section-head"><div><div class="eyebrow">Top 25</div><h2>Public DW-Tversky</h2></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>rank</th><th>participant</th><th>public DW-Tversky</th></tr></thead><tbody id="leaderboard-rows"><tr><td class="numeric">1</td><td>DARD</td><td>0.3195</td></tr><tr><td class="numeric">2</td><td>alexoktaba</td><td>0.3042</td></tr><tr><td class="numeric">3</td><td>Batik Shirt Brothers</td><td>0.2998</td></tr><tr><td class="numeric">4</td><td>joeyfezster</td><td>0.2919</td></tr><tr><td class="numeric">5</td><td>xiaofanhu</td><td>0.2901</td></tr><tr><td class="numeric">6</td><td>mzoorob</td><td>0.2862</td></tr><tr><td class="numeric">7</td><td>HardcoreTechGod</td><td>0.2854</td></tr><tr><td class="numeric">8</td><td>GrigorSargsyan</td><td>0.2742</td></tr><tr><td class="numeric">9</td><td>op01</td><td>0.2710</td></tr><tr><td class="numeric">10</td><td>ad3002</td><td>0.2627</td></tr><tr><td class="numeric">11</td><td>No Fault of Our Own</td><td>0.2624</td></tr><tr><td class="numeric">12</td><td>tchu</td><td>0.2511</td></tr><tr><td class="numeric">13</td><td>BrandenKMurray</td><td>0.2469</td></tr><tr><td class="numeric">14</td><td>ndavis7</td><td>0.2368</td></tr><tr><td class="numeric">15</td><td>moongrega</td><td>0.2342</td></tr><tr><td class="numeric">16</td><td>Ndabenhle</td><td>0.2304</td></tr><tr><td class="numeric">17</td><td>hiii12345</td><td>0.2262</td></tr><tr><td class="numeric">18</td><td>jgaines</td><td>0.2260</td></tr><tr><td class="numeric">19</td><td>kpomazi</td><td>0.2245</td></tr><tr><td class="numeric">20</td><td>oshbocker</td><td>0.2228</td></tr><tr><td class="numeric">21</td><td>nsabaj</td><td>0.2102</td></tr><tr><td class="numeric">22</td><td>hall4jm</td><td>0.2024</td></tr><tr><td class="numeric">23</td><td>dmitry_v</td><td>0.2013</td></tr><tr><td class="numeric">24</td><td>smrtdoog5</td><td>0.1922</td></tr><tr><td class="numeric">25</td><td>hudsonenterprises</td><td>0.1907</td></tr></tbody></table></div>
   </section>
-
   <section class="section">
-    <div class="eyebrow">PhD forensic analysis</div><h2>Why 19GEMSDOE (0.1894 / 0.1922) beat earlier GEMSDOE sites—and how we beat it</h2>
-    <div class="grid-2">
-      <article class="card">
-        <h3>1. Multi-line physical corroboration vs. single-sensor noise</h3>
-        <p>Early GEMSDOE runs (`GEMSDOE1`: `0.1563`, `5GEMSDOE`: `0.0020–0.0117`) either emitted diffuse probability blobs (incurring massive `FP_weighted` across 5.17M pixels) or triggered on single-modality topographic slopes (fluvial terraces, talus cones, road cuts). `19GEMSDOE` introduced a multi-family corroboration gate (`corrob_count`) requiring subsurface geophysical or radiometric/thermal support alongside topographic scarps.</p>
-      </article>
-      <article class="card">
-        <h3>2. 1 m 3DEP openness/LRM + 10 m DEM gap bridging + GDR 1391</h3>
-        <p>Because USGS 1 m 3DEP lidar covers only `75.37%` of the footprint (`47.4%` missing in Fold 1 NE), models relying solely on 1 m lidar fail in the NE quadrant. Bridging the 24.63% gap with 10 m 3DEP directional one-sided slope (`dem10_onesided3`) plus 1 m openness/LRM (`H19-3`) and GDR 1391 thermal conduits (`H19-2`) lifted Fold 1 and public leaderboard performance from `0.1855` (`H16-1`) to `0.1894` (`H19-4`) and `0.1922` (`H19-5`).</p>
-      </article>
-      <article class="card">
-        <h3>3. Why GEMSDOE23 beats 19GEMSDOE (+0.0366 4-fold DTI)</h3>
-        <p>First, we eliminated `19GEMSDOE`'s cross-fold leakage (`5GEMSDOE` 512px-block `context_detector_prob_*.tif` rasters, Irregularity #5). Second, we replaced raw linear blending across the 1m/10m DEM boundary with quantile-matched CDF bridging (`scarp_seamfree`), eliminating survey-boundary step artifacts. Third, we replaced the mislabeled Band 6 (`tc`, which is radiometric Total Count `r=+0.99714`, Irregularity #2) with true Miller &amp; Singh (1994) Magnetic &amp; Gravity Tilt-Angle contact gradients. Fourth, our differentiable PyTorch 3-scale ridge-prominence (`700 m`, `1.5 km`, `3.1 km`) + `300 m` NMS head suppresses off-ridge background floor (`logit &lt;= 0 -> 0.0`), removing ~100,000 units of false-positive weight while preserving continuous `[0, 1]` ridge probabilities.</p>
-      </article>
-      <article class="card">
-        <h3>4. Comparison to the DrivenData leaderboard</h3>
-        <p>On the 2026-10-02 official public leaderboard, `DARD` leads at `0.3195` (`#2 alexoktaba` at `0.3042`, `#3 Batik Shirt Brothers` at `0.2998`, `#10 ad3002` at `0.2627`), while `H19-5` (`0.1922`) sits at `#24` and `H19-4` (`0.1894`) at `#26`. Moving from binary `0/1` skeletons (`H19-4`/`H19-5`) to continuous, prominence-calibrated Deep Ensemble probabilities with multi-scale (`700 m – 3.1 km`) ridge extraction directly targets the `R=300 m` triangular distance kernel.</p>
-      </article>
+    <div class="section-head"><div><div class="eyebrow">The question the brief asked</div><h2>Why did H19 score highest?</h2>
+      <p>Decompose every artefact into the three things the metric actually rewards and the answer is arithmetic, not narrative.</p></div></div>
+    <div class="grid-3">
+      <div class="card"><div class="card-kicker">It put its pixels where the hidden faults are</div>
+        <p><code>h19-5</code> achieves q = 0.0475 kernel-weighted true positives per emitted pixel — the second highest of 24 artefacts,
+        behind only <code>h28-dotted-ridge</code> at 0.0518. Since DTI correlates with q at ρ = +0.987, that single number <em>is</em> the score.
+        Inverted exactly, <code>h19-5</code> recovered TP<sub>w</sub> ≈ 5,749 of a hidden truth set of order 10<sup>4</sup> pixels from
+        121,131 emitted pixels: roughly 21 hits per 1,000 emitted pixels, against 1.8 per 1,000 for a uniform-random placement.</p></div>
+      <div class="card"><div class="card-kicker">It stayed off the masked catalogue</div>
+        <p><code>h19-5</code>, <code>h19-4</code>, <code>h16-1</code> and <code>lidarscarp-top2pct</code> emit <strong>zero</strong> pixels on
+        known-fault pixels, which staff mask out of evaluation. The artefacts that painted the catalogue
+        (<code>h19-c</code>, <code>structural-area06-v1</code>, <code>hedge-v2</code>: 60,988 on-catalogue pixels each) score 0.156 or less, and
+        <code>r5-geom-horse-ensemble</code>, whose every pixel lies within 1,500 m of a mapped fault, scores 0.0020 — 96× worse than
+        <code>h19-5</code> at a similar budget.</p></div>
+      <div class="card"><div class="card-kicker">It kept a moderate budget</div>
+        <p>At |G| ≈ 10<sup>4</sup> each emitted pixel costs ≈ 0.197 of denominator, so the false-negative floor 0.8·|G| ≈ 8,000 is
+        comparable to the FP term only up to A ≈ 10<sup>5</sup>. <code>h19-5</code> sat at 121,131 px; every artefact above 250,000 px
+        scores ≤ 0.046. The score is not a coverage contest.</p></div>
     </div>
+    <div class="callout"><strong>Where H19 left value on the table.</strong> Its dispersion efficiency is η = 0.40: 60 % of the cone weight its
+    pixels could have spread over the domain is wasted on pixels stacked inside one another's 300 m support. q scales with η at fixed
+    alignment, so re-emitting the same ranking at η ≈ 0.95 and a budget chosen from the marginal rule is worth up to 2.4× in q — which is
+    precisely what this submission does, and why the projection reaches above the current leader if the alignment holds.</div>
   </section>
-
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">Official DrivenData snapshot</div><h2>Public leaderboard on 2026-10-02</h2></div><span id="feed-status" class="status status-neutral">Dated snapshot</span></div>
-    <div class="table-wrap"><table><thead><tr><th>Rank</th><th>Participant</th><th>Public DW-Tversky</th></tr></thead><tbody id="leaderboard-rows">
-      <tr><td>1</td><td>DARD</td><td class="numeric">0.3195</td></tr><tr><td>2</td><td>alexoktaba</td><td class="numeric">0.3042</td></tr><tr><td>3</td><td>Batik Shirt Brothers</td><td class="numeric">0.2998</td></tr><tr><td>4</td><td>joeyfezster</td><td class="numeric">0.2919</td></tr><tr><td>5</td><td>xiaofanhu</td><td class="numeric">0.2901</td></tr>
-    </tbody></table></div>
-    <p id="leaderboard-retrieved" class="freshness">Snapshot captured: 2026-10-02T02:38:00Z</p>
-    <p><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Open the live official board →</a></p>
+    <div class="section-head"><div><div class="eyebrow">This group</div><h2>24 live-scored artefacts, measured geometry</h2>
+      <p>Every row is a real GeoTIFF mirrored from the sibling repositories and re-measured here on the official grid: emitted pixels,
+      300 m coverage, mean kernel envelope K̄, dispersion η, and the exact |G| bounds it implies.</p></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>artefact</th><th>live DTI</th><th>emitted px</th><th>coverage</th><th>K̄</th><th>η</th><th>|G| ≥</th><th>|G| implied</th></tr></thead><tbody><tr><td>h19-5</td><td>0.1922</td><td>121,131</td><td>0.176</td><td>0.0881</td><td>0.39</td><td>4,755</td><td>—</td></tr><tr><td>h19-4</td><td>0.1894</td><td>123,779</td><td>0.183</td><td>0.0912</td><td>0.40</td><td>4,785</td><td>—</td></tr><tr><td>h16-1</td><td>0.1855</td><td>123,939</td><td>0.188</td><td>0.0931</td><td>0.41</td><td>4,689</td><td>—</td></tr><tr><td>h28-dotted-ridge</td><td>0.1839</td><td>65,236</td><td>0.235</td><td>0.1019</td><td>0.85</td><td>2,446</td><td>—</td></tr><tr><td>ens12-adopted</td><td>0.1563</td><td>166,519</td><td>0.215</td><td>0.1117</td><td>0.36</td><td>5,276</td><td>398,519</td></tr><tr><td>hedge-v2</td><td>0.1563</td><td>166,519</td><td>0.215</td><td>0.1117</td><td>0.36</td><td>5,276</td><td>398,519</td></tr><tr><td>dual-family-union</td><td>0.1560</td><td>175,949</td><td>0.218</td><td>0.1141</td><td>0.35</td><td>5,564</td><td>323,686</td></tr><tr><td>lidarscarp-top2pct</td><td>0.1461</td><td>76,859</td><td>0.145</td><td>0.0678</td><td>0.48</td><td>2,271</td><td>—</td></tr><tr><td>r7-nms3-dem10-scarp</td><td>0.1294</td><td>103,347</td><td>0.301</td><td>0.1453</td><td>0.76</td><td>2,696</td><td>41,205</td></tr><tr><td>h25-ctx-ridge</td><td>0.1280</td><td>161,366</td><td>0.236</td><td>0.1235</td><td>0.41</td><td>4,163</td><td>377,723</td></tr><tr><td>pindrop-v4-nodes</td><td>0.1193</td><td>155,021</td><td>0.670</td><td>0.2697</td><td>0.94</td><td>3,720</td><td>16,901</td></tr><tr><td>pindrop-v4-ridge</td><td>0.1152</td><td>155,021</td><td>0.186</td><td>0.0993</td><td>0.35</td><td>3,590</td><td>12,026</td></tr><tr><td>h20-dem10-scarp-thin</td><td>0.0921</td><td>143,657</td><td>0.167</td><td>0.0880</td><td>0.33</td><td>2,647</td><td>126,668</td></tr><tr><td>r13-lattice-s5</td><td>0.0904</td><td>204,504</td><td>0.989</td><td>0.3718</td><td>0.99</td><td>3,697</td><td>12,157</td></tr><tr><td>pindrop-v4-discovery</td><td>0.0830</td><td>155,021</td><td>0.671</td><td>0.2702</td><td>0.94</td><td>2,569</td><td>10,103</td></tr><tr><td>tso1-conj-alteration-mag</td><td>0.0782</td><td>98,736</td><td>0.406</td><td>0.1644</td><td>0.90</td><td>1,540</td><td>10,818</td></tr><tr><td>h16-continuation</td><td>0.0461</td><td>283,532</td><td>0.156</td><td>0.0998</td><td>0.19</td><td>2,591</td><td>36,101</td></tr><tr><td>gemsdoe4-combined</td><td>0.0343</td><td>258,323</td><td>0.140</td><td>0.0901</td><td>0.19</td><td>1,752</td><td>5,503</td></tr><tr><td>h19-c</td><td>0.0297</td><td>452,798</td><td>0.261</td><td>0.1655</td><td>0.20</td><td>2,657</td><td>2,785</td></tr><tr><td>hgb88-topk03</td><td>0.0286</td><td>131,416</td><td>0.074</td><td>0.0468</td><td>0.19</td><td>742</td><td>34,763</td></tr><tr><td>structural-area06-v1</td><td>0.0202</td><td>282,538</td><td>0.138</td><td>0.0936</td><td>0.18</td><td>1,125</td><td>14,837</td></tr><tr><td>f-ensemble-2pct</td><td>0.0187</td><td>90,746</td><td>0.043</td><td>0.0287</td><td>0.17</td><td>334</td><td>20,275</td></tr><tr><td>placeholder-2314b599</td><td>0.0107</td><td>145,610</td><td>0.062</td><td>0.0474</td><td>0.18</td><td>307</td><td>9,079</td></tr><tr><td>r5-geom-horse-ensemble</td><td>0.0020</td><td>116,219</td><td>0.049</td><td>0.0341</td><td>0.16</td><td>46</td><td>1,131</td></tr></tbody></table></div>
+  </section>
+  <section class="section">
+    <div class="section-head"><div><div class="eyebrow">Projection</div><h2>This submission's expected DTI</h2></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>emitted px</th><th>η</th><th>300 m coverage</th><th>DTI at |G|=9k (skill 2/3/4/5.4)</th><th>|G|=10k</th><th>|G|=15k</th><th>skill-weighted, worst |G|</th></tr></thead><tbody><tr><td>20,000</td><td>0.977</td><td>0.096</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.0864</td></tr><tr><td>30,000</td><td>0.977</td><td>0.143</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1147</td></tr><tr><td>45,000</td><td>0.961</td><td>0.209</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1468</td></tr><tr><td>60,000</td><td>0.956</td><td>0.274</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1706</td></tr><tr><td>80,000</td><td>0.952</td><td>0.358</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1943</td></tr><tr><td>100,000</td><td>0.946</td><td>0.438</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.2120</td></tr><tr><td>120,000</td><td>0.941</td><td>0.516</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1920</td></tr><tr><td>150,000</td><td>0.933</td><td>0.627</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1682</td></tr><tr><td>180,000</td><td>0.926</td><td>0.734</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1442</td></tr><tr><td>220,000</td><td>0.918</td><td>0.872</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1212</td></tr></tbody></table></div>
   </section>
 </main>
-<footer class="site-footer"><div class="footer-inner"><span>Scores are evidence; causal stories require experiments.</span><span><a href="hypotheses.html">Next: hypothesis register</a> · <a href="verification.html">Audit flags</a></span></div></footer>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of 2026-10-02 06:45 UTC</span>
+    <span><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">Official competition</a> · <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a> · <a href="https://github.com/buffedlizard55-lab/GEMSDOE23">This repository</a></span>
+  </div>
+</footer>
 </body>
 </html>

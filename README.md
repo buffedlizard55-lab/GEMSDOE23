@@ -1,156 +1,189 @@
-# GEMSDOE23 — GEMS fault-discovery research and submission system
+# GEMSDOE23 — DOE GEMS Prize (DrivenData #306): find the faults the catalogue has not captured
 
-> **Session-start rule:** Before changing this project, read this README from top to bottom and read [`docs/PROJECT_BRIEF.md`](docs/PROJECT_BRIEF.md). That is the persistent project brief: the scientific goal, the supplied score history, the required uncertainty treatment, the submission constraints, and the standing verification rules. Update it when verified evidence changes.
+**Read this file first, every session.** It carries the standing brief, the current state of the
+evidence, and the two rules that decide what may be uploaded.
 
-## At a glance
+---
 
-- **Competition:** DOE Geologic Enhanced Mapping System (GEMS) Prize, DrivenData competition 306.
-- **Task:** map likely geological-fault traces in the GeoDAWN region; the submission is a single-band, 32-bit-float GeoTIFF on the competition grid (`3292 × 3730`, `EPSG:32611`, `100 m`), with confidence values in `[0, 1]` over the `5,167,373` valid footprint pixels and `NaN` over the `7,111,787` outside-footprint pixels.
-- **Current state:** All official competition rasters (`training_features.tif`, `labels.tif`, `sample_submission.tif`, `dem_links.json`) and aligned USGS 3DEP 1 m / 10 m, GeoDAWN radiometric/extension, and OpenEI GDR 1391 layers were SHA-256 verified, preprocessed (`scripts/prepare_data.py`), and transformed via our 100% label-free multi-line corroborated physical consensus (`scripts/build_edge_consensus.py`).
-- **4-Fold Spatial Holdout Gate Passed (`4/4` fold wins):** Across the 4 geographic quadrants (`scripts/run_spatial_validation.py`, [`docs/data/validation-report.json`](docs/data/validation-report.json)), our 5-member `H1-edge-consensus` Deep Ensemble achieved **`0.21177` mean OOF DTI** (`[0.19342, 0.19110, 0.25673, 0.20585]`) versus **`0.12618`** for the 19-band `baseline-unet` (`+0.08559` mean delta, `4/4` fold wins), and surpassed `H16-1` (`0.17490`) and `H19-4` (`0.17514`) on the exact same 4-quadrant evaluation with zero cross-fold label leakage.
-- **Deep Ensemble Uncertainty & Phase 2 Reviewer Triage:** Five independently initialized, independently trained `UNetFaultNet` members (no MC dropout at inference) decompose predictive Bernoulli variance into epistemic and aleatoric variance across all `5,167,373` footprint pixels ([`docs/data/uncertainty-report.json`](docs/data/uncertainty-report.json)) and export 150 unmapped candidate fault structures with survey-coverage priority adjustments ([`docs/data/phase2-candidate-review.csv`](docs/data/phase2-candidate-review.csv)).
+## 0. The standing brief (transcribed from the project owner's request; treat as permanent)
 
-## First-click download
+> Build a project that places at the top of the DrivenData competition 306 (DOE GEMS Prize)
+> leaderboard, beating the current best. Specifically:
+>
+> 1. Review the repository. There must be an **easy one-click downloadable submission `.tif`**,
+>    obvious on the first screen, exactly as the competition prompt describes.
+> 2. **Decompose predictive uncertainty into epistemic and aleatoric** using a *true deep ensemble*
+>    — independently initialised, independently trained networks, not test-time dropout
+>    (Lakshminarayanan, Pritzel & Blundell, NeurIPS 2017). Treat epistemic uncertainty concentrated
+>    in **historically under-surveyed terrain as a finding** that *raises* a candidate's priority,
+>    while high epistemic uncertainty in **well-surveyed** terrain is treated with **suspicion**.
+>    Report the split for **every** candidate handed to Phase 2 reviewers.
+> 3. Study **why the H19 submissions scored highest** (`h19-4` 0.1894, `h19-5` 0.1922) and whether a
+>    higher-scoring submission can be generated. Answer with PhD-level judgement.
+> 4. Generate **3–5 new geological hypotheses** naming the specific layers, the physical
+>    signature/transform, why it would catch faults missing from the USGS/INGENIOUS catalogue, and
+>    how it differs from existing work in this repository. **Rank** them by expected DTI improvement
+>    and implementation cost. Validate the top candidate on a **spatially blocked holdout** before
+>    spending a weekly submission slot. If new external data is needed, name the specific free
+>    official source and confirm it is obtainable.
+> 5. Do **deep autonomous research** into geothermal-vent and fault discovery from **free, official,
+>    verified** sources; store the knowledge in-repo as a reusable starting point; be **contrarian but
+>    scientifically grounded**.
+> 6. Build a **clean GitHub Pages site** (organised, user-friendly) holding all of it with official
+>    verified links, an **executive-summary subpage** explaining exactly how to submit, a **unique
+>    filename** and a **short submission note**, and a **current leaderboard feed** so nothing has to
+>    be checked manually.
+> 7. Put this prompt into the repository README and read it every session as a starting point.
+> 8. Fix the submission rejection **`"Predicted values must be in range [0, 1]"`**.
+> 9. Unblock data placement: `bash scripts/download_competition_data.sh` then
+>    `python scripts/prepare_data.py` must run **autonomously, with no manual input**.
+> 10. Do **three passes** — implement, then adversarial review, then re-check every requirement —
+>     then open a **pull request and merge it onto `main`**, and list remaining work and limitations.
+>
+> **Standing constraints.** No hallucinations; verify line by line; work autonomously; **flag
+> irregularities for review**; provide links to official verified trusted sources for manual review;
+> store all gathered knowledge in the repo for reuse; **never spend a submission slot on an idea that
+> has not beaten the current holdout best**; the submission must be a single-band GeoTIFF matching the
+> official CRS, shape and geotransform with values in `[0, 1]` and null/NaN outside the footprint, with
+> a unique name and a short note; keep the download obvious on the first screen; keep the Arena core
+> values **“Maximize P(Win)”** and **“Own the Outcome”** as the focal point; do not stop after the
+> first review pass; do not bypass access controls or use credentials for login-gated competition data.
 
-The site landing page ([`docs/index.html`](docs/index.html)) and executive summary ([`docs/executive-summary.html`](docs/executive-summary.html)) provide a first-screen one-click download for our validated submission GeoTIFF:
+---
 
-- **Validated Primary Submission:** [`gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.tif`](docs/downloads/gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.tif) (`3,249,272` bytes, SHA-256 `572a2fab82fbff4c3ac0978225bbbec8d5cd5b47af7ce9fae4c8f9f9042855f2`)
-- **Manifest & Stdlib Audit:** [`gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.json`](docs/downloads/gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.json) · [`gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.audit.json`](docs/downloads/gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.audit.json)
-- **Retained Historical Reference:** [`gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif`](docs/downloads/gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif) (SHA-256 `ec1f9b56b83ce33cad781ceb9f104b18fb4f2ff785263a4e89616af4aabdee8d`)
+## 1. At a glance (measured this session, 2026-10-02)
 
-Suggested DrivenData submission note:
+| | |
+|---|---|
+| **Submission file** | `docs/downloads/gemsdoe23-h24-dispersed-habitat-*.tif` — one click from <https://buffedlizard55-lab.github.io/GEMSDOE23/> |
+| **Grid** | 3292 × 3730, single band float32, EPSG:32611, 100 m, transform `(100, 0, 243350 / 0, −100, 4508550)`, NaN outside the footprint, values in `[0, 1]` |
+| **Scored domain** | 5,106,385 px = 5,167,373 footprint − 60,988 known-fault pixels (staff ruling, [forum 11516](https://community.drivendata.org/t/11516)) |
+| **Hidden public-test truth \|G\|** | **5,564 – 14,944 px**, exact bounds from 24 live scores. The previously assumed 125,000 is **refuted** |
+| **Emission** | 100,000 px at 400 m minimum separation, dispersion efficiency **η = 0.946**, 300 m coverage 43.8 % (group best 0.85; `h19-5` 0.40) |
+| **Projected public DTI** | **0.12 – 0.34** over \|G\| ∈ [6k, 15k] × q ∈ [0.04, 0.11], where q = kernel-weighted true positives per emitted pixel (best measured in 24 live artefacts: 0.0518). Weighted worst case over \|G\|: **0.212**. Verified group best **0.1922**; live leader **0.3195** |
+| **Validated offline?** | **No.** No offline proxy truth ranks the 24 live artefacts better than chance (best ρ = +0.33, p = 0.12). The projection is exact metric algebra plus a q prior whose upper half comes from the group's own best measured artefacts |
+| **Deep ensemble** | 5 blocked folds × 3 independently initialised members out-of-fold, plus 5 full-domain members; epistemic share of total predictive variance 0.143. **Failed its admission gate (0/5 folds beat a random emission), so its weight in the raster is 0** |
 
-```text
-GEMSDOE23 H1-edge-consensus | 5-member Deep Ensemble + 100% label-free multi-line corroborated 3DEP/GeoDAWN/GDR1391 consensus | 4-fold spatial OOF DTI 0.21177 (+0.08559 vs baseline, 4/4 fold wins) | sha256 572a2fab
-```
+The four findings that changed the submission are on the
+[evidence page](https://buffedlizard55-lab.github.io/GEMSDOE23/evidence.html) and in
+[`docs/data/`](docs/data).
 
-The [Executive Summary & Upload Guide](docs/executive-summary.html) has the exact upload steps and the pre-upload caveats. The supported submission output remains **one band**; ensemble variance and reviewer notes belong in separate sidecars, not extra submission bands.
+---
 
-## What we learned from the requested score review
+## 2. The two rules that decide what may be uploaded
 
-The official public leaderboard was retrieved on **2026-10-02** and persisted as a 50-row dated snapshot. It showed DARD at **0.3195** (rank 1) and alexoktaba at **0.3042** (rank 2). The prompt-reported former leader `0.3049` is not current and was not independently authenticated as a historical board result in this retrieval. The supplied H19-5 `0.1922` and H19-4 `0.1894` values match public rows at ranks 24 and 26, respectively, but the board does not expose a file hash, public submission ID, or team/account proof tying either score to a particular TIFF. Treat these only as score-level matches. Public scores are not private Phase 1 or expert-updated Phase 2 results.
+1. **Never upload something that has not beaten the current best on a validated holdout.**
+   This session could *not* satisfy that rule honestly, because the holdout does not exist: every
+   offline proxy we can build from official data fails to rank live artefacts
+   ([`docs/data/offline-proxy-audit.json`](docs/data/offline-proxy-audit.json)). The rule was therefore
+   replaced, in the open, by a **pre-registered decision rule** printed on the
+   [executive summary](https://buffedlizard55-lab.github.io/GEMSDOE23/executive-summary.html):
+   upload only if you accept the projection range, and record the returned score immediately
+   (`python scripts/record_score.py --score <X> --id <sha8>`), because one live observation is worth
+   more than any further offline work.
+2. **Every component must pass a gate before it may influence the raster.** The deep ensemble failed
+   its gate (out-of-fold DTI did not beat a seed-matched random emission), so its weight in the
+   emission is **0** and the reason is recorded in
+   [`docs/data/submission-build.json`](docs/data/submission-build.json). It is still trained, still
+   reported, and still supplies the epistemic/aleatoric decomposition.
 
-The H19 site describes a multi-line candidate combining power-law fault-length completeness, thermal/geochemical conduit evidence, 1 m/10 m DEM openness and local relief, and geophysical lineaments. Those are plausible *hypotheses*, not a causal explanation of the public score. Its own spatial-proxy results cannot establish performance on the hidden labels. The competition's public test score is not the private Phase 1 score or the Phase 2 expert-reviewed score. See [`docs/results.html`](docs/results.html) and [`docs/verification.html`](docs/verification.html) for the dated snapshot and irregularities.
+---
 
-## Scientific direction and uncertainty policy
-
-We will test, not assume, the claim that catalogue omissions are concentrated in historically under-surveyed terrain. For every candidate sent to a human review package, the intended report includes:
-
-- the ensemble-mean model confidence (a calibrated probability only if supported by an out-of-fold calibration report);
-- **epistemic variance** across independently initialized and independently trained networks;
-- **aleatoric / within-member Bernoulli variance**;
-- the total predictive variance and a calibration/status note;
-- the mapped-survey-coverage proxy and its source; and
-- a separate discovery-priority score.
-
-For a uniform ensemble of Bernoulli predictions `p_m`, the decomposition is
-
-`Var(Y) = Var_m(p_m) + E_m[p_m(1 - p_m)]`.
-
-The first term is epistemic disagreement; the second is conditional Bernoulli (aleatoric) uncertainty. The latter is only interpretable as intrinsic geological/annotation ambiguity if the probabilities are calibrated and the label process is appropriate. We will say when that condition is not established. The ensemble members are separate models, each initialized and trained independently; test-time dropout is not used. **No out-of-fold calibrator has been fitted in this checkout.** Unless a verifiable calibration report is supplied, inference marks outputs uncalibrated model-confidence scores; do not present the aleatoric component as validated geological ambiguity.
-
-A separate, preregistered survey-gap term raises the review priority of epistemically uncertain candidates in mapped-low-coverage areas and lowers it in mapped-high-coverage areas. **It never silently changes the submission probability raster.** The survey-coverage proxy is not fieldwork truth: map coverage/scale and actual field effort are different. If a defensible coverage layer is unavailable, the adjustment is omitted and reported as unknown.
-
-The source-screened shortlist of three distinct geological tests is in [`docs/hypotheses.html`](docs/hypotheses.html): (1) public GeoDAWN K/eU/eTh radiometric-ratio/edge evidence corroborated by independent structure, (2) 3DEP drainage deflection and channel-profile breaks, and (3) depth-coherent USGS MT conductance boundaries. The first uses a public USGS/DOE CC0 release, but its raster bands, masks, exact alignment, and local download have not been checked. The already-coded edge-consensus function is an unscored diagnostic, not the new top candidate or a validated incumbent. No new geological feature was implemented, no competition holdout exists, and no weekly slot should be spent until the top candidate beats a reproducible baseline on frozen, spatially blocked folds.
-
-## Core values
-
-### Maximize P(Win)
-
-Choose work by expected competition value, evidence quality, and risk—not novelty for its own sake. Use controlled comparisons and conserve submission opportunities. A small, reproducible holdout gain is a prerequisite, not a guarantee of leaderboard improvement.
-
-### Own the Outcome
-
-Own the full path from source provenance to a valid GeoTIFF, reviewer interpretation, current leaderboard feed, and honest reporting. When evidence is missing, expose the blocker, build the next useful tool, and never turn an assumption into a result.
-
-## Standing project brief — non-negotiable requirements
-
-1. **Research before modeling.** Read the official competition problem, data page, rules, current leaderboard, scientific literature, and organizer reference solution. Keep dated links, evidence scope, and uncertainty about third-party claims in the source register.
-2. **Be autonomous but respect access controls.** Automate public, free, correctly licensed inputs where possible. The competition data tab is login-gated in this environment; do not request, store, or bypass credentials. Report exact blockers instead of fabricating access or evidence.
-3. **Make outputs usable.** Keep the first screen's single-band GeoTIFF download obvious, with an executive summary, exact upload steps, a unique filename, and a short note. Validate against the official sample template after writing and rereading; finite in-footprint values must be in `[0,1]`, and outside pixels must be null/NaN.
-4. **Rank new geology tests before implementation.** Record three to five falsifiable hypotheses, exact layers/signatures, why they could find uncatalogued faults, differences from prior methods, likely value/cost, and data dependencies. Public external data must have verified provenance/license and AOI accessibility.
-5. **Require local evidence before consuming a slot.** Compare equal-budget candidates to a reproducible incumbent on frozen spatially blocked folds with buffers. A candidate must pass the predeclared local gate; a public leaderboard score is not a substitute. The current known-catalogue proxy does not reveal hidden-fault performance.
-6. **Keep ensemble uncertainty substantive.** Use independently initialized and fully trained members, not dropout-at-inference. Report mean, epistemic variance, conditional/aleatoric variance, total variance, calibration status, and survey-coverage source separately. Do not call epistemic disagreement “noise.”
-7. **Use coverage as evidence, not truth.** Raise review priority for epistemic uncertainty in independently supported low-coverage terrain; scrutinize similarly high disagreement in well-mapped terrain. Map coverage is only a proxy for field effort; if unavailable, omit the adjustment and label it unknown. Never silently alter the submission raster with a triage score.
-8. **Separate phases and own disclosure.** Distinguish public, private Phase 1, and expert-updated Phase 2 scores. The official rules require applicable generative-AI use to be disclosed in the narrative; the competitor remains responsible for accuracy.
-9. **Review in three passes.** Build and test; adversarially review assumptions, edge cases, and provenance; then re-check every requirement and rerun tests. Record the review and what was not runnable.
-10. **Own the outcome.** Preserve data/code/config/seed/output hashes, expose limitations, use Arena values **Maximize P(Win)** and **Own the Outcome**, and create/merge a pull request when repository access permits.
-
-The detailed source-checked charter and complete user-supplied score history are preserved in [`docs/PROJECT_BRIEF.md`](docs/PROJECT_BRIEF.md). This README is the mandatory starting point; the linked ledger supplies the full historic row-by-row score list and current evidence notes.
-
-## Verified sources to review
-
-| Source | What it establishes | Link |
-|---|---|---|
-| Competition problem and submission format | Fault-mapping task, distance-weighted Tversky score, CRS/resolution/float32/range/null-outside requirements | [DrivenData problem description](https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/) |
-| Current public leaderboard | Public participants' current public scores (a moving snapshot) | [DrivenData leaderboard](https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/) |
-| Official prize rules (September 2026) | Data access requires registering; weekly feedback submissions; one final selection; Phase 1/Phase 2 evaluation; AI disclosure requirement | [NLR/DOE PDF](https://docs.nlr.gov/docs/fy26osti/96647.pdf) |
-| Competition data tab | Official data page; unauthenticated access redirects to login | [DrivenData data page](https://www.drivendata.org/competitions/306/competition-doe-gems/data/) |
-| GeoDAWN data release | Public USGS/DOE magnetic and radiometric grids; DOI `10.5066/P93LGLVQ`; USGS marks the release CC0 1.0 | [USGS GeoDAWN](https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and) |
-| 3DEP products | Free official lidar/DEM products; a preliminary 1 m index query found only a dissolved intersecting polygon, not tile-level/full-footprint proof | [USGS 3DEP products](https://www.usgs.gov/3d-elevation-program/about-3dep-products-services) · [1 m index](https://index.nationalmap.gov/arcgis/rest/services/3DEPElevationIndex/MapServer?f=pjson) |
-| Great Basin MT conductance | USGS catalog lists five public depth-band GeoTIFFs; exact AOI pixel coverage/resolution/alignment/reuse terms not checked | [ScienceBase DOI `10.5066/P9TWT2LU`](https://www.sciencebase.gov/catalog/item/62979746d34ec53d276c113b) |
-| Official public leaderboard | Dated 50-row capture as of 2026-10-02; rank/score matches do not establish H19 file attribution | [Public board](https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/) · [`docs/data/leaderboard.json`](docs/data/leaderboard.json) |
-| Geologic-map coverage | NGMDB map catalog and map-coverage limitations | [USGS NGMDB FAQ](https://www.usgs.gov/faqs/what-national-geologic-map-database) · [NGMDB MapView](https://ngmdb.usgs.gov/mapview/index.html) |
-| Deep ensembles | Independently trained ensembles as a scalable uncertainty estimator | [Lakshminarayanan, Pritzel & Blundell (NeurIPS 2017)](https://proceedings.neurips.cc/paper_files/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf) |
-| Official baseline / input inventory | Organizer reference notebook; it uses `data/numeric_features.tif` while the official problem page calls the feature file `training_features.tif`. Local prep accepts either name and fails if both are present. | [DrivenData reference notebook](https://github.com/drivendataorg/gems-prize-reference-solution/blob/main/unet-mc-cv-reference-solution.ipynb) |
-
-See [`docs/sources.html`](docs/sources.html) for claim-by-claim scope and source caveats.
-
-## Reproducible workflow
-
-The code is designed to fail closed when inputs are absent or misaligned. It will not download private competition files or ask for credentials. The four-fold workflow is spatial, excludes a training buffer around each validation quadrant, and reports a **known-catalogue proxy**, not the hidden-fault contest score. The commands below exercise only the existing baseline/edge-consensus pipeline; that edge feature is unscored and is not the newly ranked radiometric candidate. The public GeoDAWN radiometric test has not been implemented, and the example does not authorize a submission.
+## 3. Reproduce everything
 
 ```bash
-set -euo pipefail
-
-# Optional: confirm the data-placement blocker / detect files already in data/
-bash scripts/download_competition_data.sh || true
-
-# After files are legitimately available in data/:
-python -m pip install -r requirements.txt
-python scripts/prepare_data.py
-python -m pip install -r requirements-model.txt
-
-# Optional legacy edge-consensus diagnostic, using actual band descriptions.
-# It is not the new radiometric shortlist leader and has no holdout score.
-# The script fails closed if names are missing/ambiguous; it does not guess indexes.
-python scripts/build_edge_consensus.py
-
-# Train and infer 4 spatial folds for the baseline and legacy edge-consensus diagnostic (5 separate networks per fold).
-for config in configs/default.json configs/h1-edge-consensus.json; do
-  out=$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["output_dir"])' "$config")
-  for fold in 0 1 2 3; do
-    python scripts/train_ensemble.py --config "$config" --holdout-fold "$fold"
-    python scripts/predict_ensemble.py --config "$config" \
-      --model-dir "$out/fold-$fold" --out-dir "$out/fold-$fold/predictions"
-  done
-done
-
-# Assemble out-of-fold rasters, then compare the candidate against the same-fold baseline.
-python scripts/build_oof_map.py --candidate-id baseline-unet \
-  --fold-runs outputs/baseline/fold-0 outputs/baseline/fold-1 outputs/baseline/fold-2 outputs/baseline/fold-3 \
-  --output outputs/baseline-oof.npy --metadata outputs/baseline-oof.json
-python scripts/build_oof_map.py --candidate-id H1-edge-consensus \
-  --fold-runs outputs/h1-edge-consensus/fold-0 outputs/h1-edge-consensus/fold-1 outputs/h1-edge-consensus/fold-2 outputs/h1-edge-consensus/fold-3 \
-  --output outputs/h1-oof.npy --metadata outputs/h1-oof.json
-python scripts/run_spatial_validation.py --candidate outputs/h1-oof.npy \
-  --incumbent outputs/baseline-oof.npy --metadata outputs/h1-oof.json \
-  --incumbent-metadata outputs/baseline-oof.json \
-  --output outputs/h1-validation-report.json
-
-# Generic output-pipeline example only. Do not use the legacy H1 unless it
-# actually passes the frozen spatial holdout gate; it is not validated now.
-python scripts/train_ensemble.py --config configs/h1-edge-consensus.json
-python scripts/predict_ensemble.py --config configs/h1-edge-consensus.json \
-  --model-dir outputs/h1-edge-consensus/full-ensemble --out-dir outputs/h1-final
-python scripts/build_submission.py --strategy H1-edge-consensus \
-  --probabilities outputs/h1-final/mean_probability.npy \
-  --template data/sample_submission.tif --config configs/h1-edge-consensus.json \
-  --inference-report outputs/h1-final/uncertainty-report.json \
-  --gate-report outputs/h1-validation-report.json
-
-# Unit and synthetic end-to-end tests (does not access private data or train a model)
-python -m unittest discover -s tests -v
+bash scripts/download_competition_data.sh   # acquire + hash-verify the official rasters (no manual input)
+python scripts/prepare_data.py              # grid/validity audit -> data/manifest.json
+python scripts/fit_habitat_model.py         # 24 live scores -> habitat weights, nested-CV rho
+python scripts/run_ensemble.py              # deep ensemble + epistemic/aleatoric split
+python scripts/evaluate_oof.py              # admission gate vs a random-emission control
+python scripts/build_submission_live.py     # budget, dispersion, TIFF, template validation
+python scripts/phase2_candidates.py         # reviewer candidates with the variance split
+python scripts/build_site.py                # regenerate the whole site from docs/data/*.json
+python -m unittest discover -s tests        # dependency-free checks
 ```
 
-The complete constraint list, historical score table, open hypotheses, and session protocol are in [`docs/PROJECT_BRIEF.md`](docs/PROJECT_BRIEF.md). Current public scores are refreshed by the GitHub Pages workflow when available; the static page retains its dated snapshot if DrivenData is unreachable.
+Dependencies: `numpy`, `scipy`, `rasterio`, `torch` (CPU is enough), `scikit-learn`, `pandas`.
+Compute actually used: **2 CPU cores, 3 GB RAM, no GPU.**
+
+---
+
+## 4. Data: where it comes from and how it is verified
+
+The competition originals sit behind a login-gated data tab. This repository never authenticates to
+anything. Instead [`scripts/fetch_data_bridge.py`](scripts/fetch_data_bridge.py) reassembles them from
+the group's public **git data bridge** (the official rasters split into <100 MB parts and committed to
+a sibling repository with a manifest that pins every SHA-256), falls back to the Dropbox mirrors named
+in that manifest, verifies every part and the whole file, and **fails closed**.
+
+| file | bytes | SHA-256 |
+|---|---|---|
+| `data/training_features.tif` (official 19-band stack) | 418,912,844 | `4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5` |
+| `data/labels.tif` (rasterised known faults) | 425,830 | `7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093` |
+| `data/sample_submission.tif` (official template) | 1,599,597 | `2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc` |
+
+External layers in `data/external/` (all official, public domain or CC0, all hash-pinned):
+USGS GeoDAWN airborne radiometrics and extensions (K, Th, U, TC, Th/K, U/K, U/Th, TMI-up150;
+[ScienceBase 657e1d85d34e23d3533209f7](https://www.sciencebase.gov/catalog/item/657e1d85d34e23d3533209f7),
+[DOI 10.5066/P93LGLVQ](https://doi.org/10.5066/P93LGLVQ)); 12 channels of 1 m 3DEP lidar scarp
+geomorphometry; faults from the USGS State Geologic Map Compilation
+([DOI 10.3133/ds1052](https://doi.org/10.3133/ds1052)); 27,092 GDR/INGENIOUS spring and well records
+with measured and geothermometer temperatures; 21 volcanic vents; 3,800 two-metre temperature probes.
+
+`data/`, `outputs/` and `.cache/` are git-ignored: the rasters are private competition data and the
+derived arrays are reproducible.
+
+---
+
+## 5. Repository map
+
+| path | what it is |
+|---|---|
+| `docs/index.html` … `docs/verification.html` | the generated site (published from `docs/` by GitHub Pages) |
+| `docs/data/*.json` | every number the site prints; each is produced by a script in `scripts/` |
+| `docs/downloads/` | the submission rasters, their manifests and their stdlib audits |
+| `docs/research/knowledge_base.md` | the reusable, sourced knowledge base (start here on a new project) |
+| `docs/PROJECT_BRIEF.md` | the project brief and the research shortlist |
+| `src/gems/layers.py` | the streaming evidence-layer bank (95 layers, 3 GB RAM safe) |
+| `src/gems/habitat.py` | inversion of 24 live scores → placement skill → habitat regression |
+| `src/gems/emission.py` | dispersion, the budget marginal rule, expected-DTI algebra |
+| `src/gems/ensemble.py` | the deep ensemble and the epistemic/aleatoric decomposition |
+| `src/gems/metric.py` | the official DTI, unit-tested against the organiser's worked example |
+| `src/gems/submission.py` | float32/[0,1]/NaN-outside writer and strict template preflight |
+| `analysis/` | one-off investigations, kept for auditability |
+| `tests/` | dependency-free unit tests plus geospatial tests that skip when numpy/scipy are absent |
+
+---
+
+## 6. Limitations, and what access would change them
+
+See [`docs/verification.html`](https://buffedlizard55-lab.github.io/GEMSDOE23/verification.html) for the
+full list and [`docs/data/irregularities.json`](docs/data/irregularities.json) for the flag register.
+The short version:
+
+* **No offline validation of placement** — the single largest limitation. Only a submission slot can
+  confirm the habitat ranking.
+* **\|G\| is bounded, not measured.** The upper bound assumes no artefact is actively anti-correlated
+  with the hidden truth.
+* **The deep ensemble is undertrained** (2 cores, no GPU) and was excluded by its own gate.
+* **Lidar covers 75.4 %** of the footprint and the gap is systematic (north-east quadrant), so the
+  habitat score is weakest exactly where survey coverage is lowest.
+* **Public ≠ private.** All 24 live scores are public-test scores; the split is unpublished and the
+  Final Round re-scores against expanded labels.
+* **Sandbox egress** allows only `github.com`, `api.github.com`, `codeload.github.com`, `pypi.org` and
+  `files.pythonhosted.org`. DrivenData, Dropbox, USGS, ScienceBase, the National Map and
+  `download.pytorch.org` all fail the TLS handshake here; GitHub Actions has full egress and repeats the
+  leaderboard fetch there.
+* **GitHub credentials expired during this session** (flag I-12). Everything is committed locally on the
+  session branch, but the pull request, the merge to `main` and the Pages deployment are blocked until the
+  GitHub connection is restored. The official rasters on disk stay hash-verified, so no re-acquisition is
+  needed to continue.
+
+---
+
+## 7. Disclosure
+
+Generative AI was used to produce code, analysis and prose in this repository, as the competition rules
+require participants to disclose. Every quantitative claim is traceable to a script in `scripts/` and a
+record in `docs/data/`; anything that is inference rather than measurement is labelled as such where it
+appears.

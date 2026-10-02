@@ -29,6 +29,17 @@ jobs:
           python-version: '3.11'
       - name: Refresh the official public leaderboard snapshot
         run: python scripts/update_leaderboard.py --output docs/data/leaderboard.json --status docs/data/leaderboard-status.json
+      - name: Rebuild every page from the evidence records
+        run: python scripts/build_site.py
+      - name: Commit the refreshed snapshot back to the branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/leaderboard.json docs/data/leaderboard-status.json docs/*.html docs/downloads/latest.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: refresh public leaderboard snapshot and rebuild the site"
+            git push origin HEAD:${GITHUB_REF_NAME}
+          fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

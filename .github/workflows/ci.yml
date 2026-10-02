@@ -2,7 +2,7 @@ name: Verify project
 
 on:
   push:
-    branches: [main, arena/01a0fa15-gemsdoe23]
+    branches: [main, arena/01a0faa7-gemsdoe23]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -26,7 +26,36 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Check static-site local links
         run: python scripts/check_site.py
-      - name: Re-audit reference GeoTIFF
+      - name: Re-audit the reference artefact (h19-5, live 0.1922)
         run: python scripts/audit_reference_tif.py docs/downloads/gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif --json /tmp/reference-audit.json
-      - name: Re-audit GEMSDOE23 Deep Ensemble GeoTIFF
-        run: python scripts/audit_reference_tif.py docs/downloads/gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.tif --json /tmp/gemsdoe23-audit.json
+      - name: Re-audit the current submission with the independent stdlib decoder
+        run: |
+          python - <<'EOF'
+          import json, os, subprocess, sys
+          man = json.load(open("docs/data/submission-manifest.json"))
+          for key in ("primary", "compatibility"):
+              name = man[key]["name"]
+              out = "/tmp/%s-audit.json" % key
+              subprocess.run([sys.executable, "scripts/audit_reference_tif.py",
+                              os.path.join("docs/downloads", name), "--json", out], check=True)
+              a = json.load(open(out))
+              assert a["finite_values_in_0_1"] is True, (key, "values outside [0, 1]")
+              assert a["positive_infinity_pixels"] == 0, key
+              assert a["negative_infinity_pixels"] == 0, key
+              assert a["samples_per_pixel"] == 1, (key, "must be single band")
+              assert a["bits_per_sample"] == 32 and a["sample_format"] == "IEEE float", (key, "must be float32")
+              assert a["epsg"] == 32611, (key, "CRS")
+              assert a["width"] == 3292 and a["height"] == 3730, (key, "grid")
+              assert a["classic_tiff"] is True and a["compression"] == "LZW", key
+              assert a["sha256"] == man[key]["sha256"], (key, "sha256 drift")
+              print("%s: %s verified (%d finite px, %d NaN, values %s-%s)" % (
+                  key, name, a["finite_pixels"], a["nan_pixels"], a["finite_min"], a["finite_max"]))
+          EOF
+      - name: Verify the site is regenerable from the evidence records
+        run: |
+          python scripts/build_site.py
+          if ! git diff --quiet -- docs; then
+            echo "::error::docs/ is out of date with docs/data/*.json - run scripts/build_site.py and commit"
+            git diff --stat -- docs
+            exit 1
+          fi

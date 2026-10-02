@@ -1,0 +1,9 @@
+{
+ "band6_tag": "tc - Tilt angle or total curvature - magnetic field derivative for edge detection",
+ "r_vs_geodawn_TC": 0.997140012311813,
+ "r_vs_geodawn_K": 0.8816758895138418,
+ "r_vs_official_tmi_hg": -0.16237128323975825,
+ "band6_min": 2.9534237384796143,
+ "band6_max": 88.56654357910156,
+ "n_valid": 5164300
+}

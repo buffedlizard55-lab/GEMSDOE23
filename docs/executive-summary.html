@@ -1,76 +1,121 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Exact step-by-step DrivenData upload instructions and GeoTIFF checks for DOE GEMS submissions.">
-  <title>Executive Summary &amp; How to Submit · GEMSDOE23</title>
-  <link rel="stylesheet" href="assets/site.css"><script defer src="assets/site.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Exact upload steps, the submission note, the decision rule and the traceability index.">
+  <title>How to submit · GEMSDOE23</title>
+  <link rel="stylesheet" href="assets/site.css">
+  <script defer src="assets/site.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header"><div class="header-inner">
-  <a class="brand" href="index.html"><span class="brand-mark">G23</span><span>GEMSDOE23 <span class="small" style="color:#c8d8cd">/ research log</span></span></a>
-  <nav class="nav" aria-label="Main navigation">
-    <a href="index.html">Overview</a><a href="executive-summary.html" aria-current="page">How to submit</a><a href="hypotheses.html">Hypotheses</a><a href="uncertainty.html">Uncertainty</a><a href="results.html">Scores</a><a href="sources.html">Sources</a><a href="verification.html">Audit</a>
-  </nav>
-</div></header>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">G23</span><span>GEMSDOE23 <span class="small" style="color:#c8d8cd">/ research log</span></span></a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index.html">Overview</a>
+      <a href="executive-summary.html" aria-current="page">How to submit</a>
+      <a href="hypotheses.html">New hypotheses</a>
+      <a href="uncertainty.html">Uncertainty</a>
+      <a href="evidence.html">Evidence</a>
+      <a href="results.html">Scores</a>
+      <a href="sources.html">Sources</a>
+      <a href="verification.html">Audit</a>
+    </nav>
+  </div>
+</header>
 <main id="main">
-  <div class="eyebrow">Executive summary / upload guide</div>
-  <h1>Download &amp; submit the validated GEMSDOE23 GeoTIFF</h1>
-  <p class="lead">The primary submission file below passed the 4-quadrant spatially blocked holdout gate (`0.21177` mean OOF DTI vs. `0.12618` baseline-unet, `4/4` fold wins) and passed all 10 template &amp; byte-level GeoTIFF validation checks against `sample_submission.tif`.</p>
 
-  <section class="section">
-    <div class="download-card" style="margin-top:.5rem">
+  <section class="hero"><div class="hero-grid"><div>
+    <div class="eyebrow">Executive summary</div>
+    <h1>How to submit this file, and what it is expected to score</h1>
+    <p class="lead">Five steps, one file, one note. The upload takes under a minute; the reasoning behind the file is on the
+    <a href="evidence.html">evidence page</a>.</p></div>
+    <aside class="hero-aside"><span class="status status-ok">Template-verified</span>
+      <strong style="margin:.8rem 0 .45rem">1.70559 MB · e29e8f04e048a4aa…</strong>
+      <p class="small">Single band, float32, EPSG:32611, 3292 × 3730, 100 m, values in [0, 1], NaN outside the footprint —
+      checked against <code>data/sample_submission.tif</code> (SHA-256 2176d08e485aa2cd…).</p></aside></div></section>
+
+  <section class="section" id="download">
+    <div class="section-head">
+      <div><div class="eyebrow">First-click download · verified against the official template</div>
+      <h2>The submission file</h2></div>
+      <span class="status status-ok">All hard checks passed</span>
+    </div>
+    <div class="download-card">
       <div>
-        <div class="eyebrow">Validated primary submission · 4/4 spatial fold wins</div>
-        <h2>GEMSDOE23 H1-edge-consensus Deep Ensemble GeoTIFF</h2>
-        <p class="small">Filename: <code>gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.tif</code> (3,249,272 bytes · LZW compressed float32)</p>
-        <p class="file-meta">
-          <span>SHA-256: <code>572a2fab82fbff4c3ac0978225bbbec8d5cd5b47af7ce9fae4c8f9f9042855f2</code></span>
-          <span>5,167,373 finite px in [0.0, 1.0]</span>
-          <span>7,111,787 NaN outside px</span>
-        </p>
+        <h3>H24 · dispersed-habitat emission</h3>
+        <p>Projected DTI is exact metric algebra over |G| in [6k, 15k] and q in [0.04, 0.11], where q is the kernel-weighted true-positive mass per emitted pixel. The q prior&#x27;s upper half is measured: the best of 24 live-scored artefacts reached q = 0.0518 at dispersion eta = 0.85, and this emission runs at eta = 0.95. No offline proxy validates placement (best Spearman rho = +0.33, p = 0.12), so this is a projection, not a prediction, and no score is claimed.</p>
+        <div class="file-meta">
+          <span>Filename: <code>gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif</code></span>
+          <span>3292 × 3730</span><span>single-band float32</span><span>EPSG:32611</span><span>100 m pixels</span>
+          <span>values in [0, 1]</span><span>NaN outside the footprint</span>
+          <span>1.71 MB</span><span>SHA-256 e29e8f04e048a4aa…</span>
+          <span>emitted mass 100,000 px</span>
+          <span>dispersion efficiency η = 0.946</span>
+        </div>
       </div>
       <div class="button-row">
-        <a class="button" href="downloads/gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.tif" download>Download GEMSDOE23 .tif ↓</a>
-        <a class="button button-secondary" href="downloads/gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.json">Manifest JSON</a>
-        <a class="button button-secondary" href="downloads/gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.audit.json">Stdlib Audit</a>
+        <a class="button" href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif" download>Download submission .tif ↓</a>
+        <a class="button button-secondary" href="data/submission-manifest.json">Manifest JSON</a>
+        <a class="button button-secondary" href="data/submission-build.json">Budget evidence</a>
+        <a class="button button-secondary" href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-allfinite.tif" download>All-finite variant</a>
       </div>
     </div>
-    <label for="note" class="small" style="display:block;margin-top:1rem"><strong>Suggested DrivenData submission note (one-click copy)</strong></label>
-    <div class="copy-row">
-      <input id="note" readonly value="GEMSDOE23 H1-edge-consensus | 5-member Deep Ensemble + 100% label-free multi-line corroborated 3DEP/GeoDAWN/GDR1391 consensus | 4-fold spatial OOF DTI 0.21177 (+0.08559 vs baseline, 4/4 fold wins) | sha256 572a2fab">
-      <button type="button" data-copy-target="note">Copy note</button>
+    <div class="copy-row" aria-label="Copy submission note" style="margin-top:1rem">
+      <input id="submission-note" readonly value="GEMSDOE23 H24 dispersed-habitat | 1m-3DEP lidar uphill-facing/step/crest scarps + 700 m detrended-slope heterogeneity, low radiometric U, off-catalogue | 400 m dot spacing, eta=0.95, 100,000 px | projected DTI 0.12-0.34 (q prior 0.04-0.11, |G| 6k-15k) | sha256 e29e8f04">
+      <button type="button" data-copy-target="submission-note">Copy submission note</button>
     </div>
   </section>
-
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">Upload steps</div><h2>Step-by-step DrivenData upload walkthrough</h2></div></div>
+    <div class="section-head"><div><div class="eyebrow">Step by step</div><h2>Upload procedure</h2></div></div>
     <ol class="list-clean">
-      <li><strong>Click “Download GEMSDOE23 .tif ↓” above.</strong> Keep the unique filename <code>gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.tif</code> intact so your submission history maps unambiguously to its manifest and SHA-256 digest (<code>572a2fab…042855f2</code>).</li>
-      <li><strong>Optional local preflight re-check.</strong> This artifact has already been verified against the official <code>data/sample_submission.tif</code> (SHA-256 <code>2176d08e…35cbc</code>) using both GDAL/rasterio and our independent stdlib TIFF/LZW decoder:
-        <pre><code>.venv/bin/python scripts/validate_submission.py \
-  --template data/sample_submission.tif \
-  --prediction docs/downloads/gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.tif</code></pre>
-      </li>
-      <li><strong>Open the official DrivenData submission portal.</strong> Sign in to your registered competition account and navigate to <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/submissions/">DOE GEMS Submissions</a>.</li>
-      <li><strong>Upload the `.tif` file directly.</strong> Click “Make a new submission” and choose <code>gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.tif</code> in the file picker (3.10 MB uploads in ~1 second; no ZIP wrapper needed).</li>
-      <li><strong>Paste the submission note.</strong> Click “Copy note” above and paste the string into the DrivenData description/note box so the 4-fold OOF score (<code>0.21177</code>) and artifact prefix (<code>572a2fab</code>) are logged on DrivenData.</li>
-      <li><strong>Submit and log the returned score.</strong> Record the returned public DW-Tversky score and UTC timestamp. Remember that up to 3 weekly feedback submissions are allowed, and only 1 final submission may be selected across Phase 1 and Phase 2.</li>
+      <li><strong>Download</strong> <code>gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif</code> with the button above. It is the official variant: NaN outside the footprint, exactly as the format rules require.</li>
+      <li><strong>Sign in</strong> at <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">drivendata.org/competitions/306</a> and open the <em>Submissions</em> tab. The account must be the entity registered for this competition.</li>
+      <li><strong>Upload</strong> the <code>.tif</code> unchanged. Do not open and re-save it in GIS software: that rewrites the nodata tag and can turn NaN into a large negative sentinel.</li>
+      <li><strong>Paste the note</strong> from the copy box above into the submission description field. It records the method, the emitted pixel count, η and the file hash, so the upload is traceable back to this repository.</li>
+      <li><strong>Record the score</strong> the moment it appears: <code>python scripts/record_score.py --score &lt;X&gt; --id e29e8f04</code>. Every live score is an observation that improves the |G| and skill estimates on the <a href="evidence.html">evidence page</a>.</li>
     </ol>
+    <div class="callout"><strong>If the uploader rejects the file with “Predicted values must be in range [0, 1]”</strong>, upload the
+    all-finite variant instead (gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-allfinite.tif). It is byte-identical inside the footprint and writes 0.0 rather than NaN outside it; some
+    server-side checkers read the whole array before applying the footprint mask. Both variants are produced and validated by
+    <code>scripts/build_submission_live.py</code>.</div>
   </section>
-
-  <section class="grid-2">
-    <article class="card"><div class="card-kicker">How we prevent the [0, 1] range error</div><h3>Exact footprint masking &amp; IEEE-754 NaN outside</h3><p>DrivenData rejects any upload with <code>"Predicted values must be in range [0, 1]"</code> if even one pixel inside the 5,167,373-pixel valid footprint is <code>NaN</code>, <code>Inf</code>, <code>&lt; 0</code>, or <code>&gt; 1</code>, or if outside-footprint pixels use numeric sentinels like <code>-9999</code> instead of <code>NaN</code>. Our pipeline enforces <code>np.clip(inside, 0.0, 1.0)</code> on the 5,167,373 valid pixels and <code>np.nan</code> on all 7,111,787 outside-footprint pixels, verified after disk write.</p></article>
-    <article class="card"><div class="card-kicker">Why this submission earned a weekly slot</div><h3>4/4 spatial fold wins (+0.0856 mean DTI delta)</h3><p>On the 4-quadrant spatially blocked holdout (<a href="data/validation-report.json">validation-report.json</a>), <code>H1-edge-consensus</code> achieved <code>0.19342</code> (Fold 0), <code>0.19110</code> (Fold 1), <code>0.25673</code> (Fold 2), and <code>0.20585</code> (Fold 3)—mean <code>0.21177</code> vs. <code>0.12618</code> for <code>baseline-unet</code> and <code>0.17514</code> for <code>H19-4</code>.</p></article>
-  </section>
-
   <section class="section">
-    <div class="eyebrow">Historical comparison</div><h2>Retained H19-5 reference artifact</h2>
-    <p class="small">For baseline reproducibility, the historical <code>19GEMSDOE</code> H19-5 submission (<code>0.1922</code> public leaderboard, <code>0.17413</code> local 4-quadrant DTI) is also retained and verified against <code>sample_submission.tif</code> (<a href="data/h19-5-template-validation.json">h19-5-template-validation.json</a>): <a href="downloads/gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif" download>Download H19-5 reference .tif</a>.</p>
-    <p class="callout"><strong>AI disclosure:</strong> Per section 3.4 of the <a href="https://docs.nlr.gov/docs/fy26osti/96647.pdf">official DOE/NLR GEMS rules</a>, generative AI assistance in code authoring, literature synthesis, and verification must be disclosed in the final competition narrative.</p>
+    <div class="section-head"><div><div class="eyebrow">Rules that constrain the decision</div><h2>Before you spend the slot</h2></div></div>
+    <div class="grid-2">
+      <div class="card"><div class="card-kicker">Three uploads per rolling seven days</div>
+        <p>Official rules §3.2/§3.4. Slots are the only ground-truth channel, so the standing rule in this repository is:
+        never upload something that has not beaten the current best on a validated holdout. <strong>That rule cannot be satisfied
+        honestly this session</strong>, because no offline proxy correlates with the live board (best ρ = 0.326).
+        The decision rule actually used is on the next card.</p></div>
+      <div class="card"><div class="card-kicker">Decision rule used instead</div>
+        <p>Upload this file if you accept the projection: DTI = TP/(0.2·TP + 0.197·A + 0.8·(|G| − TP)) with
+        A = 100,000, |G| ∈ [6k, 15k] and q ∈ [0.04, 0.11] gives
+        0.124–0.337.
+        The group's verified best is 0.1922 at q = 0.0475 and η = 0.40; this emission has η = 0.946 at a smaller budget, which is a
+        measured geometric improvement worth up to 2.4× in q at unchanged alignment, and the habitat ranking is the only component with out-of-family validation.
+        Break-even with 0.1922 needs q ≈ 0.04 at |G| = 10,000 — i.e. no better than h19-5's measured value.</p></div>
+      <div class="card"><div class="card-kicker">One submission for both prize rounds</div>
+        <p>The same file is scored on the private test set at the close (Initial Round, 5 × $10,000) and re-scored against the
+        expanded expert labels in the Final Round ($250,000 pool). Known USGS/INGENIOUS fault pixels are masked out in
+        <em>both</em> rounds (staff ruling, forum 11516), so nothing is gained by painting the catalogue.</p></div>
+      <div class="card"><div class="card-kicker">Deadline</div>
+        <p><strong>3 December 2026, 23:59 UTC.</strong> Generative-AI use must be disclosed per the rules; this repository discloses it in
+        <code>README.md</code> and <code>docs/PROJECT_BRIEF.md</code>.</p></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="section-head"><div><div class="eyebrow">Traceability</div><h2>Every number on this page</h2></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>file</th><th>what it records</th></tr></thead><tbody><tr><td><a href='data/submission-manifest.json'>submission-manifest.json</a></td><td>filename, SHA-256, byte size, validation checks, the submission note</td></tr><tr><td><a href='data/submission-build.json'>submission-build.json</a></td><td>the whole budget/η/expected-DTI table and the family-consensus weights</td></tr><tr><td><a href='data/habitat-model.json'>habitat-model.json</a></td><td>the habitat regression: selected layers, weights, nested-CV ρ, per-artefact implied TP and skill</td></tr><tr><td><a href='data/live-model-bounds.json'>live-model-bounds.json</a></td><td>exact bounds on |G| per artefact</td></tr><tr><td><a href='data/offline-proxy-audit.json'>offline-proxy-audit.json</a></td><td>the negative result: every offline proxy truth vs the live ordering</td></tr><tr><td><a href='data/oof-evaluation.json'>oof-evaluation.json</a></td><td>the deep ensemble's out-of-fold DTI against a random-emission control, and the admission gate</td></tr><tr><td><a href='data/phase2-candidates.json'>phase2-candidates.json</a></td><td>reviewer candidates with the epistemic/aleatoric split and survey coverage</td></tr></tbody></table></div>
   </section>
 </main>
-<footer class="site-footer"><div class="footer-inner"><span>GEMSDOE23 · submission guide</span><span><a href="index.html">Overview</a> · <a href="verification.html">Audit &amp; irregularities</a> · <a href="sources.html">Sources</a></span></div></footer>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of 2026-10-02 06:45 UTC</span>
+    <span><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">Official competition</a> · <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a> · <a href="https://github.com/buffedlizard55-lab/GEMSDOE23">This repository</a></span>
+  </div>
+</footer>
 </body>
 </html>

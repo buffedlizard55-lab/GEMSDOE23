@@ -59,14 +59,22 @@ def validate_submission(prediction_path: str | Path, template_path: str | Path) 
             finite_inside and range_inside,
             f"valid_pixels={int(footprint.sum())}; finite={finite_inside}; min={float(inside.min()) if inside.size and finite_inside else None}; max={float(inside.max()) if inside.size and finite_inside else None}",
         )
+        nodata = pred.nodata
         outside = prediction_values[~footprint]
-        outside_is_null = bool(np.isnan(outside).all()) if outside.size else True
+        all_nan = bool(np.isnan(outside).all()) if outside.size else True
+        # The format rule is "data outside the bounds is null or nan".  A file tagged
+        # nodata=0 that writes 0.0 outside the footprint satisfies the "null" branch; it
+        # exists because some server-side checkers read the whole array before applying the
+        # footprint mask and reject NaN with "Predicted values must be in range [0, 1]".
+        equals_nodata = bool(
+            nodata is not None and not (isinstance(nodata, float) and math.isnan(float(nodata)))
+            and outside.size and bool((outside == float(nodata)).all())
+        )
         record(
             "outside-footprint is null/NaN",
-            outside_is_null,
-            f"outside_pixels={int(outside.size)}; non_nan_outside={int(np.count_nonzero(~np.isnan(outside)))}",
+            all_nan or equals_nodata,
+            f"outside_pixels={int(outside.size)}; all_nan={all_nan}; all_equal_to_nodata_tag={equals_nodata}; nodata={nodata}",
         )
-        nodata = pred.nodata
         nodata_is_nan = nodata is not None and isinstance(nodata, (int, float)) and math.isnan(float(nodata))
         record(
             "NaN nodata tag",
@@ -94,8 +102,17 @@ def write_submission_raster(
     probabilities: Any,
     template_path: str | Path,
     output_path: str | Path,
+    outside: str = "nan",
 ) -> Path:
-    """Write one float32 probability band using the sample raster's exact profile."""
+    """Write one float32 probability band using the sample raster's exact profile.
+
+    ``outside`` controls the cells the official footprint excludes: ``"nan"`` (the default,
+    and what the format rules ask for - "data outside the bounds is null or nan") or
+    ``"zero"``, which writes 0.0 there instead.  The zero variant exists because some
+    server-side checkers read the whole array before applying the footprint mask and then
+    reject the file with "Predicted values must be in range [0, 1]"; both variants are
+    byte-identical inside the footprint.
+    """
     try:
         import numpy as np
         import rasterio
@@ -117,18 +134,20 @@ def write_submission_raster(
             raise ValueError("Cannot write: prediction contains NaN/Inf inside the official footprint")
         if inside.size == 0 or inside.min() < 0.0 or inside.max() > 1.0:
             raise ValueError("Cannot write: predicted values must be in range [0, 1]")
+        if outside not in ("nan", "zero"):
+            raise ValueError("outside must be 'nan' or 'zero'")
         output = values.copy()
-        output[~footprint] = np.nan
+        output[~footprint] = np.nan if outside == "nan" else np.float32(0.0)
         profile = template.profile.copy()
         profile.update(
             driver="GTiff",
             count=1,
             dtype="float32",
-            nodata=np.nan,
+            nodata=np.nan if outside == "nan" else 0.0,
             compress="lzw",
             predictor=1,
         )
         with rasterio.open(output_path, "w", **profile) as dst:
             dst.write(output, 1)
-            dst.set_band_description(1, "ensemble_mean_fault_probability")
+            dst.set_band_description(1, "fault_probability_h24_dispersed_habitat")
     return output_path
