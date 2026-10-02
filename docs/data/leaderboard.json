@@ -1,10 +1,10 @@
 {
   "competition": "DOE GEMS Prize / DrivenData #306",
   "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-  "retrieved_utc": "2026-10-02T09:28:35+00:00",
-  "source_status": "snapshot",
-  "capture_method": "Rows transcribed from the official public leaderboard page as rendered by the Arena web reader at 2026-10-02T09:28:35+00:00 UTC (all 50 displayed rows). The sandbox shell has no TLS egress to drivendata.org, and the GitHub Actions refresh of 2026-10-02T09:20:31Z could not parse the HTML the site served it; scripts/update_leaderboard.py now records diagnostics for that case in docs/data/leaderboard-status.json.",
-  "source_note": "Live refresh failed at 2026-10-02T09:45:15+00:00 (ValueError: Could not find a leaderboard table with rank and score headers (0 tables, 0 rows, 0 bytes of cell text)); the last verified official leaderboard rows were retained. See docs/data/leaderboard-status.json for diagnostics.",
+  "retrieved_utc": "2026-10-02T10:04:20+00:00",
+  "source_status": "live",
+  "capture_method": "Rendered by headless Chromium (scripts/render_leaderboard.py) because the official page builds its table with JavaScript, then parsed and validated by scripts/update_leaderboard.py (strategy: header row 0, score column 3).",
+  "parse_strategy": "header row 0, score column 3",
   "rows": [
     {
       "rank": 1,
@@ -20,7 +20,7 @@
     },
     {
       "rank": 3,
-      "participant": "Batik Shirt Brothers",
+      "participant": "rariwa",
       "score": 0.2998,
       "score_text": "0.2998"
     },
@@ -74,7 +74,7 @@
     },
     {
       "rank": 12,
-      "participant": "No Fault of Our Own",
+      "participant": "exposed",
       "score": 0.2624,
       "score_text": "0.2624"
     },
@@ -310,13 +310,19 @@
   "row_count": 50,
   "attribution_caveat": "The official public leaderboard displays participants and scores but does not expose a prediction-file SHA-256 or public submission identifier; score equality is not artifact, account, or team attribution. As of 2026-10-02: H19-4 (0.1894) coincides with displayed rank 28 (SDCF9); H19-5 (0.1922) coincides with displayed rank 26 (smrtdoog5).",
   "phase_caveat": "These are public leaderboard results only, not private Initial Prize Round (Phase 1) or expert-updated Final Prize Round (Phase 2) scores.",
+  "capture_path": "headless-render",
   "refresh_status": {
-    "checked_utc": "2026-10-02T09:45:15+00:00",
-    "status": "stale-snapshot-retained",
+    "checked_utc": "2026-10-02T10:04:16+00:00",
+    "status": "live",
+    "capture_path": "headless-render",
+    "row_count": 50,
     "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-    "error": "ValueError: Could not find a leaderboard table with rank and score headers (0 tables, 0 rows, 0 bytes of cell text)",
-    "retained_retrieved_utc": "2026-10-02T09:28:35+00:00",
-    "retained_row_count": 50,
+    "top": {
+      "rank": 1,
+      "participant": "DARD",
+      "score": 0.3195,
+      "score_text": "0.3195"
+    },
     "diagnostics": {
       "attempts": [
         {
@@ -327,15 +333,13 @@
           "ok": true
         }
       ],
-      "title": "Competition: The Geologic Enhanced Mapping System (GEMS) Prize Challenge",
-      "tables": 0,
-      "rows": 0,
-      "cell_text_bytes": 0,
-      "user_links": 0,
-      "rank_markers": 1,
-      "tversky_mentions": 0,
-      "loading_placeholder": true,
-      "text_excerpt": "Competition: The Geologic Enhanced Mapping System (GEMS) Prize Challenge Skip to main content Competitions Partner with us How it works DrivenData LABS Blog Log in Sign up energy The Geologic Enhanced Mapping System (GEMS) Prize Challenge Identify hidden geologic faults to discover new geothermal resources. #energy #sc"
+      "render": {
+        "returncode": 0,
+        "stdout": "rendered 158571 bytes of HTML to /tmp/gems-leaderboard-rendered.html",
+        "stderr": ""
+      },
+      "rendered_bytes": 158571
     }
-  }
+  },
+  "source_note": "Retrieved live from the official public leaderboard page."
 }

@@ -1,10 +1,15 @@
 {
-  "checked_utc": "2026-10-02T09:45:15+00:00",
-  "status": "stale-snapshot-retained",
+  "checked_utc": "2026-10-02T10:04:16+00:00",
+  "status": "live",
+  "capture_path": "headless-render",
+  "row_count": 50,
   "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-  "error": "ValueError: Could not find a leaderboard table with rank and score headers (0 tables, 0 rows, 0 bytes of cell text)",
-  "retained_retrieved_utc": "2026-10-02T09:28:35+00:00",
-  "retained_row_count": 50,
+  "top": {
+    "rank": 1,
+    "participant": "DARD",
+    "score": 0.3195,
+    "score_text": "0.3195"
+  },
   "diagnostics": {
     "attempts": [
       {
@@ -15,14 +20,11 @@
         "ok": true
       }
     ],
-    "title": "Competition: The Geologic Enhanced Mapping System (GEMS) Prize Challenge",
-    "tables": 0,
-    "rows": 0,
-    "cell_text_bytes": 0,
-    "user_links": 0,
-    "rank_markers": 1,
-    "tversky_mentions": 0,
-    "loading_placeholder": true,
-    "text_excerpt": "Competition: The Geologic Enhanced Mapping System (GEMS) Prize Challenge Skip to main content Competitions Partner with us How it works DrivenData LABS Blog Log in Sign up energy The Geologic Enhanced Mapping System (GEMS) Prize Challenge Identify hidden geologic faults to discover new geothermal resources. #energy #sc"
+    "render": {
+      "returncode": 0,
+      "stdout": "rendered 158571 bytes of HTML to /tmp/gems-leaderboard-rendered.html",
+      "stderr": ""
+    },
+    "rendered_bytes": 158571
   }
 }
