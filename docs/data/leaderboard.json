@@ -1,7 +1,7 @@
 {
   "competition": "DOE GEMS Prize / DrivenData #306",
   "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-  "retrieved_utc": "2026-10-02T19:17:08+00:00",
+  "retrieved_utc": "2026-10-02T19:22:06+00:00",
   "source_status": "live",
   "capture_method": "Rendered by headless Chromium (scripts/render_leaderboard.py) because the official page builds its table with JavaScript, then parsed and validated by scripts/update_leaderboard.py (strategy: header row 0, score column 3).",
   "parse_strategy": "header row 0, score column 3",
@@ -312,7 +312,7 @@
   "phase_caveat": "These are public leaderboard results only, not private Initial Prize Round (Phase 1) or expert-updated Final Prize Round (Phase 2) scores.",
   "capture_path": "headless-render",
   "refresh_status": {
-    "checked_utc": "2026-10-02T19:17:05+00:00",
+    "checked_utc": "2026-10-02T19:22:03+00:00",
     "status": "live",
     "capture_path": "headless-render",
     "row_count": 50,
@@ -335,10 +335,10 @@
       ],
       "render": {
         "returncode": 0,
-        "stdout": "rendered 158583 bytes of HTML to /tmp/gems-leaderboard-rendered.html",
+        "stdout": "rendered 158587 bytes of HTML to /tmp/gems-leaderboard-rendered.html",
         "stderr": ""
       },
-      "rendered_bytes": 158583
+      "rendered_bytes": 158587
     }
   },
   "source_note": "Retrieved live from the official public leaderboard page."
