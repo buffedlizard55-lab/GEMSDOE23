@@ -1,18 +1,18 @@
 {
   "schema_version": 2,
-  "generated_utc": "2026-10-02T15:32:18+00:00",
+  "generated_utc": "2026-10-02T17:48:17Z",
   "status": "QA_CANDIDATE_ONLY",
   "artifact_role": "research_candidate_preflight_only",
-  "candidate_id": "H24-distributed-habitat-archived-candidate",
+  "candidate_id": "H30-arrangement-matched-habitat",
   "artifact": {
-    "file": "gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif",
-    "sha256": "e29e8f04e048a4aa210edbc1128dc39703e9271a11c02a5a391c7753339b0125",
-    "bytes": 1705590,
+    "file": "gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif",
+    "sha256": "38539dc647d5ede0d8fa90123810d18130ee15e524097f55e83b6b8a57976ea9",
+    "bytes": 1692444,
     "geometry": {
-      "area": 100000,
-      "eta": 0.946022680409377,
-      "kbar": 0.17378193140029907,
-      "coverage": 0.437935839150397
+      "area": 91533.0,
+      "kbar": 0.15661264955997467,
+      "eta": 0.9314210940316786,
+      "coverage": 0.3794449498030407
     }
   },
   "template": {
@@ -20,25 +20,27 @@
     "sha256": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc"
   },
   "format_preflight": {
-    "status": "PASS",
+    "status": "PASS_RECORDED_NOT_RERUN",
     "report": "docs/data/current-template-validation.json",
-    "scope": "Format preflight only. Passing this file-format audit does not validate fault placement, does not establish a score, and does not release a competition slot."
+    "current_tiff_audit": "docs/data/current-tiff-audit.json",
+    "scope": "Historical exact-template check is recorded in the manifest; current standalone file audit passes structure and range, but exact comparison is not checked because the template is absent."
   },
   "spatial_holdout": {
     "status": "BLOCKED",
     "record": "docs/data/current-holdout-best.json",
-    "reason": "No reproducible, non-withdrawn spatially blocked comparison is registered as the current best. docs/data/validation-report.json is WITHDRAWN (I-05); the public H19 page's holdout claims cannot be reproduced from this checkout, and its score-to-file attribution is unresolved. Do not spend a competition submission slot until a verified independent-uncatalogued-fault holdout and exact current-best OOF artifact are registered here."
+    "reason": "No reproducible, non-withdrawn independent uncatalogued-fault spatial holdout/current-best OOF comparison is registered. The current-best registry is BLOCKED. Format checks and a standalone TIFF audit do not validate placement or authorize a competition upload. Do not spend a submission slot."
   },
   "release_decision": {
     "status": "BLOCKED",
     "eligible_for_submission": false,
     "approved": false,
-    "reason": "No reproducible, non-withdrawn spatially blocked comparison is registered as the current best. docs/data/validation-report.json is WITHDRAWN (I-05); the public H19 page's holdout claims cannot be reproduced from this checkout, and its score-to-file attribution is unresolved. Do not spend a competition submission slot until a verified independent-uncatalogued-fault holdout and exact current-best OOF artifact are registered here.",
-    "current_best_registry": "docs/data/current-holdout-best.json"
+    "reason": "No reproducible, non-withdrawn independent uncatalogued-fault spatial holdout/current-best OOF comparison is registered. The current-best registry is BLOCKED. Format checks and a standalone TIFF audit do not validate placement or authorize a competition upload. Do not spend a submission slot.",
+    "current_best_registry": "docs/data/current-holdout-best.json",
+    "current_best_registry_sha256": "ef9ae8f326d5a886320c0d07b0f4e6711ea8501095b4b02dc885d1f9c822412c"
   },
   "score_projection": {
     "status": "NOT_REPORTED",
-    "reason": "No valid spatially blocked comparison against a registered current-best OOF map; no numerical score/placement projection is presented."
+    "reason": "No valid independent spatially blocked comparison exists; no numerical score forecast is presented."
   },
-  "legacy_record_note": "Supersedes the prior submission-build record that contained unvalidated projected DTI values; those values are not release evidence and are intentionally not carried forward."
+  "legacy_record_note": "The earlier H24 preflight record is archived separately; conditional metric scenarios are not expected scores or release evidence."
 }

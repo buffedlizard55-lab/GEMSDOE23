@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Historical deep-ensemble uncertainty report, survey-coverage policy, and explicit reproduction caveats.">
+  <meta name="description" content="Deep-ensemble epistemic/aleatoric decomposition, survey-coverage priority rule and Phase 2 candidates.">
   <title>Uncertainty · GEMSDOE23</title>
   <link rel="stylesheet" href="assets/site.css">
   <script defer src="assets/site.js"></script>
@@ -16,6 +16,7 @@
     <nav class="nav" aria-label="Main navigation">
       <a href="index.html">Overview</a>
       <a href="executive-summary.html">How to submit</a>
+      <a href="clustering.html">Clustering audit</a>
       <a href="hypotheses.html">New hypotheses</a>
       <a href="uncertainty.html" aria-current="page">Uncertainty</a>
       <a href="evidence.html">Evidence</a>
@@ -28,37 +29,40 @@
 <main id="main">
 
   <section class="hero"><div class="hero-grid"><div>
-    <div class="eyebrow">Uncertainty · historical report</div><h1>Epistemic and aleatoric uncertainty—retrain before reuse.</h1>
-    <p class="lead">The mathematical decomposition is exact for an independently trained Bernoulli deep ensemble:
-    <span class="formula">Var(Y) = E<sub>m</sub>[p<sub>m</sub>(1 − p<sub>m</sub>)] + Var<sub>m</sub>(p<sub>m</sub>)</span>.
-    Historical JSON records five full-domain members and blocked out-of-fold runs, but model checkpoints and some input layers are absent from this checkout;
-    this continuation did not reproduce those predictions. See the member-provenance and coverage caveat below.</p></div>
-    <aside class="hero-aside"><span class="status status-warning">Historical values · not re-run here</span>
-      <strong style="margin:.8rem 0 .45rem">Recorded epistemic share 0.143</strong>
-      <p class="small">This number is quoted from <code>data/ensemble-report.json</code>, not newly generated or verified against checkpoints in this checkout.</p></aside></div></section>
+    <div class="eyebrow">Uncertainty · historical model outputs</div><h1>Epistemic versus aleatoric, from a deep ensemble</h1>
+    <p class="lead">The prior run used 5 independently initialised, independently trained convolutional members; no test-time dropout. The checkpoint, training rasters and external coverage layers are not present in this checkout, so these saved candidate variances are not freshly reproduced or calibrated here.
+    For Bernoulli outputs the total predictive variance decomposes exactly as
+    <span class="formula">Var(Y) = E<sub>m</sub>[p<sub>m</sub>(1 − p<sub>m</sub>)] + Var<sub>m</sub>(p<sub>m</sub>)</span>
+    — aleatoric first, epistemic second (population variance, ddof = 0) — per Lakshminarayanan, Pritzel &amp; Blundell, NeurIPS 2017.</p></div>
+    <aside class="hero-aside"><span class="status status-warning">Saved prior-run output · not reproduced</span>
+      <strong style="margin:.8rem 0 .45rem">Epistemic share 0.143</strong>
+      <p class="small">of total predictive variance over the scored domain, 5 members,
+      5 blocked folds × 3 members out-of-fold.</p></aside></div></section>
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">The brief's rule, implemented literally</div><h2>How survey coverage changes a candidate's priority</h2></div></div>
     <div class="grid-2">
       <div class="card"><div class="card-kicker">High epistemic variance in under-surveyed terrain → a finding</div>
-        <p>Project review policy: members' disagreement in independently confirmed low-coverage terrain <em>raises</em> review priority because the area may be under-mapped.
-        The historical candidate report records 14 candidates in this class; this count is not recomputed here.</p></div>
+        <p>The members disagree because the data does not constrain the answer. Where independent survey coverage is low, that is exactly
+        where a structure can exist and never have been recorded, so the disagreement <em>raises</em> review priority.
+        14 of the reported candidates fall in this class.</p></div>
       <div class="card"><div class="card-kicker">High epistemic variance in well-surveyed terrain → suspicion</div>
-        <p>If independent records confirm adequate survey coverage and members still disagree, treat the disagreement with suspicion rather than as positive evidence.
-        The historical candidate report flags 13 candidate(s); this count is not recomputed here.</p></div>
+        <p>If the ground has been flown, lidar-mapped and geologically mapped and the members still disagree, the disagreement is more
+        likely a model artefact than a missing fault, so priority is damped.
+        13 candidates are flagged this way.</p></div>
       <div class="card"><div class="card-kicker">Aleatoric variance never changes priority</div>
-        <p>E<sub>m</sub>[p<sub>m</sub>(1 − p<sub>m</sub>)] summarizes within-member Bernoulli uncertainty; it is distinct from disagreement between trained members.
-        Report both components and the model/data definition. This historic report was not reproduced here, so neither component is used for release decisions.</p></div>
+        <p>E<sub>m</sub>[p<sub>m</sub>(1 − p<sub>m</sub>)] is irreducible noise in the observations — 100 m pixels mixing a 3 m scarp with its
+        footwall, 400 m flight-line spacing, misregistered source maps. Adding members cannot reduce it, so it is reported but not acted on.</p></div>
       <div class="card"><div class="card-kicker">Coverage is measured, not assumed</div>
-        <p>The historical report combined 3DEP validity and USGS SGMC structure-line density. The referenced coverage raster is not present in this checkout, so its mapped percentage and candidate zones cannot be rechecked here.
-        Future reviews must compute coverage from the actual AOI grids and their metadata, keep the epistemic/aleatoric split, and treat coverage-adjusted uncertainty as a reviewer aid—not as a submission raster.</p></div>
+        <p>The prior run defined coverage = 0.5 · (1 m 3DEP lidar validity, band 12 of <code>lidar_scarp_features_u8.tif</code>, 0.754 of the footprint)
+        + 0.5 · (rank of USGS SGMC structure-line density in a 2.1 km window). Those external rasters are absent now, so the mask and AOI validity cannot be checked from this checkout. Priority never modifies the submitted raster — it is a reviewer-ranking aid only.</p></div>
     </div>
   </section>
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">Out-of-fold honesty check</div><h2>Did the detector beat a random emission?</h2>
-      <p>The historical report records the gate as <strong>NOT PASSED</strong>
-      (0/5 folds), with mean values 0.0440 versus
-      0.1012). These numbers are not reproduced from current checkpoints/data and are not release evidence.
-      The report states the detector was excluded; see <a href="data/submission-build.json">the archived build record</a>.</p></div></div>
+      <p>detector admitted to the emission only if folds_beating_random &gt;= ceil(n_folds/2)+1 → <strong>NOT PASSED</strong>
+      (0/5 folds). Mean ensemble DTI 0.0440 versus
+      mean random-control DTI 0.1012. Because the gate did not pass, the detector's weight in the submitted
+      emission was set to 0 and the reason is recorded in <a href="data/submission-build.json">submission-build.json</a>.</p></div></div>
     <div class="table-wrap"><table class=""><thead><tr><th>fold</th><th>target px</th><th>budget px</th><th>ensemble DTI</th><th>random control DTI</th><th>beats random</th><th>epistemic share</th></tr></thead><tbody><tr><td class="numeric">0</td><td>10,599</td><td>7,614</td><td>0.0280</td><td>0.1073</td><td><strong>no</strong></td><td>0.210</td></tr><tr><td class="numeric">1</td><td>5,218</td><td>17,204</td><td>0.0289</td><td>0.0747</td><td><strong>no</strong></td><td>0.114</td></tr><tr><td class="numeric">2</td><td>23,357</td><td>22,095</td><td>0.0732</td><td>0.1043</td><td><strong>no</strong></td><td>0.092</td></tr><tr><td class="numeric">3</td><td>13,504</td><td>9,220</td><td>0.0490</td><td>0.1075</td><td><strong>no</strong></td><td>0.114</td></tr><tr><td class="numeric">4</td><td>9,444</td><td>6,164</td><td>0.0409</td><td>0.1123</td><td><strong>no</strong></td><td>0.141</td></tr></tbody></table></div>
   </section>
   <section class="section">
@@ -74,7 +78,7 @@
 </main>
 <footer class="site-footer">
   <div class="footer-inner">
-    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of 2026-10-02 UTC</span>
+    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of 2026-10-02 16:54 UTC</span>
     <span><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">Official competition</a> · <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a> · <a href="https://github.com/buffedlizard55-lab/GEMSDOE23">This repository</a></span>
   </div>
 </footer>

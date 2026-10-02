@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Current submission status, release-blocking spatial holdout, conditional future upload steps, and traceability records.">
-  <title>Release gate and upload guide · GEMSDOE23</title>
+  <meta name="description" content="Exact upload steps, the submission note, the decision rule and the traceability index.">
+  <title>How to submit · GEMSDOE23</title>
   <link rel="stylesheet" href="assets/site.css">
   <script defer src="assets/site.js"></script>
 </head>
@@ -16,6 +16,7 @@
     <nav class="nav" aria-label="Main navigation">
       <a href="index.html">Overview</a>
       <a href="executive-summary.html" aria-current="page">How to submit</a>
+      <a href="clustering.html">Clustering audit</a>
       <a href="hypotheses.html">New hypotheses</a>
       <a href="uncertainty.html">Uncertainty</a>
       <a href="evidence.html">Evidence</a>
@@ -28,79 +29,92 @@
 <main id="main">
 
   <section class="hero"><div class="hero-grid"><div>
-    <div class="eyebrow">Executive summary · release gate BLOCKED</div>
-    <h1>Candidate QA, not submission approval.</h1>
-    <p class="lead">The available GeoTIFF passes hard format checks against the official template. The current-best spatial holdout is blocked,
-    so <strong>do not upload this candidate or spend a weekly slot</strong>. Review the gate and exact future upload steps below.</p></div>
-    <aside class="hero-aside"><span class="status status-warning">Format preflight PASS · release BLOCKED</span>
-      <strong style="margin:.8rem 0 .45rem">1.70559 MB · e29e8f04e048a4aa…</strong>
-      <p class="small">Single band, float32, EPSG:32611, 3292×3730, 100 m, values in [0,1], NaN outside — template checked. This is file-format evidence only, not placement/score validation.</p></aside></div></section>
+    <div class="eyebrow">Executive summary</div>
+    <h1>Submission steps—only after holdout approval</h1>
+    <p class="lead">The H30 GeoTIFF is a QA candidate, not an approved submission. The current independent spatial-holdout gate is BLOCKED; do not spend a slot. These are the upload steps to follow only after a future candidate is explicitly approved in the manifest.</p></div>
+    <aside class="hero-aside"><span class="status status-warning">TIFF value/structure audit PASS · template match not rechecked · release BLOCKED</span>
+      <strong style="margin:.8rem 0 .45rem">1.69 MB · 38539dc647d5ede0…</strong>
+      <p class="small">Current standalone TIFF audit: 3292×3730, one float32 band, EPSG:32611, 100 m pixels; finite values 0.0–1.0 and 7,111,787 NaNs. Exact sample-template comparison was not checked because <code>data/sample_submission.tif</code> is absent. A prior template-validation record names <code>data/sample_submission.tif</code> (SHA-256 2176d08e485aa2cd…), but that raster is absent and the comparison was not re-run in this checkout.</p></aside></div></section>
 
   <section class="section" id="download">
     <div class="section-head">
-      <div><div class="eyebrow">First-page download · template format preflight only</div>
+      <div><div class="eyebrow">First-page download · format preflight, not upload approval</div>
       <h2>Downloadable QA candidate</h2></div>
-      <span class="status status-warning">Format preflight PASS · release BLOCKED</span>
+      <span class="status status-warning">TIFF value/structure audit PASS · template match not rechecked · release BLOCKED</span>
     </div>
     <div class="download-card">
       <div>
-        <h3>H24 · research candidate only</h3>
-        <p>The file is provided for format QA and inspection, not as a recommendation or approved submission. Its geological placement has not passed a current-best spatial holdout; historical score projections are intentionally not repeated here.</p>
+        <h3>H30 · arrangement-matched habitat emission (H24 ranking, audit-constrained) · QA only</h3>
+        <p>Current standalone TIFF audit: 3292×3730, one float32 band, EPSG:32611, 100 m pixels; finite values 0.0–1.0 and 7,111,787 NaNs. Exact sample-template comparison was not checked because <code>data/sample_submission.tif</code> is absent. The manifest records an earlier template comparison as passing, but that comparison could not be re-run in this checkout. No reproducible independent uncatalogued-fault holdout has approved placement. Conditional scenario calculations are not a competition-score forecast; this file is for inspection and file-format QA only.</p>
         <div class="file-meta">
-          <span>Filename: <code>gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif</code></span>
+          <span>Filename: <code>gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif</code></span>
           <span>3292 × 3730</span><span>single-band float32</span><span>EPSG:32611</span><span>100 m pixels</span>
           <span>values in [0, 1]</span><span>NaN outside the footprint</span>
-          <span>1.71 MB</span><span>SHA-256 e29e8f04e048a4aa…</span>
-          <span>candidate mass 100,000 px</span>
-          <span>dispersion efficiency η = 0.946</span>
+          <span>1.69 MB</span><span>SHA-256 38539dc647d5ede0…</span>
+          <span>emitted mass 91,533 px</span>
+          <span>dispersion efficiency η = 0.931</span>
         </div>
-        <div class="callout"><strong>Do not upload or spend a weekly slot.</strong> No reproducible, non-withdrawn spatially blocked comparison is registered as the current best. docs/data/validation-report.json is WITHDRAWN (I-05); the public H19 page&#x27;s holdout claims cannot be reproduced from this checkout, and its score-to-file attribution is unresolved. Do not spend a competition submission slot until a verified independent-uncatalogued-fault holdout and exact current-best OOF artifact are registered here.</div>
+        <div class="callout"><strong>Do not upload or spend a weekly slot.</strong> No reproducible, non-withdrawn independent uncatalogued-fault spatial holdout/current-best OOF comparison is registered. The current-best registry is BLOCKED. Format checks and a standalone TIFF audit do not validate placement or authorize a competition upload. Do not spend a submission slot.</div>
       </div>
       <div class="button-row">
-        <a class="button" href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif" download>Download QA candidate .tif ↓</a>
-        <a class="button button-secondary" href="data/submission-manifest.json">Candidate manifest</a>
-        <a class="button button-secondary" href="data/current-holdout-best.json">Holdout release status</a>
-        <a class="button button-secondary" href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-allfinite.tif" download>All-finite QA variant</a>
+        <a class="button" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif" download>Download QA candidate .tif ↓</a>
+        <a class="button button-secondary" href="data/submission-manifest.json">Manifest JSON</a>
+        <a class="button button-secondary" href="data/current-tiff-audit.json">Current TIFF audit</a>
+        <a class="button button-secondary" href="clustering.html">Audit &amp; clustering evidence</a>
+        <a class="button button-secondary" href="data/submission-build.json">Budget evidence</a>
+        <a class="button button-secondary" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif" download>All-finite variant</a>
       </div>
     </div>
-    <div class="copy-row" aria-label="Candidate note (not for upload)" style="margin-top:1rem">
-      <input id="submission-note" readonly value="GEMSDOE23 QA ONLY — not for upload | gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif | sha256 e29e8f04">
-      <button type="button" data-copy-target="submission-note">Copy candidate note</button>
+    <div class="copy-row" aria-label="QA candidate note preview, not for upload" style="margin-top:1rem">
+      <input id="submission-note" readonly value="GEMSDOE23 H30 | QA-only, unscored; no score forecast; release blocked pending independent uncatalogued-fault holdout | 91,533 dots | sha256 38539dc6">
+      <button type="button" data-copy-target="submission-note">Copy QA candidate note</button>
     </div>
+    <p class="small" style="margin-top:.9rem"><strong>Other QA files</strong> (main-branch records list earlier template checks; the official sample is absent now; none scored):
+      <a href="downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-nan.tif" download>H29 · de-aliased lattice-regime emission (H24 ranking)</a> (<a href="downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-allfinite.tif" download>all-finite</a>) · <a href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif" download>H24 · superseded (comb at 400 m, 931 dots too close)</a></p>
   </section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">Only after approval</div><h2>Future upload steps</h2></div></div>
-    <div class="callout"><strong>Current status: do not upload.</strong> No reproducible, non-withdrawn spatially blocked comparison is registered as the current best. docs/data/validation-report.json is WITHDRAWN (I-05); the public H19 page&#x27;s holdout claims cannot be reproduced from this checkout, and its score-to-file attribution is unresolved. Do not spend a competition submission slot until a verified independent-uncatalogued-fault holdout and exact current-best OOF artifact are registered here. The visible download is only for QA and inspection.</div>
+    <div class="section-head"><div><div class="eyebrow">Step by step</div><h2>Upload procedure</h2></div></div>
     <ol class="list-clean">
-      <li><strong>Wait for a new release artifact.</strong> It must be uniquely named and produced by <code>scripts/build_submission.py</code> only after a passing spatial holdout against the exact registered current-best OOF map.</li>
-      <li><strong>Run the final preflight</strong> with <code>scripts/validate_submission.py --template data/sample_submission.tif --prediction &lt;release.tif&gt;</code>. Confirm every hard check passes and compare the reported SHA-256 with its manifest.</li>
-      <li><strong>Sign in</strong> at <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">the official competition page</a> and open the Submissions tab for the registered team/entity.</li>
-      <li><strong>Upload the single-band <code>.tif</code> unchanged</strong>; do not round-trip it through GIS software. Paste the release manifest’s short, unique note and retain the artifact SHA-256.</li>
-      <li><strong>Record the returned public score</strong> with its retrieval date and artifact hash. Keep public, private Initial Round, and expert-updated Final Round results separate.</li>
+      <li><strong>First check approval.</strong> Do not upload the current QA candidate. Proceed only when <code>docs/data/submission-manifest.json</code> records an explicit spatial-holdout release approval and its report hashes match <code>docs/data/current-holdout-best.json</code>.</li>
+      <li><strong>Download only the approved file</strong> named in the updated release manifest. The button above is currently for QA and format inspection, not an upload.</li>
+      <li><strong>Sign in</strong> at <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">drivendata.org/competitions/306</a> and open the <em>Submissions</em> tab only after approval. The account must be the entity registered for this competition.</li>
+      <li><strong>Upload the approved <code>.tif</code> unchanged</strong> and use its unique filename/note. Do not open and re-save it in GIS software: that may rewrite nodata or raster metadata.</li>
+      <li><strong>Record the score only after an approved upload</strong>: <code>python scripts/record_score.py --score &lt;X&gt; --id &lt;approved-sha8&gt;</code>. Do not use this step to justify an unvalidated upload or alter a release decision retroactively.</li>
     </ol>
-    <div class="callout"><strong>Range-error fallback.</strong> The all-finite candidate variant writes 0 outside the footprint with nodata=0 and passes the template hard checks; this may help if a platform checker evaluates every cell before masking. The uploader has not been tested here. Use a fallback only after a release is approved and its exact TIFF is preflighted.</div>
+    <div class="callout"><strong>The [0, 1] compatibility fallback is also QA-only today.</strong> If a future release-approved upload is rejected with “Predicted values must be in range [0, 1]”, use only the matching approved all-finite variant (<code>gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif</code>) after confirming the manifest/hash. It writes 0.0 outside the footprint; the historical manifest records a prior template check, but the template is missing here and no online uploader test was made. Current H30/H29 files must not be uploaded.</div>
   </section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">Decision gate</div><h2>Why no slot is authorized</h2></div></div>
+    <div class="callout"><strong>What the audit changed in the H30 QA candidate (not an upload recommendation).</strong> The previous file (H24) carried a spectral line at exactly the 400 m GeoDAWN flight-line spacing
+    (strength 243 against a control 95th percentile of 10), had 931 dots closer than its stated 400 m, and was statistically a uniform lattice
+    (signed divergence from the catalogue -0.58). H30 has no such line (strength 2.3),
+    0 pairs closer than 400 m, and signed divergence -0.21. Evidence: <a href="clustering.html">clustering audit</a>.</div>
+  </section>
+  <section class="section">
+    <div class="section-head"><div><div class="eyebrow">Rules that constrain the decision</div><h2>Before you spend the slot</h2></div></div>
     <div class="grid-2">
-      <div class="card"><div class="card-kicker">Current holdout best is not registered</div>
-        <p><code>data/current-holdout-best.json</code> is BLOCKED. The prior known-catalogue validation report is WITHDRAWN, and self-reported H19 holdout results cannot be reproduced from this checkout. A public score projection or a format pass cannot substitute for a candidate-versus-current-best spatial test.</p></div>
-      <div class="card"><div class="card-kicker">Release builder fails closed</div>
-        <p><code>scripts/build_submission.py</code> requires a verified four-fold current-best record, matching OOF hashes and a passing candidate comparison. <code>scripts/build_submission_live.py</code> is only a candidate/preflight builder and labels its files not approved.</p></div>
-      <div class="card"><div class="card-kicker">Public is not private or final</div>
-        <p>The official problem page describes separate public/private scoring and later expert review. Public rank is not hidden Initial Prize Round performance; the same selected submission is later rescored against expanded expert labels. See the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">official task page</a> and <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/rules/">rules</a>.</p></div>
-      <div class="card"><div class="card-kicker">Attribution remains unresolved</div>
-        <p>The official board rows at 0.1922 and 0.1894 do not identify the H19 TIFFs. The H19 page itself calls them not live-scored yet. No causal H19 feature contribution is claimed.</p></div>
+      <div class="card"><div class="card-kicker">Three uploads per rolling seven days</div>
+        <p>Official rules §3.2/§3.4 (re-read 2026-10-02) permit up to three feedback submissions per rolling seven days. The standing project rule is stricter: a candidate must beat the registered current best on an independent uncatalogued-fault spatial holdout before an upload is considered. <strong>No such holdout exists.</strong> The current registry is BLOCKED; public-board correlations and known-catalogue folds are not substitutes. Keep every slot unused until the gate can be met; a competition upload is not a validation set.</p></div>
+      <div class="card"><div class="card-kicker">Which file, and what to expect</div>
+        <p><strong>H30</strong> (the QA download above) is an arrangement-audited emission whose main-branch manifest records a prior template-format pass; the sample template is absent here and the comparison was not re-run. <strong>H29</strong> is the de-aliased lattice control; H24 is superseded. None has a live score or release approval. Numbers in the historical budget file are conditional sensitivities, not a forecast. No expected leaderboard score is claimed.</p></div>
+      <div class="card"><div class="card-kicker">No experiment slot is authorized</div>
+        <p>H-32 on the <a href="hypotheses.html">hypotheses page</a> describes possible paired experiments, but those designs do not waive the independent-holdout rule. They must not be run through competition slots unless the user later revises that standing constraint.</p></div>
+      <div class="card"><div class="card-kicker">One submission for both prize rounds</div>
+        <p>The same file is scored on the private test set at the close (Initial Round, 5 × $10,000) and re-scored against the
+        expanded expert labels in the Final Round ($250,000 pool). Known USGS/INGENIOUS fault pixels are masked out in
+        <em>both</em> rounds (staff ruling, forum 11516), so nothing is gained by painting the catalogue.</p></div>
+      <div class="card"><div class="card-kicker">Deadline</div>
+        <p><strong>3 December 2026, 23:59 UTC.</strong> Generative-AI use must be disclosed per the rules; this repository discloses it in
+        <code>README.md</code> and <code>docs/PROJECT_BRIEF.md</code>.</p></div>
     </div>
   </section>
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">Traceability</div><h2>Every number on this page</h2></div></div>
-    <div class="table-wrap"><table class=""><thead><tr><th>file</th><th>what it records</th></tr></thead><tbody><tr><td><a href='data/submission-manifest.json'>submission-manifest.json</a></td><td>QA candidate filename/hash and explicit BLOCKED release decision</td></tr><tr><td><a href='data/current-template-validation.json'>current-template-validation.json</a></td><td>current formal TIFF-to-template hard checks; format evidence only</td></tr><tr><td><a href='data/current-holdout-best.json'>current-holdout-best.json</a></td><td>release registry; BLOCKED until a reproducible current-best spatial holdout exists</td></tr><tr><td><a href='data/validation-report.json'>validation-report.json</a></td><td>historical known-catalogue comparison; WITHDRAWN and never a release gate</td></tr><tr><td><a href='data/irregularities.json'>irregularities.json</a></td><td>audit flags, attribution conflicts, and documented limitations</td></tr><tr><td><a href='data/ensemble-report.json'>ensemble-report.json</a></td><td>historical ensemble report; not reproduced in the current checkout</td></tr><tr><td><a href='data/phase2-candidates.json'>phase2-candidates.json</a></td><td>historical Phase 2 candidate uncertainty report; retrain before reuse</td></tr></tbody></table></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>file</th><th>what it records</th></tr></thead><tbody><tr><td><a href='data/submission-manifest.json'>submission-manifest.json</a></td><td>H30 QA filename/hash and separate format-preflight versus release-blocked status</td></tr><tr><td><a href='data/current-template-validation.json'>current-template-validation.json</a></td><td>historical independent TIFF hard checks for H29/H30 variants; format only, not re-run here</td></tr><tr><td><a href='data/current-tiff-audit.json'>current-tiff-audit.json</a></td><td>fresh standard-library audit of H30 files; value bounds and TIFF tags only, exact sample-template comparison unavailable</td></tr><tr><td><a href='data/current-holdout-best.json'>current-holdout-best.json</a></td><td>current-best spatial holdout release registry; BLOCKED</td></tr><tr><td><a href='data/submission-build.json'>submission-build.json</a></td><td>historical budget/η/conditional-DTI sensitivities; not a score forecast</td></tr><tr><td><a href='data/habitat-model.json'>habitat-model.json</a></td><td>the habitat regression: selected layers, weights, nested-CV ρ, per-artefact implied TP and skill</td></tr><tr><td><a href='data/live-model-bounds.json'>live-model-bounds.json</a></td><td>exact bounds on |G| per artefact</td></tr><tr><td><a href='data/offline-proxy-audit.json'>offline-proxy-audit.json</a></td><td>the negative result: every offline proxy truth vs the live ordering</td></tr><tr><td><a href='data/oof-evaluation.json'>oof-evaluation.json</a></td><td>the deep ensemble's out-of-fold DTI against a random-emission control, and the admission gate</td></tr><tr><td><a href='data/phase2-candidates.json'>phase2-candidates.json</a></td><td>reviewer candidates with the epistemic/aleatoric split and survey coverage</td></tr><tr><td><a href='data/fault-statistics.json'>fault-statistics.json</a></td><td>the fault-population statistics fitted on the known catalogue before any model, the prior and the tip-wedge analysis</td></tr><tr><td><a href='data/prediction-audit.json'>prediction-audit.json</a></td><td>the audit of 23 live-scored emissions and of H24/H29/H30, with the calibration against the live scores</td></tr><tr><td><a href='data/h29-build.json'>h29-build.json</a> · <a href='data/h30-build.json'>h30-build.json</a> · <a href='data/candidates.json'>candidates.json</a></td><td>before/after audit of each file, the equalisation statistics and the scenario table</td></tr></tbody></table></div>
   </section>
 </main>
 <footer class="site-footer">
   <div class="footer-inner">
-    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of 2026-10-02 UTC</span>
+    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of 2026-10-02 16:54 UTC</span>
     <span><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">Official competition</a> · <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a> · <a href="https://github.com/buffedlizard55-lab/GEMSDOE23">This repository</a></span>
   </div>
 </footer>

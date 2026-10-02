@@ -1,7 +1,7 @@
 {
-  "checked_utc": "2026-10-02",
-  "status": "dated-snapshot",
-  "capture_path": "Arena official-page fetch",
+  "checked_utc": "2026-10-02T16:54:25+00:00",
+  "status": "live",
+  "capture_path": "headless-render",
   "row_count": 50,
   "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
   "top": {
@@ -11,12 +11,20 @@
     "score_text": "0.3195"
   },
   "diagnostics": {
-    "source": "Official DrivenData leaderboard page",
-    "capture": "Arena page-reader manual capture",
-    "rows_persisted": 50,
-    "visible_rank_range": "1-50",
-    "retrieved_utc": "2026-10-02 (exact time not supplied by page-reader tool)",
-    "notes": "This record is not a live API response; page ordering/scores can change."
-  },
-  "notes": "The snapshot was refreshed from the official rendered page; automated repository Chromium refresh was not run here. The current branch does not claim a continuously live feed."
+    "attempts": [
+      {
+        "user_agent": "Mozilla/5.0",
+        "http_status": 200,
+        "final_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
+        "bytes": 30166,
+        "ok": true
+      }
+    ],
+    "render": {
+      "returncode": 0,
+      "stdout": "rendered 158596 bytes of HTML to /tmp/gems-leaderboard-rendered.html",
+      "stderr": ""
+    },
+    "rendered_bytes": 158596
+  }
 }

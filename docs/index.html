@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="First-page QA GeoTIFF download, current release gate, leaderboard context, and evidence limits for DOE GEMS Prize submissions.">
-  <title>GEMSDOE23 · geothermal fault discovery</title>
+  <meta name="description" content="One-click QA-only GeoTIFF candidate with the current blocked release gate, fault-population evidence and documented limitations.">
+  <title>GEMSDOE23 · QA candidate and evidence</title>
   <link rel="stylesheet" href="assets/site.css">
   <script defer src="assets/site.js"></script>
 </head>
@@ -16,6 +16,7 @@
     <nav class="nav" aria-label="Main navigation">
       <a href="index.html" aria-current="page">Overview</a>
       <a href="executive-summary.html">How to submit</a>
+      <a href="clustering.html">Clustering audit</a>
       <a href="hypotheses.html">New hypotheses</a>
       <a href="uncertainty.html">Uncertainty</a>
       <a href="evidence.html">Evidence</a>
@@ -30,85 +31,110 @@
   <section class="hero">
     <div class="hero-grid">
       <div>
-        <div class="eyebrow">DOE GEMS Prize · DrivenData #306 · evidence records of 2026-10-02 UTC</div>
-        <h1>Spatial validation before submissions.</h1>
-        <p class="lead">A first-page H24 GeoTIFF is available for format QA, but it is <strong>not approved for a competition slot</strong>.
-        Its hard template checks pass; no reproducible candidate-versus-current-best spatial holdout is registered. The organizer says
-        the discovery target is expert-mapped fault geometry missing from the public catalogue—not the catalogue labels themselves.</p>
+        <div class="eyebrow">DOE GEMS Prize · DrivenData #306 · evidence records of 2026-10-02 16:54 UTC · source rasters absent in current checkout</div>
+        <h1>Faults are spatially structured; this emission remains a QA candidate.</h1>
+        <p class="lead">The known catalogue is strongly clustered (4.2× the random expectation at 1 km) and obeys the Bour &amp; Davy scaling above 3 km.
+        Held against that statistic, the previous file (H24) was a uniform lattice that carried a spectral line at exactly the <strong>400 m GeoDAWN flight-line spacing</strong>
+        and broke its own separation rule in 931 places. This page now ships <strong>H30</strong>: same ranking, those defects removed, arrangement moved into the bin that holds the best live scores.
+        H29/H30 have no live score, and no independent uncatalogued-fault holdout has approved their placement. The downloadable H30 raster is QA-only; conditional metric scenarios are not a score forecast. The live leader in the latest official capture is <strong id="leader-score-lead">0.3195</strong>.</p>
         <div class="button-row" style="margin-top:1.25rem">
-          <a class="button" href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif" download>Download QA candidate .tif ↓</a>
-          <a class="button button-secondary" href="executive-summary.html">Release gate and submission guide →</a>
+          <a class="button" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif" download>Download QA candidate .tif ↓</a>
+          <a class="button button-secondary" href="executive-summary.html">Exactly how to submit →</a>
+          <a class="button button-secondary" href="clustering.html">The clustering audit →</a>
         </div>
       </div>
       <aside class="hero-aside">
-        <span class="status status-warning">Release gate BLOCKED</span>
-        <strong style="margin:.8rem 0 .45rem">No slot is authorized</strong>
-        <p class="small">Official public leaderboard snapshot: <strong id="leader-score">0.3195</strong>
-        (<span id="leader-name">DARD</span>). Retrieved 2026-10-02; see score caveats below.</p>
-        <a href="verification.html">Why release is blocked →</a>
+        <span class="status status-warning">Holdout approval: BLOCKED</span>
+        <strong style="margin:.8rem 0 .45rem">QA format pass ≠ upload approval</strong>
+        <p class="small">The main-branch manifest records a prior H30 template preflight, but the official template raster is missing from this checkout and the comparison was not re-run here. Placement has not beaten a verified current-best OOF baseline on independent uncatalogued-fault truth. Do not spend a submission slot. Conditional scenario calculations are not a predicted DTI. Latest public leader: <strong id="leader-score">0.3195</strong> (<span id="leader-name">DARD</span>).</p>
+        <a href="verification.html">Review the release gate and open limitations →</a>
       </aside>
     </div>
   </section>
 
   <section class="section" id="download">
     <div class="section-head">
-      <div><div class="eyebrow">First-page download · template format preflight only</div>
+      <div><div class="eyebrow">First-page download · format preflight, not upload approval</div>
       <h2>Downloadable QA candidate</h2></div>
-      <span class="status status-warning">Format preflight PASS · release BLOCKED</span>
+      <span class="status status-warning">TIFF value/structure audit PASS · template match not rechecked · release BLOCKED</span>
     </div>
     <div class="download-card">
       <div>
-        <h3>H24 · research candidate only</h3>
-        <p>The file is provided for format QA and inspection, not as a recommendation or approved submission. Its geological placement has not passed a current-best spatial holdout; historical score projections are intentionally not repeated here.</p>
+        <h3>H30 · arrangement-matched habitat emission (H24 ranking, audit-constrained) · QA only</h3>
+        <p>Current standalone TIFF audit: 3292×3730, one float32 band, EPSG:32611, 100 m pixels; finite values 0.0–1.0 and 7,111,787 NaNs. Exact sample-template comparison was not checked because <code>data/sample_submission.tif</code> is absent. The manifest records an earlier template comparison as passing, but that comparison could not be re-run in this checkout. No reproducible independent uncatalogued-fault holdout has approved placement. Conditional scenario calculations are not a competition-score forecast; this file is for inspection and file-format QA only.</p>
         <div class="file-meta">
-          <span>Filename: <code>gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif</code></span>
+          <span>Filename: <code>gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif</code></span>
           <span>3292 × 3730</span><span>single-band float32</span><span>EPSG:32611</span><span>100 m pixels</span>
           <span>values in [0, 1]</span><span>NaN outside the footprint</span>
-          <span>1.71 MB</span><span>SHA-256 e29e8f04e048a4aa…</span>
-          <span>candidate mass 100,000 px</span>
-          <span>dispersion efficiency η = 0.946</span>
+          <span>1.69 MB</span><span>SHA-256 38539dc647d5ede0…</span>
+          <span>emitted mass 91,533 px</span>
+          <span>dispersion efficiency η = 0.931</span>
         </div>
-        <div class="callout"><strong>Do not upload or spend a weekly slot.</strong> No reproducible, non-withdrawn spatially blocked comparison is registered as the current best. docs/data/validation-report.json is WITHDRAWN (I-05); the public H19 page&#x27;s holdout claims cannot be reproduced from this checkout, and its score-to-file attribution is unresolved. Do not spend a competition submission slot until a verified independent-uncatalogued-fault holdout and exact current-best OOF artifact are registered here.</div>
+        <div class="callout"><strong>Do not upload or spend a weekly slot.</strong> No reproducible, non-withdrawn independent uncatalogued-fault spatial holdout/current-best OOF comparison is registered. The current-best registry is BLOCKED. Format checks and a standalone TIFF audit do not validate placement or authorize a competition upload. Do not spend a submission slot.</div>
       </div>
       <div class="button-row">
-        <a class="button" href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif" download>Download QA candidate .tif ↓</a>
-        <a class="button button-secondary" href="data/submission-manifest.json">Candidate manifest</a>
-        <a class="button button-secondary" href="data/current-holdout-best.json">Holdout release status</a>
-        <a class="button button-secondary" href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-allfinite.tif" download>All-finite QA variant</a>
+        <a class="button" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif" download>Download QA candidate .tif ↓</a>
+        <a class="button button-secondary" href="data/submission-manifest.json">Manifest JSON</a>
+        <a class="button button-secondary" href="data/current-tiff-audit.json">Current TIFF audit</a>
+        <a class="button button-secondary" href="clustering.html">Audit &amp; clustering evidence</a>
+        <a class="button button-secondary" href="data/submission-build.json">Budget evidence</a>
+        <a class="button button-secondary" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif" download>All-finite variant</a>
       </div>
     </div>
-    <div class="copy-row" aria-label="Candidate note (not for upload)" style="margin-top:1rem">
-      <input id="submission-note" readonly value="GEMSDOE23 QA ONLY — not for upload | gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif | sha256 e29e8f04">
-      <button type="button" data-copy-target="submission-note">Copy candidate note</button>
+    <div class="copy-row" aria-label="QA candidate note preview, not for upload" style="margin-top:1rem">
+      <input id="submission-note" readonly value="GEMSDOE23 H30 | QA-only, unscored; no score forecast; release blocked pending independent uncatalogued-fault holdout | 91,533 dots | sha256 38539dc6">
+      <button type="button" data-copy-target="submission-note">Copy QA candidate note</button>
     </div>
+    <p class="small" style="margin-top:.9rem"><strong>Other QA files</strong> (main-branch records list earlier template checks; the official sample is absent now; none scored):
+      <a href="downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-nan.tif" download>H29 · de-aliased lattice-regime emission (H24 ranking)</a> (<a href="downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-allfinite.tif" download>all-finite</a>) · <a href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif" download>H24 · superseded (comb at 400 m, 931 dots too close)</a></p>
   </section>
   <section class="grid-3" aria-label="Status">
-    <div class="card metric-card"><span>Official footprint</span><strong>5,167,373 px</strong><span>3292×3730, EPSG:32611, 100 m; labels are incomplete, not negatives</span></div>
-    <div class="card metric-card"><span>Data ready locally</span><strong>19 bands</strong><span>Core rasters and prepared arrays are present; external feature products are absent from this checkout</span></div>
-    <div class="card metric-card"><span>Current holdout-best record</span><strong>BLOCKED</strong><span>No validated independent spatial comparison is registered; do not spend a submission slot</span></div>
+    <div class="card metric-card"><span>Hidden public-test truth |G|</span><strong>5,564–14,944</strong><span>exact bounds from 24 live scores (10,103 upper if the hidden traces look like SGMC); the previously assumed 125,000 is refuted</span></div>
+    <div class="card metric-card"><span>Dispersion efficiency η of this emission</span><strong>0.931</strong><span>group best 0.85 (h28), h19-5 0.39. The cross-artefact η–q correlation (ρ = +0.61) is confounded; the one controlled pair shows no TP gain from dispersal (I-17)</span></div>
+    <div class="card metric-card"><span>Habitat model, nested leave-one-family-out CV</span><strong>ρ = 0.437</strong><span>on log placement skill, 24 live-scored artefacts, 95 evidence layers</span></div>
   </section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">Evidence boundary</div><h2>What a leaderboard score can—and cannot—tell us</h2></div></div>
+    <div class="section-head"><div><div class="eyebrow">Recorded in the 2026-10-02 audit · inputs currently absent</div><h2>Six findings from fitting the fault statistic before touching the model</h2></div></div>
+    <p class="small">These findings are reproducible records from an earlier hash-verified input restore, not a fresh fit from the current filesystem. The three core competition rasters and all external layers are currently absent; restore and hash-check them before any rerun.</p>
     <div class="grid-2">
-      <div class="card"><div class="card-kicker">H19 values are score matches, not verified attribution</div>
-        <p>The reported H19-5 0.1922 and H19-4 0.1894 match official public rows at ranks 26 and 28, but the board does not expose file hashes or submission IDs. The H19 page itself calls those TIFFs “not live-scored yet”. The four-line geological rationale and spatial-holdout results remain self-reported and unreproduced in this checkout.</p></div>
-      <div class="card"><div class="card-kicker">No causal ablation is available</div>
-        <p>A scalar public score cannot isolate the gain from fault-length scaling, thermal residuals, lidar morphology, or geophysical edges. To claim mechanism, reproduce artifacts and compare controlled ablations on the same frozen spatial holdout against the registered current best.</p></div>
+      <div class="card"><div class="card-kicker">1 · The catalogue is a clustered, self-similar fault population</div>
+        <p>3,199 traces; length exponent a = 3.15 above 3 km; nearest-larger-neighbour x = 1.54
+        against the Bour &amp; Davy prediction 1.20–1.55; correlation dimension ≈ 1.5–1.7; the normalised correlation
+        sum is 3.6–4.2× random between 0.5 and 2 km and still 1.15× at 30 km. <a href="clustering.html">Details and figures →</a></p></div>
+      <div class="card"><div class="card-kicker">2 · H24 failed its own audit</div>
+        <p>A spectral line at exactly the 400 m Area 2 traverse spacing (strength 243 vs a control 95th percentile of 10, rank p = 0.016),
+        931 dots closer than the stated 400 m (equal-score plateaus accepted together), and an arrangement that is statistically a lattice. Removed in H29/H30.</p></div>
+      <div class="card"><div class="card-kicker">3 · The geometric prior is real but small for the faults that matter</div>
+        <p>Faults missing from the catalogue (independent SGMC sample) are enriched ×1.8 at 200–400 m and ×2.1 in the continuation wedge beyond tips, but ≈ 1 beyond 1 km; the continuation zone covers 0.7 % of the domain. Live scores reward no concentration near known faults.
+        The prior is therefore wired in as a tie-break (≤ 0.003 rank units, ~1 % of dots move).</p></div>
+      <div class="card"><div class="card-kicker">4 · Dispersal is not the free lever it was presented as</div>
+        <p>In the one controlled pair (same score, same 155,021 pixels) dispersal raised K̄ 2.7× and lowered skill 2.6×, leaving TP — and DTI (0.1152 → 0.1193) — unchanged. The “0.12–0.34 projected” headline assumed skill would transfer; no score forecast is supported.</p></div>
+      <div class="card"><div class="card-kicker">5 · Arrangement orders the live scores</div>
+        <p>Signed divergence of an emission's pair statistics from the catalogue's: Spearman -0.66 with live DTI (n = 23, post-hoc bins, correlational). Over-clustered detectors average 0.034, lattices 0.093,
+        mildly-less-clustered emissions 0.170. H24 was in the lattice bin; H30 is in the best one.</p></div>
+      <div class="card"><div class="card-kicker">6 · Reproducibility, prior-run record</div>
+        <p>H24 rebuilds bit-for-bit from public inputs; all 23 live-scored artefacts re-fetch with exact pixel-count identity; the full habitat refit reproduces the committed model <em>only</em> when anchors are listed in the committed order (tie-breaking on a duplicate anchor, flag I-20).</p></div>
     </div>
-    <p><a href="hypotheses.html">See four distinct, ranked hypotheses and their holdout status →</a></p>
+    <p class="small">Earlier findings that still stand: |G| is 5,564–14,944 pixels, not 125,000; the habitat is lidar uphill-facing scarps, steps and crests plus 700 m detrended-slope heterogeneity and low radiometric U (nested-CV ρ = 0.437); no offline proxy truth ranks the live artefacts better than chance
+    (best ρ = 0.326, p = 0.120).</p>
   </section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">Official public board</div><h2>Current standings</h2>
-      <p><span class="status status-neutral" id="feed-status">Dated snapshot · captured from official page by hand</span> <span class="small" id="leaderboard-retrieved">Snapshot date: 2026-10-02</span>
-      Manual dated public snapshot; check the official source for newer rows. <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official source</a>.</p></div></div>
-    <div class="table-wrap"><table class=""><thead><tr><th>rank</th><th>participant</th><th>public DW-Tversky</th></tr></thead><tbody id="leaderboard-rows"><tr><td class="numeric">1</td><td>DARD</td><td>0.3195</td></tr><tr><td class="numeric">2</td><td>alexoktaba</td><td>0.3042</td></tr><tr><td class="numeric">3</td><td>Batik Shirt Brothers</td><td>0.2998</td></tr><tr><td class="numeric">4</td><td>xiaofanhu</td><td>0.2941</td></tr><tr><td class="numeric">5</td><td>joeyfezster</td><td>0.2919</td></tr><tr><td class="numeric">6</td><td>mzoorob</td><td>0.2862</td></tr><tr><td class="numeric">7</td><td>HardcoreTechGod</td><td>0.2854</td></tr><tr><td class="numeric">8</td><td>GrigorSargsyan</td><td>0.2742</td></tr><tr><td class="numeric">9</td><td>op01</td><td>0.2710</td></tr><tr><td class="numeric">10</td><td>kinghorton42</td><td>0.2635</td></tr><tr><td class="numeric">11</td><td>ad3002</td><td>0.2627</td></tr><tr><td class="numeric">12</td><td>No Fault of Our Own</td><td>0.2624</td></tr><tr><td class="numeric">13</td><td>tchu</td><td>0.2511</td></tr><tr><td class="numeric">14</td><td>BrandenKMurray</td><td>0.2469</td></tr><tr><td class="numeric">15</td><td>ndavis7</td><td>0.2368</td></tr><tr><td class="numeric">16</td><td>moongrega</td><td>0.2342</td></tr><tr><td class="numeric">17</td><td>Ndabenhle</td><td>0.2304</td></tr><tr><td class="numeric">18</td><td>hiii12345</td><td>0.2262</td></tr><tr><td class="numeric">19</td><td>jgaines</td><td>0.2260</td></tr><tr><td class="numeric">20</td><td>kpomazi</td><td>0.2245</td></tr><tr><td class="numeric">21</td><td>oshbocker</td><td>0.2228</td></tr><tr><td class="numeric">22</td><td>nsabaj</td><td>0.2102</td></tr><tr><td class="numeric">23</td><td>hall4jm</td><td>0.2024</td></tr><tr><td class="numeric">24</td><td>dmitry_v</td><td>0.2013</td></tr><tr><td class="numeric">25</td><td>Ehimenathan</td><td>0.1949</td></tr></tbody></table></div>
-    <p class="small">The public board displays participant names and scores but no prediction-file SHA-256 or public submission ID. Displayed score matches include rank 26 (smrtdoog5) at 0.1922 and rank 28 (SDCF9) at 0.1894; score equality is not artifact, account, or team attribution.</p>
-    <p class="small">These are public leaderboard results only, not private Initial Prize Round (Phase 1) scores or expert-updated Final Prize Round (Phase 2) scores.</p>
+    <div class="section-head"><div><div class="eyebrow">Budget choice</div><h2>Conditional DTI sensitivity (not a score forecast)</h2>
+      <p>The rows use three historical placement-skill assumptions and the columns vary the unknown hidden-truth size |G|. The computation is metric algebra only; neither q nor skill transfer to H30 is validated, and the public score matches do not identify the underlying files. Read every value only as conditional sensitivity—not a prediction, expected DTI, validation result, or release criterion.</p></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>Conditional placement-skill assumption (not validated)</th><th>|G| = 6,000</th><th>|G| = 10,000</th><th>|G| = 15,000</th></tr></thead><tbody><tr><td>lattice-type skill 2.0 (nodes/discovery/r13 measured 1.9-2.7)</td><td>0.081</td><td>0.118</td><td>0.153</td></tr><tr><td>pindrop-nodes skill 2.7</td><td>0.108</td><td>0.158</td><td>0.204</td></tr><tr><td>dotted-ridge skill 5.5 (best dotted, measured)</td><td>0.216</td><td>0.311</td><td>0.399</td></tr></tbody></table></div>
+  </section>
+  <section class="section">
+    <div class="section-head"><div><div class="eyebrow">Live public leaderboard</div><h2>Current standings</h2>
+      <p><span class="status status-neutral" id="feed-status">loading feed…</span> <span class="small" id="leaderboard-retrieved"></span>
+      Refreshed automatically by <code>.github/workflows/pages.yml</code>; <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">official source</a>.</p></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>rank</th><th>participant</th><th>public DW-Tversky</th></tr></thead><tbody id="leaderboard-rows"><tr><td class="numeric">1</td><td>DARD</td><td>0.3195</td></tr><tr><td class="numeric">2</td><td>nchuzhoy</td><td>0.3128</td></tr><tr><td class="numeric">3</td><td>alexoktaba</td><td>0.3042</td></tr><tr><td class="numeric">4</td><td>rariwa</td><td>0.2998</td></tr><tr><td class="numeric">5</td><td>xiaofanhu</td><td>0.2941</td></tr><tr><td class="numeric">6</td><td>joeyfezster</td><td>0.2919</td></tr><tr><td class="numeric">7</td><td>mzoorob</td><td>0.2862</td></tr><tr><td class="numeric">8</td><td>HardcoreTechGod</td><td>0.2854</td></tr><tr><td class="numeric">9</td><td>GrigorSargsyan</td><td>0.2742</td></tr><tr><td class="numeric">10</td><td>op01</td><td>0.2710</td></tr><tr><td class="numeric">11</td><td>kinghorton42</td><td>0.2635</td></tr><tr><td class="numeric">12</td><td>ad3002</td><td>0.2627</td></tr><tr><td class="numeric">13</td><td>exposed</td><td>0.2624</td></tr><tr><td class="numeric">14</td><td>tchu</td><td>0.2511</td></tr><tr><td class="numeric">15</td><td>BrandenKMurray</td><td>0.2469</td></tr><tr><td class="numeric">16</td><td>ndavis7</td><td>0.2368</td></tr><tr><td class="numeric">17</td><td>moongrega</td><td>0.2342</td></tr><tr><td class="numeric">18</td><td>Ndabenhle</td><td>0.2304</td></tr><tr><td class="numeric">19</td><td>hiii12345</td><td>0.2262</td></tr><tr><td class="numeric">20</td><td>jgaines</td><td>0.2260</td></tr><tr><td class="numeric">21</td><td>kpomazi</td><td>0.2245</td></tr><tr><td class="numeric">22</td><td>oshbocker</td><td>0.2228</td></tr><tr><td class="numeric">23</td><td>nsabaj</td><td>0.2102</td></tr><tr><td class="numeric">24</td><td>hall4jm</td><td>0.2024</td></tr><tr><td class="numeric">25</td><td>dmitry_v</td><td>0.2013</td></tr></tbody></table></div>
+    <p class="small">The official public leaderboard displays participants and scores but does not expose a prediction-file SHA-256 or public submission identifier; score equality is not artifact, account, or team attribution. As of 2026-10-02: H19-4 (0.1894) coincides with displayed rank 29 (SDCF9); H19-5 (0.1922) coincides with displayed rank 27 (smrtdoog5).</p>
+    <p class="small">These are public leaderboard results only, not private Initial Prize Round (Phase 1) or expert-updated Final Prize Round (Phase 2) scores.</p>
   </section>
 </main>
 <footer class="site-footer">
   <div class="footer-inner">
-    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of 2026-10-02 UTC</span>
+    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of 2026-10-02 16:54 UTC</span>
     <span><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">Official competition</a> · <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a> · <a href="https://github.com/buffedlizard55-lab/GEMSDOE23">This repository</a></span>
   </div>
 </footer>

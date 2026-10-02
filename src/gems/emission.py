@@ -129,7 +129,8 @@ def optimal_dti_and_area(q: float, g_size: float, domain_px: float = DOMAIN_PX) 
 
 
 def disperse_select(score: np.ndarray, domain: np.ndarray, budget: int,
-                    r_min_px: int = 4, forbid: np.ndarray | None = None) -> np.ndarray:
+                    r_min_px: float = 4, forbid: np.ndarray | None = None,
+                    break_ties: bool = False, tie_seed: int = 0) -> np.ndarray:
     """Greedy highest-score-first selection with a minimum separation.
 
     Equivalent to non-maximum suppression on the score field: in each round only local
@@ -142,11 +143,19 @@ def disperse_select(score: np.ndarray, domain: np.ndarray, budget: int,
     s = np.where(domain, score, -np.inf).astype(np.float64)
     if forbid is not None:
         s[forbid] = -np.inf
+    if break_ties:
+        # The peak test below is ``cand >= local max``, so every pixel of an equal-score plateau is accepted in
+        # the same round and the minimum separation is silently violated (931 of the 100,000 dots of the
+        # shipped H24 have a neighbour < 4 px away, 898 of them adjacent).  A deterministic 1e-9 jitter makes
+        # the local maxima unique.  Off by default so that the shipped H24 file stays reproducible bit-for-bit.
+        fin = np.isfinite(s)
+        s[fin] += np.random.default_rng(tie_seed).random(int(fin.sum())) * 1e-9
     accepted = np.zeros(domain.shape, bool)
     blocked = np.zeros(domain.shape, bool)
-    size = 2 * r_min_px + 1
-    foot = np.zeros((size, size), bool)
-    yy, xx = np.ogrid[-r_min_px:r_min_px + 1, -r_min_px:r_min_px + 1]
+    rc = int(math.ceil(r_min_px))               # integer radii behave exactly as before; fractional radii
+    size = 2 * rc + 1                           # (e.g. 4.4 px) let the spacing be incommensurate with the
+    foot = np.zeros((size, size), bool)         # 400 m flight-line spacing (see src/gems/audit.py)
+    yy, xx = np.ogrid[-rc:rc + 1, -rc:rc + 1]
     foot[(yy * yy + xx * xx) <= r_min_px * r_min_px] = True
     rounds = 0
     while accepted.sum() < budget and rounds < 60:
