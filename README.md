@@ -174,10 +174,18 @@ The short version:
   `files.pythonhosted.org`. DrivenData, Dropbox, USGS, ScienceBase, the National Map and
   `download.pytorch.org` all fail the TLS handshake here; GitHub Actions has full egress and repeats the
   leaderboard fetch there.
-* **GitHub credentials expired during this session** (flag I-12). Everything is committed locally on the
-  session branch, but the pull request, the merge to `main` and the Pages deployment are blocked until the
-  GitHub connection is restored. The official rasters on disk stay hash-verified, so no re-acquisition is
-  needed to continue.
+* **The official leaderboard is client-rendered** (flag I-13). A plain HTTP GET of the leaderboard URL
+  returns 200 and ~30 KB of page shell with `tables: 0, rows: 0, user_links: 0` and a `Loading...`
+  placeholder — the board is built by JavaScript. There is no anonymous JSON endpoint:
+  `/api/competitions/306/leaderboard/` answers 404 with "make sure that you are signed in and signed up
+  for that competition", and this repository uses no credentials and bypasses no access control. So
+  `.github/workflows/pages.yml` installs Playwright/Chromium and refreshes with
+  `scripts/update_leaderboard.py --render`, which executes the page's own public JavaScript anonymously
+  and hands the rendered HTML to the same validating parser. If rendering ever fails, the last verified
+  rows are retained and `docs/data/leaderboard-status.json` records why — the site badge says so instead
+  of silently showing an old board.
+* **GitHub credentials expired mid-session and were restored** (flag I-12, resolved). PRs #4, #5 and #6
+  are merged to `main` and the site is deployed; nothing is blocked on this any more.
 
 ---
 

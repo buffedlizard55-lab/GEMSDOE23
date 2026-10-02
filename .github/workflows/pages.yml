@@ -30,8 +30,28 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install a headless browser for the client-rendered leaderboard
+        run: |
+          # The official board is built by JavaScript: a plain GET returns a 30 KB shell with
+          # tables: 0, rows: 0 and a "Loading..." placeholder (measured from a runner and recorded
+          # in docs/data/leaderboard-status.json). DrivenData has no anonymous JSON endpoint -
+          # /api/competitions/306/leaderboard/ answers 404 asking the caller to sign in, and this
+          # repository does not use credentials or bypass access controls. Executing the page's own
+          # public JavaScript in an anonymous browser is therefore the only faithful automatic path.
+          # Installed here rather than in requirements.txt so the science pipeline and PR CI stay
+          # dependency-light.
+          python -m pip install --upgrade pip
+          pip install playwright==1.63.0
+          python -m playwright install --with-deps chromium
       - name: Refresh the official public leaderboard snapshot
-        run: python scripts/update_leaderboard.py --output docs/data/leaderboard.json --status docs/data/leaderboard-status.json
+        run: |
+          # Not --strict: publication must survive a leaderboard outage. On failure the script keeps
+          # the last verified rows and writes full diagnostics to the status sidecar, which the
+          # commit-back step below puts on main where it can be read without access to CI logs.
+          python scripts/update_leaderboard.py --render --timeout 90 \
+            --output docs/data/leaderboard.json --status docs/data/leaderboard-status.json || true
+          echo "--- refresh status (also committed to docs/data/leaderboard-status.json) ---"
+          cat docs/data/leaderboard-status.json
       - name: Rebuild every page from the evidence records
         run: python scripts/build_site.py
       # Best effort: publication must never be blocked by a rejected commit-back push, so this

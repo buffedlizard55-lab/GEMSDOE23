@@ -58,10 +58,13 @@ jobs:
           # parser end to end and prints the diagnostics, so a bot-wall, a markup change or a
           # JS-only table shows up in the run log instead of silently leaving a stale board
           # published. continue-on-error keeps a third-party change from blocking unrelated work.
-          # No `|| true` here: continue-on-error already keeps the job green, and swallowing the
-          # exit code would hide the one signal this step exists to produce - whether a GitHub
-          # runner is served the real table or a challenge page. A red step with a green job means
-          # "the automated feed is down; the published board is a dated snapshot".
+          # The step conclusion is not a usable signal - continue-on-error reports it as success
+          # either way - so this exists to put the diagnostics in the run log for a human. The
+          # machine-readable channel is docs/data/leaderboard-status.json, which pages.yml commits
+          # to main on every run. This probe deliberately uses the plain-HTTP path only: installing
+          # Chromium in every PR check is not worth it, and pages.yml exercises --render on main.
+          # Known outcome as of 2026-10-02: the official board is client-rendered, so the plain GET
+          # returns a shell (tables: 0) and this probe exits 1 without blocking anything.
           python scripts/update_leaderboard.py --strict --timeout 60 \
             --output /tmp/leaderboard-live.json --status /tmp/leaderboard-status.json
           echo "--- live refresh status ---"
