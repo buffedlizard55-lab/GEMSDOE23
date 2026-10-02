@@ -1,7 +1,7 @@
 {
   "competition": "DOE GEMS Prize / DrivenData #306",
   "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-  "retrieved_utc": "2026-10-02T15:19:31+00:00",
+  "retrieved_utc": "2026-10-02T16:54:29+00:00",
   "source_status": "live",
   "capture_method": "Rendered by headless Chromium (scripts/render_leaderboard.py) because the official page builds its table with JavaScript, then parsed and validated by scripts/update_leaderboard.py (strategy: header row 0, score column 3).",
   "parse_strategy": "header row 0, score column 3",
@@ -14,305 +14,305 @@
     },
     {
       "rank": 2,
+      "participant": "nchuzhoy",
+      "score": 0.3128,
+      "score_text": "0.3128"
+    },
+    {
+      "rank": 3,
       "participant": "alexoktaba",
       "score": 0.3042,
       "score_text": "0.3042"
     },
     {
-      "rank": 3,
+      "rank": 4,
       "participant": "rariwa",
       "score": 0.2998,
       "score_text": "0.2998"
     },
     {
-      "rank": 4,
+      "rank": 5,
       "participant": "xiaofanhu",
       "score": 0.2941,
       "score_text": "0.2941"
     },
     {
-      "rank": 5,
+      "rank": 6,
       "participant": "joeyfezster",
       "score": 0.2919,
       "score_text": "0.2919"
     },
     {
-      "rank": 6,
+      "rank": 7,
       "participant": "mzoorob",
       "score": 0.2862,
       "score_text": "0.2862"
     },
     {
-      "rank": 7,
+      "rank": 8,
       "participant": "HardcoreTechGod",
       "score": 0.2854,
       "score_text": "0.2854"
     },
     {
-      "rank": 8,
+      "rank": 9,
       "participant": "GrigorSargsyan",
       "score": 0.2742,
       "score_text": "0.2742"
     },
     {
-      "rank": 9,
+      "rank": 10,
       "participant": "op01",
       "score": 0.271,
       "score_text": "0.2710"
     },
     {
-      "rank": 10,
+      "rank": 11,
       "participant": "kinghorton42",
       "score": 0.2635,
       "score_text": "0.2635"
     },
     {
-      "rank": 11,
+      "rank": 12,
       "participant": "ad3002",
       "score": 0.2627,
       "score_text": "0.2627"
     },
     {
-      "rank": 12,
+      "rank": 13,
       "participant": "exposed",
       "score": 0.2624,
       "score_text": "0.2624"
     },
     {
-      "rank": 13,
+      "rank": 14,
       "participant": "tchu",
       "score": 0.2511,
       "score_text": "0.2511"
     },
     {
-      "rank": 14,
+      "rank": 15,
       "participant": "BrandenKMurray",
       "score": 0.2469,
       "score_text": "0.2469"
     },
     {
-      "rank": 15,
+      "rank": 16,
       "participant": "ndavis7",
       "score": 0.2368,
       "score_text": "0.2368"
     },
     {
-      "rank": 16,
+      "rank": 17,
       "participant": "moongrega",
       "score": 0.2342,
       "score_text": "0.2342"
     },
     {
-      "rank": 17,
+      "rank": 18,
       "participant": "Ndabenhle",
       "score": 0.2304,
       "score_text": "0.2304"
     },
     {
-      "rank": 18,
+      "rank": 19,
       "participant": "hiii12345",
       "score": 0.2262,
       "score_text": "0.2262"
     },
     {
-      "rank": 19,
+      "rank": 20,
       "participant": "jgaines",
       "score": 0.226,
       "score_text": "0.2260"
     },
     {
-      "rank": 20,
+      "rank": 21,
       "participant": "kpomazi",
       "score": 0.2245,
       "score_text": "0.2245"
     },
     {
-      "rank": 21,
+      "rank": 22,
       "participant": "oshbocker",
       "score": 0.2228,
       "score_text": "0.2228"
     },
     {
-      "rank": 22,
+      "rank": 23,
       "participant": "nsabaj",
       "score": 0.2102,
       "score_text": "0.2102"
     },
     {
-      "rank": 23,
+      "rank": 24,
       "participant": "hall4jm",
       "score": 0.2024,
       "score_text": "0.2024"
     },
     {
-      "rank": 24,
+      "rank": 25,
       "participant": "dmitry_v",
       "score": 0.2013,
       "score_text": "0.2013"
     },
     {
-      "rank": 25,
+      "rank": 26,
       "participant": "Ehimenathan",
       "score": 0.1949,
       "score_text": "0.1949"
     },
     {
-      "rank": 26,
+      "rank": 27,
       "participant": "smrtdoog5",
       "score": 0.1922,
       "score_text": "0.1922"
     },
     {
-      "rank": 27,
+      "rank": 28,
       "participant": "hudsonenterprises",
       "score": 0.1907,
       "score_text": "0.1907"
     },
     {
-      "rank": 28,
+      "rank": 29,
       "participant": "SDCF9",
       "score": 0.1894,
       "score_text": "0.1894"
     },
     {
-      "rank": 29,
+      "rank": 30,
       "participant": "Ehimen777",
       "score": 0.1886,
       "score_text": "0.1886"
     },
     {
-      "rank": 30,
+      "rank": 31,
       "participant": "SOLAPEO",
       "score": 0.1869,
       "score_text": "0.1869"
     },
     {
-      "rank": 31,
+      "rank": 32,
       "participant": "extradr19",
       "score": 0.1855,
       "score_text": "0.1855"
     },
     {
-      "rank": 32,
+      "rank": 33,
       "participant": "doegemsDrivendata",
       "score": 0.1847,
       "score_text": "0.1847"
     },
     {
-      "rank": 33,
+      "rank": 34,
       "participant": "wbg1",
       "score": 0.1839,
       "score_text": "0.1839"
     },
     {
-      "rank": 34,
+      "rank": 35,
       "participant": "jphein",
       "score": 0.1791,
       "score_text": "0.1791"
     },
     {
-      "rank": 35,
+      "rank": 36,
       "participant": "raboush2",
       "score": 0.1742,
       "score_text": "0.1742"
     },
     {
-      "rank": 36,
+      "rank": 37,
       "participant": "Scotty77",
       "score": 0.1682,
       "score_text": "0.1682"
     },
     {
-      "rank": 37,
+      "rank": 38,
       "participant": "rksams7",
       "score": 0.1682,
       "score_text": "0.1682"
     },
     {
-      "rank": 38,
+      "rank": 39,
       "participant": "VictorCallejas",
       "score": 0.1629,
       "score_text": "0.1629"
     },
     {
-      "rank": 39,
+      "rank": 40,
       "participant": "fishnchips",
       "score": 0.1587,
       "score_text": "0.1587"
     },
     {
-      "rank": 40,
+      "rank": 41,
       "participant": "smashi34",
       "score": 0.1563,
       "score_text": "0.1563"
     },
     {
-      "rank": 41,
+      "rank": 42,
       "participant": "jfper21",
       "score": 0.1558,
       "score_text": "0.1558"
     },
     {
-      "rank": 42,
+      "rank": 43,
       "participant": "Aero",
       "score": 0.15,
       "score_text": "0.1500"
     },
     {
-      "rank": 43,
+      "rank": 44,
       "participant": "GeoTrace",
       "score": 0.1498,
       "score_text": "0.1498"
     },
     {
-      "rank": 44,
+      "rank": 45,
       "participant": "mlandry",
       "score": 0.1481,
       "score_text": "0.1481"
     },
     {
-      "rank": 45,
+      "rank": 46,
       "participant": "Milieunomics",
       "score": 0.1466,
       "score_text": "0.1466"
     },
     {
-      "rank": 46,
+      "rank": 47,
       "participant": "kbrodt",
       "score": 0.1456,
       "score_text": "0.1456"
     },
     {
-      "rank": 47,
+      "rank": 48,
       "participant": "syntropy-digital",
       "score": 0.1433,
       "score_text": "0.1433"
     },
     {
-      "rank": 48,
+      "rank": 49,
       "participant": "Waltz157",
       "score": 0.1422,
       "score_text": "0.1422"
     },
     {
-      "rank": 49,
+      "rank": 50,
       "participant": "Beacon",
       "score": 0.1407,
       "score_text": "0.1407"
-    },
-    {
-      "rank": 50,
-      "participant": "Milieu",
-      "score": 0.1401,
-      "score_text": "0.1401"
     }
   ],
   "row_count": 50,
-  "attribution_caveat": "The official public leaderboard displays participants and scores but does not expose a prediction-file SHA-256 or public submission identifier; score equality is not artifact, account, or team attribution. As of 2026-10-02: H19-4 (0.1894) coincides with displayed rank 28 (SDCF9); H19-5 (0.1922) coincides with displayed rank 26 (smrtdoog5).",
+  "attribution_caveat": "The official public leaderboard displays participants and scores but does not expose a prediction-file SHA-256 or public submission identifier; score equality is not artifact, account, or team attribution. As of 2026-10-02: H19-4 (0.1894) coincides with displayed rank 29 (SDCF9); H19-5 (0.1922) coincides with displayed rank 27 (smrtdoog5).",
   "phase_caveat": "These are public leaderboard results only, not private Initial Prize Round (Phase 1) or expert-updated Final Prize Round (Phase 2) scores.",
   "capture_path": "headless-render",
   "refresh_status": {
-    "checked_utc": "2026-10-02T15:19:28+00:00",
+    "checked_utc": "2026-10-02T16:54:25+00:00",
     "status": "live",
     "capture_path": "headless-render",
     "row_count": 50,
@@ -335,10 +335,10 @@
       ],
       "render": {
         "returncode": 0,
-        "stdout": "rendered 158570 bytes of HTML to /tmp/gems-leaderboard-rendered.html",
+        "stdout": "rendered 158596 bytes of HTML to /tmp/gems-leaderboard-rendered.html",
         "stderr": ""
       },
-      "rendered_bytes": 158570
+      "rendered_bytes": 158596
     }
   },
   "source_note": "Retrieved live from the official public leaderboard page."
