@@ -1,0 +1,51 @@
+name: Refresh USGS ComCat seismicity snapshot (H-40)
+
+# Free, official, no-login source: https://earthquake.usgs.gov/fdsnws/event/1/
+# The development sandbox has no egress to earthquake.usgs.gov, so the acquisition
+# runs here, on GitHub Actions, following the same commit-back pattern as the
+# leaderboard refresh in pages.yml. Obtainability was verified on 2026-10-02
+# (count endpoint answered 15,802 events M>=2.5 for the wider AOI box).
+# The catalogue feeds hypothesis H-40 (fine-scale seismicity lineaments); it is
+# an input candidate only - no score, holdout or release claim is made here.
+
+on:
+  schedule:
+    - cron: '30 12 * * 1'   # weekly, after the Monday leaderboard refresh
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: seismicity-refresh
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Fetch and validate the AOI earthquake catalogue
+        run: |
+          # Fails closed: the fetch script refuses to write anything unless the
+          # response parses, carries the FDSN text header, has a magnitude on
+          # every row and exceeds the minimum event count.
+          python scripts/fetch_seismicity.py --out docs/data/seismicity
+          echo "--- catalogue metadata ---"
+          cat docs/data/seismicity/comcat-meta.json
+      - name: Commit the refreshed catalogue back to main
+        continue-on-error: true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/seismicity/comcat_m25_aoi.txt docs/data/seismicity/comcat-meta.json
+          if git diff --cached --quiet; then
+            echo "catalogue unchanged; nothing to commit"
+            exit 0
+          fi
+          git commit -m "chore: refresh USGS ComCat AOI seismicity snapshot (H-40 input)"
+          git pull --rebase origin main
+          git push origin main

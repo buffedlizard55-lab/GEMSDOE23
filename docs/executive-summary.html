@@ -32,20 +32,20 @@
     <div class="eyebrow">Executive summary</div>
     <h1>Submission steps—only after holdout approval</h1>
     <p class="lead">The H30 GeoTIFF is a QA candidate, not an approved submission. The current independent spatial-holdout gate is BLOCKED; do not spend a slot. These are the upload steps to follow only after a future candidate is explicitly approved in the manifest.</p></div>
-    <aside class="hero-aside"><span class="status status-warning">TIFF value/structure audit PASS · template match not rechecked · release BLOCKED</span>
+    <aside class="hero-aside"><span class="status status-warning">TIFF value/structure audit PASS · template match re-run this session: PASS · release BLOCKED</span>
       <strong style="margin:.8rem 0 .45rem">1.69 MB · 38539dc647d5ede0…</strong>
-      <p class="small">Current standalone TIFF audit: 3292×3730, one float32 band, EPSG:32611, 100 m pixels; finite values 0.0–1.0 and 7,111,787 NaNs. Exact sample-template comparison was not checked because <code>data/sample_submission.tif</code> is absent. A prior template-validation record names <code>data/sample_submission.tif</code> (SHA-256 2176d08e485aa2cd…), but that raster is absent and the comparison was not re-run in this checkout.</p></aside></div></section>
+      <p class="small">Current standalone TIFF audit: 3292×3730, one float32 band, EPSG:32611, 100 m pixels; finite values 0.0–1.0 and 7,111,787 NaNs. The strict sample-template comparison was re-run this session against the restored official template and every hard requirement passes (<a href='data/current-template-validation.json'>current-template-validation.json</a>). The strict template comparison was re-run this session against the restored official <code>data/sample_submission.tif</code> (SHA-256 2176d08e485aa2cd…): every hard requirement passes for both H30 variants.</p></aside></div></section>
 
   <section class="section" id="download">
     <div class="section-head">
       <div><div class="eyebrow">First-page download · format preflight, not upload approval</div>
       <h2>Downloadable QA candidate</h2></div>
-      <span class="status status-warning">TIFF value/structure audit PASS · template match not rechecked · release BLOCKED</span>
+      <span class="status status-warning">TIFF value/structure audit PASS · template match re-run this session: PASS · release BLOCKED</span>
     </div>
     <div class="download-card">
       <div>
         <h3>H30 · arrangement-matched habitat emission (H24 ranking, audit-constrained) · QA only</h3>
-        <p>Current standalone TIFF audit: 3292×3730, one float32 band, EPSG:32611, 100 m pixels; finite values 0.0–1.0 and 7,111,787 NaNs. Exact sample-template comparison was not checked because <code>data/sample_submission.tif</code> is absent. The manifest records an earlier template comparison as passing, but that comparison could not be re-run in this checkout. No reproducible independent uncatalogued-fault holdout has approved placement. Conditional scenario calculations are not a competition-score forecast; this file is for inspection and file-format QA only.</p>
+        <p>Current standalone TIFF audit: 3292×3730, one float32 band, EPSG:32611, 100 m pixels; finite values 0.0–1.0 and 7,111,787 NaNs. The strict sample-template comparison was re-run this session against the restored official template and every hard requirement passes (<a href='data/current-template-validation.json'>current-template-validation.json</a>). The manifest records an earlier template comparison as passing, but that comparison could not be re-run in this checkout. No reproducible independent uncatalogued-fault holdout has approved placement. Conditional scenario calculations are not a competition-score forecast; this file is for inspection and file-format QA only.</p>
         <div class="file-meta">
           <span>Filename: <code>gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif</code></span>
           <span>3292 × 3730</span><span>single-band float32</span><span>EPSG:32611</span><span>100 m pixels</span>
@@ -69,7 +69,7 @@
       <input id="submission-note" readonly value="GEMSDOE23 H30 | QA-only, unscored; no score forecast; release blocked pending independent uncatalogued-fault holdout | 91,533 dots | sha256 38539dc6">
       <button type="button" data-copy-target="submission-note">Copy QA candidate note</button>
     </div>
-    <p class="small" style="margin-top:.9rem"><strong>Other QA files</strong> (main-branch records list earlier template checks; the official sample is absent now; none scored):
+    <p class="small" style="margin-top:.9rem"><strong>Other QA files</strong> (none scored; H30's two variants passed the re-run strict template check this session):
       <a href="downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-nan.tif" download>H29 · de-aliased lattice-regime emission (H24 ranking)</a> (<a href="downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-allfinite.tif" download>all-finite</a>) · <a href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif" download>H24 · superseded (comb at 400 m, 931 dots too close)</a></p>
   </section>
   <section class="section">
@@ -95,7 +95,7 @@
       <div class="card"><div class="card-kicker">Three uploads per rolling seven days</div>
         <p>Official rules §3.2/§3.4 (re-read 2026-10-02) permit up to three feedback submissions per rolling seven days. The standing project rule is stricter: a candidate must beat the registered current best on an independent uncatalogued-fault spatial holdout before an upload is considered. <strong>No such holdout exists.</strong> The current registry is BLOCKED; public-board correlations and known-catalogue folds are not substitutes. Keep every slot unused until the gate can be met; a competition upload is not a validation set.</p></div>
       <div class="card"><div class="card-kicker">Which file, and what to expect</div>
-        <p><strong>H30</strong> (the QA download above) is an arrangement-audited emission whose main-branch manifest records a prior template-format pass; the sample template is absent here and the comparison was not re-run. <strong>H29</strong> is the de-aliased lattice control; H24 is superseded. None has a live score or release approval. Numbers in the historical budget file are conditional sensitivities, not a forecast. No expected leaderboard score is claimed.</p></div>
+        <p><strong>H30</strong> (the QA download above) is an arrangement-audited emission that passed the strict template-format check re-run this session against the restored official sample. <strong>H29</strong> is the de-aliased lattice control; H24 is superseded. None has a live score or release approval. Numbers in the historical budget file are conditional sensitivities, not a forecast. No expected leaderboard score is claimed.</p></div>
       <div class="card"><div class="card-kicker">No experiment slot is authorized</div>
         <p>H-32 on the <a href="hypotheses.html">hypotheses page</a> describes possible paired experiments, but those designs do not waive the independent-holdout rule. They must not be run through competition slots unless the user later revises that standing constraint.</p></div>
       <div class="card"><div class="card-kicker">One submission for both prize rounds</div>

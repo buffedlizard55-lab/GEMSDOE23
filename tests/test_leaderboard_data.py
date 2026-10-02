@@ -62,8 +62,20 @@ class LeaderboardFeedSchemaTests(unittest.TestCase):
         self.assertTrue(all(r["participant"] for r in rows))
         self.assertIn("2026-10-02", feed["retrieved_utc"])
         caveat = feed["attribution_caveat"]
-        self.assertNotIn("rank 24 (smrtdoog5)", caveat)
-        self.assertIn("rank 27 (smrtdoog5)", caveat)
+        # The board re-ranks between captures, so the rank claim must be derived from the
+        # snapshot's own rows rather than hard-coded (the 2026-10-02T18:02Z capture moved
+        # smrtdoog5 from rank 27 to 28 and broke a frozen assertion).
+        for score, name in ((0.1922, "H19-5"), (0.1894, "H19-4")):
+            matching = [r for r in rows if abs(r["score"] - score) < 1e-9]
+            self.assertTrue(matching, f"score {score} no longer on the board; update the caveat")
+            claims = [
+                f"{name} ({score:.4f}) coincides with displayed rank {r['rank']} ({r['participant']})"
+                for r in matching
+            ]
+            self.assertTrue(
+                any(claim in caveat for claim in claims),
+                f"caveat rank claim for {name} inconsistent with snapshot rows {matching}",
+            )
 
     def test_failed_refresh_preserves_rows_and_surfaces_stale_status(self):
         with tempfile.TemporaryDirectory() as tmp:

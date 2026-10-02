@@ -65,22 +65,24 @@ evidence, and the two rules that decide what may be uploaded.
 
 ---
 
-## 1. At a glance (latest recorded analysis, 2026-10-02; raw inputs currently absent from this checkout)
+## 1. At a glance (latest recorded analysis, 2026-10-02 continuation session; all inputs restored and hash-verified in this checkout)
 
 | | |
 |---|---|
-| **QA candidate file** | `docs/downloads/gemsdoe23-h30-arrangement-matched-habitat-*.tif` (**H30**, primary) — one click from the first-page download. H29 is the de-aliased lattice control; H24 is superseded. A fresh stdlib TIFF audit confirms one float32 band, EPSG:32611, 3292×3730, 100 m pixels and finite predictions in `[0,1]`; exact template comparison was **not checked** because `data/sample_submission.tif` is absent. The main-branch manifest records a prior template pass. The geological release gate is **BLOCKED**; **do not upload or spend a slot.** |
+| **QA candidate file** | `docs/downloads/gemsdoe23-h30-arrangement-matched-habitat-*.tif` (**H30**, primary) — one click from the first-page download. H29 is the de-aliased lattice control; H24 is superseded. Stdlib TIFF audit confirms one float32 band, EPSG:32611, 3292×3730, 100 m pixels and finite predictions in `[0,1]`; the sample template is restored in this session's checkout, so strict template comparison can be re-run any time. The geological release gate is **BLOCKED**; **do not upload or spend a slot.** |
+| **Data state** | **Restored and verified this session** through the public git data bridge (SHA-256 match on all three official rasters, all 12 external layers, all 24 live-scored anchor artefacts identity-verified; `docs/data/restore-receipt.json`). `data/` is populated via `~/.cache/gems-data` symlinks. |
 | **Grid** | 3292 × 3730, single band float32, EPSG:32611, 100 m, transform `(100, 0, 243350 / 0, −100, 4508550)`, NaN outside the footprint, values in `[0, 1]` |
 | **Scored domain** | 5,106,385 px = 5,167,373 footprint − 60,988 known-fault pixels (staff ruling, [forum 11516](https://community.drivendata.org/t/11516), re-read 2026-10-02) |
-| **Hidden public-test truth \|G\|** | **5,564 – 14,944 px**, exact bounds from 24 live scores (unchanged; the previously assumed 125,000 stays refuted) |
+| **Hidden public-test truth \|G\|** | **5,564 – 14,944 px**, exact bounds from 24 live scores (unchanged; the previously assumed 125,000 stays refuted). New this session: the leaders' 0.3049–0.3195 is **algebraically unreachable** at h19-5's budget unless \|G\| ≳ 12,000, and needs \|G\| ≳ 8,000 even at H30's more efficient geometry — the leaders are finding a large fraction of a large truth set (`docs/data/h19-placement-analysis.json`). |
 | **H30 emission** | 91,533 dots at ≥ 400 m separation inside the top 30 % of the habitat score, row-phase equalised, tie-broken NMS; η = 0.931, 300 m coverage 37.9%, K̄ = 0.157 |
-| **Official public board** | Latest verified headless-render capture at `2026-10-02T16:54:29Z`: DARD 0.3195, nchuzhoy 0.3128, alexoktaba 0.3042. User-reported 0.3049 is absent. The 0.1922 and 0.1894 rows are rank 27 and 29 in this capture; scores alone do not identify H19 files/accounts. |
-| **Score inconsistency** | One older passage calls 0.1894 the highest while listing 0.1922 elsewhere; numerically 0.1922 is larger. Neither value is verified as an H19 artifact here. |
+| **Official public board** | Latest verified headless-render capture at `2026-10-02T18:02:50Z`: DARD 0.3195, nchuzhoy 0.3128, alexoktaba 0.3042. User-reported 0.3049 is absent. The 0.1922 and 0.1894 rows are rank 28 and 30 in this capture; scores alone do not identify H19 files/accounts (flag I-28). |
+| **Why h19-5 leads the group** | Measured this session (`docs/data/h19-placement-analysis.json`): highest placement skill of all 24 artefacts at every admissible \|G\| (7.2 at \|G\|=10k vs ens12's 5.9), achieved with broad coverage (recall 0.64 at \|G\|=10k). The +0.0028 h19-5−h19-4 delta prefers **specific scarp morphology** (`lid_downface_max`/`lid_step_max`/`lid_relief` up, generic slope-variability and `sgmc_gap_density9` down). All four top artefacts share one signature: enriched **near** catalogue and SGMC structure, on steep rough scarp ground, with **zero** pixels on the masked catalogue itself. |
 | **Score expectation** | **No score is predicted.** DTI figures in the historical budget/scenario records are conditional metric-algebra sensitivities, not observed or validated performance. H30 has no live score; the current spatial-holdout registry is BLOCKED. |
-| **Validated offline?** | **No.** No offline proxy ranks the 24 live artefacts better than chance, and no blocked holdout can test hidden-fault placement. The new arrangement statistic *orders the live scores* (Spearman −0.66, p = 0.001, n = 23) but that is correlational and post-hoc |
+| **Validated offline?** | **No.** No offline proxy ranks the 24 live artefacts better than chance, and no blocked holdout can test hidden-fault placement. The new-hypothesis validation (H-38/H-39) uses the blocked SGMC-proxy protocol with that limitation stated in the record itself. |
 | **Fault statistics (fitted before the model)** | catalogue = 3,199 traces; length exponent a = **3.15** [2.99, 3.34] above 3.0 km; nearest-larger-neighbour x = **1.54** [1.33, 1.75] vs Bour & Davy prediction [1.20, 1.55]; D = 1.51–1.66; normalised correlation sum 4.2× at 1 km → 2.3× at 5 km → 1.15× at 30 km (95 % CSR envelope 0.8–1.2 at 1 km, ±0.01 at 30 km) |
 | **Audit findings** | H24 carried a spectral line at exactly the **400 m GeoDAWN Area 2 flight-line spacing** (strength 243 vs control p95 10, rank p = 0.016), **931 dots closer than its stated 400 m**, and a lattice-like arrangement (signed divergence −0.58). H29/H30 remove the first two (strength 2.4/2.3, 0 violations); only H30 moves the arrangement into the bin that holds the best live scores (−0.21) |
-| **Deep ensemble** | 5 blocked folds × 3 independently initialised members out-of-fold, plus 5 full-domain members; epistemic share 0.143. **Failed its admission gate (0/5 folds beat a random emission), so its weight in the raster is 0** |
+| **Deep ensemble** | **Retrained this session on the restored rasters, fresh seeds, identical config** (5 blocked folds × 3 independently initialised members out-of-fold + 5 full-domain members; 2,223 s). Admission gate **failed a second time, 0/5 folds beat a seed-matched random emission** (mean DTI 0.0450 vs random 0.1012; prior run 0.0440) → a twice-reproduced negative result: detector weight stays 0. The epistemic/aleatoric split (share 0.145) is regenerated from the fresh members and remains a reviewer-ranking aid only. |
+| **New hypotheses (this session)** | **H-38** cross-family azimuth coherence and **H-39** shallow-residual potential-field edges: implemented (`src/gems/orientation.py`, unit-tested — the tests caught a real kernel bug) and **validated then honestly rejected as standalone emissions** (0/5 blocked folds beat a random emission; record: `docs/data/new-hypothesis-validation.json`). H-39 additionally shows the strongest live-score consistency of any layer family (ρ = +0.39, family-LOO-stable, top-4 enrichment +0.09) — the single permitted follow-up is a habitat-feature nested-CV test, never an emission. **H-40** fine-scale seismicity (USGS ComCat FDSN; obtainability verified 2026-10-02: 15,802 events M≥2.5 in the AOI box; acquisition automated in `.github/workflows/seismicity.yml`), **H-41** direction-resolved tip/step-over lobes (Faulds & Hinz verified for the INGENIOUS area), **H-42** playa/basin-margin association: proposed with sources verified. No slot may be spent until a candidate beats the registered current best on a valid holdout. |
 
 The findings are on the [clustering-audit page](https://buffedlizard55-lab.github.io/GEMSDOE23/clustering.html),
 the [evidence page](https://buffedlizard55-lab.github.io/GEMSDOE23/evidence.html) and in [`docs/data/`](docs/data)
@@ -101,8 +103,8 @@ the [evidence page](https://buffedlizard55-lab.github.io/GEMSDOE23/evidence.html
 python3 scripts/restore_workspace.py --all  # official rasters + hash-pinned external layers + the 23 live-scored artefacts (identity-verified by exact pixel count and mass)
 bash scripts/download_competition_data.sh   # acquire + hash-verify the official rasters (no manual input)
 python scripts/prepare_data.py              # grid/validity audit -> data/manifest.json
-python scripts/fit_habitat_model.py         # 24 live scores -> habitat weights, nested-CV rho
-python scripts/run_ensemble.py              # deep ensemble + epistemic/aleatoric split
+python scripts/fit_habitat_model.py         # 24 live scores -> habitat weights, nested-CV rho (reproduces the committed record exactly)
+python scripts/run_ensemble.py              # deep ensemble + epistemic/aleatoric split (retrained 2026-10-02)
 python scripts/evaluate_oof.py              # admission gate vs a random-emission control
 python scripts/build_submission_live.py     # budget, dispersion, TIFF, template validation (H24)
 python scripts/rebuild_h24_check.py         # rebuild H24 from public inputs; verified bit-for-bit identical to the shipped file
@@ -110,7 +112,10 @@ python scripts/fit_fault_statistics.py      # fault-population statistics on lab
 python scripts/audit_predictions.py --extra <rasters>   # audit + calibration against the 23 live scores -> docs/data/prediction-audit.json
 python scripts/build_audited_emission.py --variant h30 --set-primary   # H29 / H30: de-aliased, arrangement-audited emissions
 python scripts/make_cluster_figures.py      # SVG figures for docs/clustering.html (needs matplotlib)
-python scripts/phase2_candidates.py         # reviewer candidates with the variance split
+python scripts/phase2_candidates.py         # reviewer candidates with the variance split (fresh ensemble output)
+python scripts/analyze_h19_placement.py     # why h19-5 leads: |G|-scenario skills, h19-5 vs h19-4 delta attribution, leader-target algebra
+python scripts/validate_new_hypotheses.py   # H-38/H-39 on the blocked SGMC-proxy holdout + live-score consistency
+python scripts/fetch_seismicity.py          # H-40 input: USGS ComCat AOI catalogue (needs egress; automated in CI)
 python scripts/build_site.py                # regenerate the whole site from docs/data/*.json
 python -m unittest discover -s tests        # dependency-free checks
 ```
@@ -156,7 +161,7 @@ derived arrays are reproducible.
 | `docs/data/current-holdout-best.json` | authoritative current-best gate registry; BLOCKED until independent target validation exists |
 | `docs/PROJECT_BRIEF.md` | the project brief and the research shortlist |
 | `src/gems/layers.py` | the streaming evidence-layer bank (95 layers, 3 GB RAM safe) |
-| `src/gems/habitat.py` | inversion of 24 live scores → placement skill → habitat regression |
+| `src/gems/orientation.py` | H-38/H-39 transforms: structure-tensor azimuths, cross-family agreement, upward continuation and shallow-residual edges (unit-tested) |
 | `src/gems/emission.py` | dispersion, the budget marginal rule, expected-DTI algebra |
 | `src/gems/ensemble.py` | the deep ensemble and the epistemic/aleatoric decomposition |
 | `src/gems/metric.py` | the official DTI, unit-tested against the organiser's worked example |
@@ -189,7 +194,9 @@ The short version:
   lattice it can only be a tie-break (~1 % of dots move).
 * **\|G\| is bounded, not measured.** The upper bound assumes no artefact is actively anti-correlated
   with the hidden truth.
-* **The deep ensemble is undertrained** (2 cores, no GPU) and was excluded by its own gate.
+* **The deep ensemble is undertrained** (2 cores, no GPU) and its admission gate failure is now
+  **twice-reproduced** (independent retrain with fresh seeds: mean OOF DTI 0.0450 vs random 0.1012, 0/5 folds) —
+  treat the exclusion as systematic, not a bad seed.
 * **Historical lidar coverage report: 75.4 %**, with a north-east gap; external rasters are absent from this checkout, so that mask and its spatial alignment were not independently reproduced here. Do not treat it as a verified current survey-coverage layer or use it to adjust uncertainty until restored and checked.
 * **Public ≠ private.** All 24 live scores are public-test scores; the split is unpublished and the
   Final Round re-scores against expanded labels.
@@ -207,12 +214,13 @@ The short version:
   and hands the rendered HTML to the same validating parser. If rendering ever fails, the last verified
   rows are retained and `docs/data/leaderboard-status.json` records why — the site badge says so instead
   of silently showing an old board.
-* **Historical credential-outage flags I-12/I-27 are not the current PR state.** GitHub access works in this continuation; the active branch is `arena/01a0fd30-gemsdoe23` and PR #9 is open with CI passing. Merge remains pending until the latest-main conflicts are reconciled and checks rerun.
+* **Historical credential-outage flags I-12/I-27 are resolved.** GitHub access works; all nine PRs to date
+  (including #9, "Advance GEMS discovery workflow and block unvalidated releases") are merged to `main`, and the
+  site deploys on push. This session's work rides `arena/01a0fdcb-gemsdoe23` → PR #10.
 * **The north-east lidar gap is not yet explained** (flag I-26): the 716-tile list behind the 24.6 % figure is an
   OCR-recovered inventory, not the official CSV; enumerate the footprint's 1 m tiles from the public National Map API
-  from a machine with egress before assuming the ground has no coverage.
-* **GitHub credentials expired mid-session and were restored** (flag I-12, resolved). PRs #4, #5 and #6
-  are merged to `main` and the site is deployed; nothing is blocked on this any more.
+  from a machine with egress before assuming the ground has no coverage. The lidar product itself is restored and
+  hash-verified in this checkout (I-32 resolved); only the tile inventory is historical.
 
 ---
 

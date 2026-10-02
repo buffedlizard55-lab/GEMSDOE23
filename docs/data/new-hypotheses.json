@@ -1,0 +1,117 @@
+{
+ "generated_utc": "2026-10-02",
+ "purpose": "Register of the five new geological hypotheses designed in the 2026-10-02 continuation session, each naming its layers, physical signature, uncatalogued-fault rationale, difference from prior work, ordinal expected benefit, implementation cost, status and stop rule. No numeric DTI benefit is claimed for any entry; the only measured quantities live in new-hypothesis-validation.json (blocked SGMC-proxy protocol + live-score consistency).",
+ "validation_gate": "A hypothesis may not influence a release candidate until it (a) beats a seed-matched random emission on a majority of the 5 blocked SGMC-proxy folds and (b) is reported with the live-score consistency check. Beating the SGMC proxy is necessary, not sufficient: no available proxy ranks the 24 live artefacts above chance (offline-proxy-audit.json), so no entry here authorises a submission slot.",
+ "hypotheses": [
+  {
+   "id": "H-38",
+   "title": "Cross-family azimuth (orientation) coherence",
+   "layers": "structure tensors (sigma=300 m) of official det_elev, rtp, iso_grav_anom, cond_surf, depth_to_base_surf; lidar product strike + coh100 channels",
+   "transform": "A_ij = coh_i * coh_j * cos^2(theta_i - theta_j), averaged over family pairs; cos^2 (not cos^2 of doubled angle) so perpendicular lineaments score 0",
+   "physical_signature": "Faults are linear: independent fields should be locally anisotropic AND strike the same way at a fault corridor; magnitude overlap alone cannot distinguish coincidence from structure",
+   "why_uncatalogued": "Catalogue faults were mapped largely from magnitude evidence (airphoto/lidar scarp + geophysical gradients); orientation agreement across independent families is a genuinely independent discriminator, and catalogue mapping is weakest where no single magnitude signal is strong",
+   "difference_from_prior": "No layer, transform or sibling artefact compares azimuths across families; build_edge_consensus.py is magnitude-only; lid_strike is exposed raw in the 95-layer bank but never cross-checked",
+   "sources": [
+    "https://doi.org/10.1016/j.jappgeo.2012.06.004",
+    "https://doi.org/10.1190/1.1442103"
+   ],
+   "expected_benefit": "medium-high (ordinal only)",
+   "cost": "medium (implemented this session)",
+   "status": "validated-rejected (2026-10-02)",
+   "stop_rule": "does not beat random on a majority of the 5 blocked SGMC folds",
+   "validation_result": {
+    "blocked_proxy_1.22pct_mean_dti": 0.0075,
+    "blocked_proxy_2.37pct_mean_dti": 0.0129,
+    "folds_beating_random": "0/5 (both budgets, both variants)",
+    "live_consistency_spearman": -0.06,
+    "live_consistency_lidar_variant_spearman": -0.33,
+    "verdict": "REJECTED. As a standalone emission the orientation-agreement score scores ~10x below a random emission on every blocked fold, and its live-score consistency is null (lidar-gated variant anti-correlated). The stop rule fires: no further standalone investment, no slot.",
+    "record": "docs/data/new-hypothesis-validation.json"
+   }
+  },
+  {
+   "id": "H-39",
+   "title": "Shallow-residual potential-field edges",
+   "layers": "official rtp band; upward continuation at 500 m and 2000 m; edge magnitude; depth_to_base_surf cover-thickness context",
+   "transform": "residual = rtp - upward_continuation(rtp, h); residual edge magnitude (Sobel, sigma=2 px); thick-cover variant multiplies by normalised depth_to_base_surf",
+   "physical_signature": "exp(-2 pi h / lambda) separation: upward continuation removes short wavelengths (shallow sources); the residual keeps the uppermost ~1 km of crust, so its edges in thick cover are young cover-cutting structures",
+   "why_uncatalogued": "The catalogue is dominated by mapped bedrock structure; deep-persistent magnetic edges are mostly already catalogued. A Quaternary fault cutting alluvial cover is a shallow short-wavelength source that the residual isolates and the catalogue systematically lacks",
+   "difference_from_prior": "The layer bank has native-support gradients and one 150 m upward-continued magnitude layer (ext_TMI_up150); no residual, residual-edge or cover-context product exists. H-35 proposes the complement (deep persistence across heights)",
+   "sources": [
+    "https://pubs.usgs.gov/of/2013/1024/i/",
+    "https://doi.org/10.1190/1.1442376"
+   ],
+   "expected_benefit": "medium (ordinal only)",
+   "cost": "low-medium (implemented this session)",
+   "status": "validated-rejected as standalone; flagged for one habitat-feature test (2026-10-02)",
+   "stop_rule": "same as H-38",
+   "validation_result": {
+    "blocked_proxy_1.22pct_mean_dti": 0.0151,
+    "blocked_proxy_2.37pct_mean_dti": 0.027,
+    "folds_beating_random": "0/5 (both budgets, both variants)",
+    "live_consistency_spearman": 0.39,
+    "live_consistency_family_loo_min": 0.23,
+    "live_consistency_top4_minus_rest_enrichment": 0.09,
+    "verdict": "REJECTED as a standalone emission (0/5 folds vs random on the blocked SGMC proxy, like every other standalone including h19-5's own fixed emission). BUT the live-score consistency check is the strongest measured for any layer family to date (rho=+0.39 with |G|=10k log-skill, stable under family leave-one-out, top-4 artefacts enriched +0.09 vs rest) and is correlational only. Stop rule: no slot; the single permitted follow-up is adding h39 as a feature to the habitat regression (nested-CV comparison against 0.437), never an emission.",
+    "record": "docs/data/new-hypothesis-validation.json"
+   }
+  },
+  {
+   "id": "H-40",
+   "title": "Fine-scale seismicity lineament density",
+   "layers": "USGS ComCat ANSS earthquakes M>=2.5 1960-present (external, free, official), kernel-smoothed at 5 km and 10 km; NOT the competition ieq/deq bands",
+   "transform": "event-density kernels at 5/10 km radius, depth-weighted variant, lineament orientation of dense alignments",
+   "physical_signature": "microseismicity lines up on active blind faults; swarms and linear event chains mark structures that lack surface expression",
+   "why_uncatalogued": "the official stack's earthquake channels smooth at a 100 km radius (n100), which erases fault-scale structure; uncatalogued ACTIVE faults should carry fine-scale lineations the official bands cannot express",
+   "difference_from_prior": "no seismicity layer at fine spatial support exists anywhere in the group's work; the official ieq/deq bands prove the signal class matters but at 10-20x coarser support",
+   "caution": "Coolbaugh et al. (2002, A Geothermal GIS for Nevada, GRC Transactions) measured earthquakes as the LOWEST-weighted evidence layer in their weights-of-evidence permeability model, so fine-scale seismicity may be a weak standalone signal; the official 100 km-smoothed bands' presence in the feature stack is not evidence that finer support helps",
+   "sources": [
+    "https://earthquake.usgs.gov/fdsnws/event/1/",
+    "https://www.researchgate.net/publication/254499173"
+   ],
+   "obtainability": {
+    "verified_utc": "2026-10-02",
+    "evidence": "FDSN count endpoint answered 15802 events (M>=2.5) and 692 (M>=4.0) for the wider AOI box 1960-01-01..2026-10-01; text format streams correctly",
+    "acquisition": "scripts/fetch_seismicity.py + .github/workflows/seismicity.yml (weekly, fail-closed, hash-pinned metadata)"
+   },
+   "expected_benefit": "medium (ordinal only; unvalidated until acquired)",
+   "cost": "medium (acquisition + smoothing)",
+   "status": "proposed; acquisition automated this session; catalogue not yet fetched (sandbox has no egress to earthquake.usgs.gov)",
+   "stop_rule": "smoothed density fails to beat random on the blocked SGMC proxy or adds no live-score consistency"
+  },
+  {
+   "id": "H-41",
+   "title": "Direction-resolved fault-tip and step-over lobes",
+   "layers": "trace skeletons of labels.tif + SGMC traces (both in-repo); tip azimuths; anisotropic wing-crack lobes (30-45 deg off tip) and relay ramps between overlapping like-dipping traces",
+   "transform": "tip/stepover geometry -> anisotropic distance-decay lobes (vs the isotropic clusterprior)",
+   "physical_signature": "splays and relay strands nucleate at tips and stepovers of known faults; stepovers host ~40% of the INGENIOUS area's favourable structural settings and terminations ~17% (Faulds & Hinz 2015 and the 2026 INGENIOUS-area update)",
+   "why_uncatalogued": "the staff ruling says new faults include newly mapped geometry of existing systems; the missing short traces physically must sit at tips and stepovers, which the catalogue truncates",
+   "difference_from_prior": "sibling H19-1 used isotropic sigma=1.8/2.5 km tip/stepover Gaussians; this repo's clusterprior is isotropic proximity to long faults. The delta is direction-resolved lobes from trace azimuths - unimplemented anywhere",
+   "sources": [
+    "https://pangea.stanford.edu/ERE/db/GeoConf/papers/SGW/2026/Faulds.pdf",
+    "https://www.lyellcollection.org/doi/full/10.1144/geoenergy2023-009"
+   ],
+   "expected_benefit": "low-medium (ordinal only; overlaps H19-1's family)",
+   "cost": "medium",
+   "status": "proposed",
+   "stop_rule": "direction-resolved lobes do not beat the isotropic clusterprior out-of-fold on the blocked SGMC proxy"
+  },
+  {
+   "id": "H-42",
+   "title": "Playa / basin-margin discharge association",
+   "layers": "det_elev flatness + local relief adjacency; cond_surf; in-repo GDR spring/well CSV; distance-to-basin-floor and basin-margin-edge density",
+   "transform": "basin-floor flatness mask -> margin distance/edge density; combined with spring density and conductivity edges",
+   "physical_signature": "Great Basin Quaternary faults bound basins and control discharge; the weights-of-evidence geothermal GIS work (Coolbaugh et al. 2002, GRC Transactions; Coolbaugh et al. 2005, NBMG Map 151) found favourability in shallow-groundwater / basin-floor settings, and high-temperature systems prefer NE-trending structures within 5 km",
+   "why_uncatalogued": "catalogue mapping concentrated in bedrock/uplands; basin-margin strands under alluvium near playas are systematically under-mapped - the same sparse-historical-fieldwork premise the catalogue-gap hypothesis rests on",
+   "difference_from_prior": "the spring layers are pure distance/density; no playa, basin-floor or margin-geometry term exists in the 95-layer bank or any sibling artefact",
+   "sources": [
+    "https://www.researchgate.net/publication/254499173",
+    "https://nbmg.unr.edu/geothermal/PublishedMaps.html"
+   ],
+   "expected_benefit": "low-medium (ordinal only; targets geothermal systems more than fault traces)",
+   "cost": "low-medium",
+   "status": "proposed",
+   "stop_rule": "basin-margin proximity does not enrich the SGMC-proxy faults out-of-fold"
+  }
+ ]
+}

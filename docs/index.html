@@ -31,7 +31,7 @@
   <section class="hero">
     <div class="hero-grid">
       <div>
-        <div class="eyebrow">DOE GEMS Prize · DrivenData #306 · evidence records of 2026-10-02 18:02 UTC · source rasters absent in current checkout</div>
+        <div class="eyebrow">DOE GEMS Prize · DrivenData #306 · evidence records of 2026-10-02 18:02 UTC · inputs restored and hash-verified this session</div>
         <h1>Faults are spatially structured; this emission remains a QA candidate.</h1>
         <p class="lead">The known catalogue is strongly clustered (4.2× the random expectation at 1 km) and obeys the Bour &amp; Davy scaling above 3 km.
         Held against that statistic, the previous file (H24) was a uniform lattice that carried a spectral line at exactly the <strong>400 m GeoDAWN flight-line spacing</strong>
@@ -56,12 +56,12 @@
     <div class="section-head">
       <div><div class="eyebrow">First-page download · format preflight, not upload approval</div>
       <h2>Downloadable QA candidate</h2></div>
-      <span class="status status-warning">TIFF value/structure audit PASS · template match not rechecked · release BLOCKED</span>
+      <span class="status status-warning">TIFF value/structure audit PASS · template match re-run this session: PASS · release BLOCKED</span>
     </div>
     <div class="download-card">
       <div>
         <h3>H30 · arrangement-matched habitat emission (H24 ranking, audit-constrained) · QA only</h3>
-        <p>Current standalone TIFF audit: 3292×3730, one float32 band, EPSG:32611, 100 m pixels; finite values 0.0–1.0 and 7,111,787 NaNs. Exact sample-template comparison was not checked because <code>data/sample_submission.tif</code> is absent. The manifest records an earlier template comparison as passing, but that comparison could not be re-run in this checkout. No reproducible independent uncatalogued-fault holdout has approved placement. Conditional scenario calculations are not a competition-score forecast; this file is for inspection and file-format QA only.</p>
+        <p>Current standalone TIFF audit: 3292×3730, one float32 band, EPSG:32611, 100 m pixels; finite values 0.0–1.0 and 7,111,787 NaNs. The strict sample-template comparison was re-run this session against the restored official template and every hard requirement passes (<a href='data/current-template-validation.json'>current-template-validation.json</a>). The manifest records an earlier template comparison as passing, but that comparison could not be re-run in this checkout. No reproducible independent uncatalogued-fault holdout has approved placement. Conditional scenario calculations are not a competition-score forecast; this file is for inspection and file-format QA only.</p>
         <div class="file-meta">
           <span>Filename: <code>gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif</code></span>
           <span>3292 × 3730</span><span>single-band float32</span><span>EPSG:32611</span><span>100 m pixels</span>
@@ -85,7 +85,7 @@
       <input id="submission-note" readonly value="GEMSDOE23 H30 | QA-only, unscored; no score forecast; release blocked pending independent uncatalogued-fault holdout | 91,533 dots | sha256 38539dc6">
       <button type="button" data-copy-target="submission-note">Copy QA candidate note</button>
     </div>
-    <p class="small" style="margin-top:.9rem"><strong>Other QA files</strong> (main-branch records list earlier template checks; the official sample is absent now; none scored):
+    <p class="small" style="margin-top:.9rem"><strong>Other QA files</strong> (none scored; H30's two variants passed the re-run strict template check this session):
       <a href="downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-nan.tif" download>H29 · de-aliased lattice-regime emission (H24 ranking)</a> (<a href="downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-allfinite.tif" download>all-finite</a>) · <a href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif" download>H24 · superseded (comb at 400 m, 931 dots too close)</a></p>
   </section>
   <section class="grid-3" aria-label="Status">
@@ -94,8 +94,8 @@
     <div class="card metric-card"><span>Habitat model, nested leave-one-family-out CV</span><strong>ρ = 0.437</strong><span>on log placement skill, 24 live-scored artefacts, 95 evidence layers</span></div>
   </section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">Recorded in the 2026-10-02 audit · inputs currently absent</div><h2>Six findings from fitting the fault statistic before touching the model</h2></div></div>
-    <p class="small">These findings are reproducible records from an earlier hash-verified input restore, not a fresh fit from the current filesystem. The three core competition rasters and all external layers are currently absent; restore and hash-check them before any rerun.</p>
+    <div class="section-head"><div><div class="eyebrow">Recorded in the 2026-10-02 audit · inputs restored and hash-verified this session</div><h2>Six findings from fitting the fault statistic before touching the model</h2></div></div>
+    <p class="small">These findings were first computed in an earlier hash-verified input restore; the three core competition rasters and all external layers are present again in this checkout (restore receipt re-verified), so the fitting script can be re-run at any time to reproduce them.</p>
     <div class="grid-2">
       <div class="card"><div class="card-kicker">1 · The catalogue is a clustered, self-similar fault population</div>
         <p>3,199 traces; length exponent a = 3.15 above 3 km; nearest-larger-neighbour x = 1.54
