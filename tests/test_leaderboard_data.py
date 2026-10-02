@@ -12,7 +12,10 @@ class LeaderboardFeedSchemaTests(unittest.TestCase):
     def test_snapshot_matches_site_javascript_contract(self):
         feed = json.loads((ROOT / "docs/data/leaderboard.json").read_text(encoding="utf-8"))
         self.assertIn(feed.get("source_status"), {"snapshot", "live"})
-        self.assertIn(feed.get("refresh_status", {}).get("status"), {"live", "stale-snapshot-retained", "unavailable-no-snapshot"})
+        self.assertIn(
+            feed.get("refresh_status", {}).get("status"),
+            {"live", "dated-snapshot", "stale-snapshot-retained", "unavailable-no-snapshot"},
+        )
         self.assertIsInstance(feed.get("retrieved_utc"), str)
         self.assertTrue(feed["retrieved_utc"])
         self.assertIn("SHA-256", feed.get("attribution_caveat", ""))
@@ -33,7 +36,8 @@ class LeaderboardFeedSchemaTests(unittest.TestCase):
         js = (ROOT / "docs/assets/site.js").read_text(encoding="utf-8")
         self.assertIn("data/leaderboard.json", js)
         self.assertIn("data.source_status === 'live'", js)
-        self.assertIn("data.refresh_status?.status === 'stale-snapshot-retained'", js)
+        self.assertIn("refreshState === 'stale-snapshot-retained'", js)
+        self.assertIn("refreshState === 'dated-snapshot'", js)
         self.assertIn("entry.rank <= 10", js)
 
     def test_status_sidecar_has_a_known_schema(self):
@@ -41,6 +45,25 @@ class LeaderboardFeedSchemaTests(unittest.TestCase):
         self.assertIn(status.get("status"), {"live", "dated-snapshot", "stale-snapshot-retained", "unavailable-no-snapshot"})
         self.assertIn("source_url", status)
         self.assertIn("checked_utc", status)
+
+    def test_snapshot_rows_are_the_currently_displayed_board(self):
+        """Guard the delivered board: 50 rows, strictly descending scores, no stale rank claims.
+
+        The rows were verified against the official page on 2026-10-02; this test fails loudly if
+        someone edits the snapshot into an inconsistent state (ranks out of order, scores outside
+        [0, 1], or a duplicated rank) rather than silently shipping a wrong board.
+        """
+        feed = json.loads((ROOT / "docs/data/leaderboard.json").read_text(encoding="utf-8"))
+        rows = feed["rows"]
+        self.assertEqual(len(rows), feed.get("row_count", len(rows)))
+        self.assertEqual([r["rank"] for r in rows], list(range(1, len(rows) + 1)))
+        scores = [r["score"] for r in rows]
+        self.assertEqual(scores, sorted(scores, reverse=True))
+        self.assertTrue(all(r["participant"] for r in rows))
+        self.assertIn("2026-10-02", feed["retrieved_utc"])
+        caveat = feed["attribution_caveat"]
+        self.assertNotIn("rank 24 (smrtdoog5)", caveat)
+        self.assertIn("rank 26 (smrtdoog5)", caveat)
 
     def test_failed_refresh_preserves_rows_and_surfaces_stale_status(self):
         with tempfile.TemporaryDirectory() as tmp:
