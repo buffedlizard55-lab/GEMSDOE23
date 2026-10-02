@@ -42,7 +42,11 @@ jobs:
               assert a["finite_values_in_0_1"] is True, (key, "values outside [0, 1]")
               assert a["positive_infinity_pixels"] == 0, key
               assert a["negative_infinity_pixels"] == 0, key
-              assert a["count"] == 1 and a["dtype"] == "float32", key
+              assert a["samples_per_pixel"] == 1, (key, "must be single band")
+              assert a["bits_per_sample"] == 32 and a["sample_format"] == "IEEE float", (key, "must be float32")
+              assert a["epsg"] == 32611, (key, "CRS")
+              assert a["width"] == 3292 and a["height"] == 3730, (key, "grid")
+              assert a["classic_tiff"] is True and a["compression"] == "LZW", key
               assert a["sha256"] == man[key]["sha256"], (key, "sha256 drift")
               print("%s: %s verified (%d finite px, %d NaN, values %s-%s)" % (
                   key, name, a["finite_pixels"], a["nan_pixels"], a["finite_min"], a["finite_max"]))
