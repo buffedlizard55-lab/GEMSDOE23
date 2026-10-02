@@ -1,22 +1,27 @@
 #!/usr/bin/env python3
-"""Build, budget, validate and publish the submission raster.
+"""Build a research-candidate raster and run format preflight; this is NOT a release command.
 
-    python scripts/build_submission_live.py            # full build
+    python scripts/build_submission_live.py            # candidate build + format preflight
     python scripts/build_submission_live.py --dry-run  # geometry + budget table only
+
+The output is deliberately marked not approved for a competition slot. Only
+``scripts/build_submission.py`` can produce a release artifact, and only with a verified
+current-best record plus a passing spatial holdout against that exact incumbent.
 
 Rank score (pre-registered weights, not tuned on the 24 live scores):
     S = 0.50 rank(H)  habitat model fitted to the 24 live public scores
       + 0.30 rank(V)  skill-weighted consensus of the 9 live-scored artefact families
       + 0.20 rank(P)  deep-ensemble mean probability (independent detector)
-Emission: highest S first with a 400 m minimum separation (dispersion), budget chosen by
-maximin expected DTI over |G| in [9k, 15k] and placement skill in [2.0, 5.4].
+Emission: highest S first with a 400 m minimum separation. Budget selection retains a legacy
+exploratory scenario heuristic; its assumptions are not validated against a current-best spatial
+holdout and must not be interpreted as a score forecast or release recommendation.
 """
 from __future__ import annotations
 import argparse, hashlib, json, os, sys, time
 import numpy as np
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src"))
 from gems.layers import load_domain
-from gems.emission import disperse_select, geometry, expected_dti, fp_relief, CONE_WEIGHT
+from gems.emission import disperse_select, geometry, fp_relief
 
 
 def expected_dti_from_q(area: float, q: float, g_size: float) -> float:
@@ -27,20 +32,23 @@ def expected_dti_from_q(area: float, q: float, g_size: float) -> float:
 from gems.submission import validate_submission, write_submission_raster
 
 ANCH = ".cache/sib/anchors"
-FAMILY_REPS = {          # one artefact per code base / emission family, with its live score
+# Legacy candidate-builder inputs. These score values are public-row matches, not verified
+# artifact attribution; the official leaderboard does not expose file hashes/submission IDs.
+FAMILY_REPS = {          # one reported score per emission family
     "h19-5": 0.1922, "h16-1": 0.1855, "ens12-adopted": 0.1563, "lidarscarp-top2pct": 0.1461,
     "r7-nms3-dem10-scarp": 0.1294, "pindrop-v4-ridge": 0.1152, "h25-ctx-ridge": 0.1280,
     "h20-dem10-scarp-thin": 0.0921, "h28-dotted-ridge": 0.1839,
 }
-G_GRID = (6_000.0, 10_000.0, 15_000.0)   # inside the measured |G| bounds [5,564, 14,944]
-# q = kernel-weighted true positives per emitted pixel.  Unlike "skill", q does not depend on
-# the assumed |G|, which makes it the honest primitive for a projection.  Measured over the 24
-# live artefacts q spans 0.0005 (r5-geom-horse-ensemble) to 0.0518 (h28-dotted-ridge), with
-# h19-5 at 0.0475.  Those artefacts ran at dispersion eta = 0.16-0.85; this emission runs at
-# eta ~ 0.95, and q scales with eta at fixed alignment, so the plausible band for a ranking at
-# least as good as the group's best is 0.04-0.11.
+G_GRID = (6_000.0, 10_000.0, 15_000.0)   # legacy scenario grid from historical, unverified |G| analysis
+# Legacy scenario-only budget parameters retained to reproduce the archived candidate geometry.
+# The q values/weights are not calibrated or validated on a current-best spatial holdout and must
+# not be described as expected score, placement probability, or evidence of competitive benefit.
 Q_GRID = (0.04, 0.06, 0.08, 0.11)
 Q_W = (0.25, 0.30, 0.25, 0.20)
+BUDGET_SELECTION_NOTE = (
+    "Exploratory internal q/|G| scenario heuristic only; assumptions unvalidated; no numerical "
+    "DTI projections are persisted or published, and this process cannot approve release."
+)
 BUDGETS = (20_000, 30_000, 45_000, 60_000, 80_000, 100_000, 120_000, 150_000, 180_000, 220_000)
 R_MIN_PX = 4                            # 400 m minimum separation between emitted pixels
 W = dict(habitat=0.50, votes=0.30, ensemble=0.20)
@@ -135,32 +143,25 @@ def main():
     S[~domain] = -np.inf
     log("rank score combined; weights", w)
 
-    table = []
+    geometry_table = []
+    exploratory_objective = []
     for b in BUDGETS:
         mask = disperse_select(S, domain, b, R_MIN_PX)
         g = geometry(mask, domain)
-        row = dict(budget_requested=b, **{k: float(v) for k, v in g.items()})
-        cells = {}
+        geometry_table.append(dict(budget_requested=b, **{k: float(v) for k, v in g.items()}))
+        # Retain a legacy scenario objective only to reproduce the archived candidate budget.
+        # It is not written to public records, is not validation, and cannot approve release.
+        scenario_values = []
         for G in G_GRID:
             dtis = [expected_dti_from_q(g["area"], q, G) for q in Q_GRID]
-            cells[str(int(G))] = dict(dti_per_q=[float(x) for x in dtis],
-                                      weighted=float(np.dot(dtis, Q_W) / sum(Q_W)),
-                                      worst=float(min(dtis)),
-                                      optimal_area_per_q=dict(zip([str(q) for q in Q_GRID],
-                                                                  [float(G / q) for q in Q_GRID])))
-        row["by_G"] = cells
-        row["maximin_over_G_and_skill"] = float(min(c["worst"] for c in cells.values()))
-        row["weighted_min_over_G"] = float(min(c["weighted"] for c in cells.values()))
-        row["weighted_mean_over_G"] = float(np.mean([c["weighted"] for c in cells.values()]))
-        table.append(row)
-        log(f"A={g['area']:8.0f} eta={g['eta']:.3f} cov={g['coverage']:.3f} "
-            f"maximin={row['maximin_over_G_and_skill']:.4f} weighted={row['weighted_min_over_G']:.4f} "
-            f"(mean over G {row['weighted_mean_over_G']:.4f})")
+            scenario_values.append(float(np.dot(dtis, Q_W) / sum(Q_W)))
+        exploratory_objective.append(min(scenario_values))
+        log(f"budget={b:8d} px area={g['area']:8.0f} eta={g['eta']:.3f} coverage={g['coverage']:.3f}")
 
-    best = max(table, key=lambda r: r["weighted_min_over_G"])
+    best_index = max(range(len(geometry_table)), key=lambda i: exploratory_objective[i])
+    best = geometry_table[best_index]
     A = int(round(best["area"]))
-    log(f"chosen budget = {A:,} px (weighted-min over |G| = {best['weighted_min_over_G']:.4f}; "
-        f"maximin {best['maximin_over_G_and_skill']:.4f})")
+    log(f"chosen candidate budget = {A:,} px; {BUDGET_SELECTION_NOTE}")
     mask = disperse_select(S, domain, A, R_MIN_PX)
     g = geometry(mask, domain)
     os.makedirs("outputs", exist_ok=True)
@@ -168,8 +169,11 @@ def main():
     np.save("outputs/emission_mask.npy", mask)
 
     if args.dry_run:
-        json.dump(dict(chosen=A, geometry=g, table=table), open("outputs/budget_table.json", "w"), indent=1)
-        log("dry run: wrote outputs/budget_table.json")
+        json.dump(dict(chosen=A, geometry=g, geometry_table=geometry_table,
+                       budget_selection_note=BUDGET_SELECTION_NOTE,
+                       release_decision="BLOCKED: no registered current-best spatial holdout"),
+                  open("outputs/budget_table.json", "w"), indent=1)
+        log("dry run: wrote outputs/budget_table.json (geometry only; no score projection)")
         return 0
 
     # graded hedge: the emitted core is 1.0; pixels immediately beside a core pixel whose
@@ -214,39 +218,43 @@ def main():
                 h.update(c)
         return h.hexdigest()
 
-    dti_expected = {str(int(G)): {str(q): float(expected_dti_from_q(g["area"], q, G)) for q in Q_GRID} for G in G_GRID}
-    weighted = {str(int(G)): cells_v["weighted"] for G in G_GRID
-                for cells_v in [next(r["by_G"][str(int(G))] for r in table if int(r["area"]) == int(g["area"]))]}
-    note = (f"GEMSDOE23 H24 dispersed-habitat | 1m-3DEP lidar uphill-facing/step/crest scarps + 700 m "
-            f"detrended-slope heterogeneity, low radiometric U, off-catalogue | 400 m dot spacing, "
-            f"eta={g['eta']:.2f}, {int(g['area']):,} px | projected DTI "
-            f"{min(min(d.values()) for d in dti_expected.values()):.2f}-"
-            f"{max(max(d.values()) for d in dti_expected.values()):.2f} "
-            f"(q prior 0.04-0.11, |G| 6k-15k) | sha256 {sha256(nan_path)[:8]}")
-    man = dict(generated_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    note = (f"GEMSDOE23 QA ONLY — not for upload | research candidate | {int(g['area']):,} px | "
+            f"format preflight only; current-best spatial holdout BLOCKED | sha256 {sha256(nan_path)[:8]}")
+    release_decision = dict(
+        status="BLOCKED",
+        eligible_for_submission=False,
+        approved=False,
+        reason="This builder checks candidate format only. No passing comparison against a verified registered current-best spatial OOF map exists.",
+        current_best_registry="docs/data/current-holdout-best.json",
+    )
+    man = dict(schema_version=2,
+               generated_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                template_sha256=sha256(args.template), weights=w, r_min_px=R_MIN_PX,
-               rolling_limit="3 submissions per rolling 7 days per entity (official rules 3.2/3.4)",
-               claims=dict(score_predicted=False,
-                           statement=("Projected DTI is exact metric algebra over |G| in [6k, 15k] and q in [0.04, 0.11], "
-                                      "where q is the kernel-weighted true-positive mass per emitted pixel. The q prior's "
-                                      "upper half is measured: the best of 24 live-scored artefacts reached q = 0.0518 at "
-                                      "dispersion eta = 0.85, and this emission runs at eta = 0.95. No offline proxy "
-                                      "validates placement (best Spearman rho = +0.33, p = 0.12), so this is a projection, "
-                                      "not a prediction, and no score is claimed.")),
+               artifact_role="research_candidate_preflight_only",
+               budget_selection_note=BUDGET_SELECTION_NOTE,
+               score_projection=dict(status="NOT_REPORTED", reason="No validated current-best spatial holdout; internal scenario parameters are not an empirical score model."),
+               release_decision=release_decision,
                primary=dict(name=os.path.basename(nan_path), href="downloads/" + os.path.basename(nan_path),
                             bytes=os.path.getsize(nan_path), sha256=sha256(nan_path), variant="nan-outside-footprint",
-                            ok_to_upload=v1["passed"]),
+                            format_preflight_passed=v1["passed"], release_approved=False, ok_to_upload=False),
                compatibility=dict(name=os.path.basename(allf_path), href="downloads/" + os.path.basename(allf_path),
                                   bytes=os.path.getsize(allf_path), sha256=sha256(allf_path),
-                                  variant="zeros-outside-footprint", ok_to_upload=v2["passed"]),
-               note=note, geometry=g, expected_dti=dti_expected, detector_gate=gate,
+                                  variant="zeros-outside-footprint-nodata-zero", format_preflight_passed=v2["passed"],
+                                  release_approved=False, ok_to_upload=False,
+                                  advisory="nodata=0 differs from the official NaN convention; no online uploader test"),
+               note=note, geometry=g,
+               detector_gate=dict(status="historical_not_reproduced", source="docs/data/oof-evaluation.json",
+                                  candidate_influence_used=bool(have_ens), release_authority=False),
                validation=dict(nan=v1, allfinite=v2))
-    json.dump(man, open(args.manifest, "w"), indent=1)
-    json.dump(dict(generated_utc=man["generated_utc"], chosen_budget=A, geometry=g, table=table,
-                   weights=w, family_consensus=vdetail, q_prior=dict(zip(map(str, Q_GRID), Q_W)), q_definition="kernel-weighted TP per emitted pixel; independent of the assumed |G|",
-                   G_grid=list(G_GRID), note=note, detector_gate=gate), open(args.evidence, "w"), indent=1)
-    log("wrote", nan_path, allf_path, args.manifest, args.evidence)
-    print("\nSUBMISSION NOTE:\n" + note)
+    json.dump(man, open(args.manifest, "w"), indent=2)
+    json.dump(dict(schema_version=2, generated_utc=man["generated_utc"], status="QA_CANDIDATE_ONLY",
+                   chosen_budget=A, geometry=g, geometry_candidates=geometry_table,
+                   weights=w, budget_selection_note=BUDGET_SELECTION_NOTE,
+                   detector_gate=man["detector_gate"], artifact_role=man["artifact_role"],
+                   release_decision=release_decision, score_projection=man["score_projection"]),
+              open(args.evidence, "w"), indent=2)
+    log("wrote research candidate", nan_path, allf_path, args.manifest, args.evidence)
+    print("\nCANDIDATE NOTE (NOT FOR AN UPLOAD):\n" + note)
     return 0
 
 

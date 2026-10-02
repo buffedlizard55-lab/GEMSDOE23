@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="One-click validated GeoTIFF for the DOE GEMS Prize, with the fault-population statistics, the arrangement audit, the |G| bounds and the habitat model behind it.">
-  <title>GEMSDOE23 · Audited habitat fault emission</title>
+  <meta name="description" content="One-click QA-only GeoTIFF candidate with the current blocked release gate, fault-population evidence and documented limitations.">
+  <title>GEMSDOE23 · QA candidate and evidence</title>
   <link rel="stylesheet" href="assets/site.css">
   <script defer src="assets/site.js"></script>
 </head>
@@ -31,38 +31,37 @@
   <section class="hero">
     <div class="hero-grid">
       <div>
-        <div class="eyebrow">DOE GEMS Prize · DrivenData #306 · evidence records of 2026-10-02 16:54 UTC</div>
-        <h1>Faults are a spatial statistic. We fitted it, then audited our own submission with it.</h1>
+        <div class="eyebrow">DOE GEMS Prize · DrivenData #306 · evidence records of 2026-10-02 16:54 UTC · source rasters absent in current checkout</div>
+        <h1>Faults are spatially structured; this emission remains a QA candidate.</h1>
         <p class="lead">The known catalogue is strongly clustered (4.2× the random expectation at 1 km) and obeys the Bour &amp; Davy scaling above 3 km.
         Held against that statistic, the previous file (H24) was a uniform lattice that carried a spectral line at exactly the <strong>400 m GeoDAWN flight-line spacing</strong>
         and broke its own separation rule in 931 places. This page now ships <strong>H30</strong>: same ranking, those defects removed, arrangement moved into the bin that holds the best live scores.
-        Nothing here has a live score, the central expectation is about h19-5 (<strong>0.17–0.18</strong>), and the live leader is at <strong id="leader-score-lead">0.3195</strong>.</p>
+        H29/H30 have no live score, and no independent uncatalogued-fault holdout has approved their placement. The downloadable H30 raster is QA-only; conditional metric scenarios are not a score forecast. The live leader in the latest official capture is <strong id="leader-score-lead">0.3195</strong>.</p>
         <div class="button-row" style="margin-top:1.25rem">
-          <a class="button" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif" download>Download submission .tif ↓</a>
+          <a class="button" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif" download>Download QA candidate .tif ↓</a>
           <a class="button button-secondary" href="executive-summary.html">Exactly how to submit →</a>
           <a class="button button-secondary" href="clustering.html">The clustering audit →</a>
         </div>
       </div>
       <aside class="hero-aside">
-        <span class="status status-neutral">Expectation, not a promise</span>
-        <strong style="margin:.8rem 0 .45rem">Central expectation DTI 0.17–0.18</strong>
-        <p class="small">If TP per emitted pixel matches h19-5 (live <strong>0.1922</strong>) at |G| ∈ [6k, 15k]. Scenario range 0.08–0.40: lattice-type skill → 0.08–0.20, ridge-level skill → 0.22–0.40.
-        The earlier “0.12–0.34 projected” is superseded (flag I-17). Live leader: <strong id="leader-score">0.3195</strong> (<span id="leader-name">DARD</span>).</p>
-        <a href="evidence.html">How |G| and q were derived →</a>
+        <span class="status status-warning">Holdout approval: BLOCKED</span>
+        <strong style="margin:.8rem 0 .45rem">QA format pass ≠ upload approval</strong>
+        <p class="small">The main-branch manifest records a prior H30 template preflight, but the official template raster is missing from this checkout and the comparison was not re-run here. Placement has not beaten a verified current-best OOF baseline on independent uncatalogued-fault truth. Do not spend a submission slot. Conditional scenario calculations are not a predicted DTI. Latest public leader: <strong id="leader-score">0.3195</strong> (<span id="leader-name">DARD</span>).</p>
+        <a href="verification.html">Review the release gate and open limitations →</a>
       </aside>
     </div>
   </section>
 
   <section class="section" id="download">
     <div class="section-head">
-      <div><div class="eyebrow">First-click download · verified against the official template</div>
-      <h2>The submission file</h2></div>
-      <span class="status status-ok">All hard checks passed</span>
+      <div><div class="eyebrow">First-page download · format preflight, not upload approval</div>
+      <h2>Downloadable QA candidate</h2></div>
+      <span class="status status-warning">TIFF value/structure audit PASS · template match not rechecked · release BLOCKED</span>
     </div>
     <div class="download-card">
       <div>
-        <h3>H30 · arrangement-matched habitat emission (H24 ranking, audit-constrained)</h3>
-        <p>No score is predicted. Central expectation: this emission performs like h19-5 (live 0.1922) if its TP per emitted pixel q matches that artefact, i.e. DTI 0.17-0.18 at this budget (|G| 6k-15k). Scenario range 0.08-0.40 depends on whether placement skill survives the arrangement: lattice-type skill (1.9-2.7, measured on the group&#x27;s dispersed artefacts) gives 0.08-0.20, ridge-level skill (5.5+) gives 0.22-0.40. The one controlled pair (pindrop ridge vs nodes) shows dispersal alone did not raise TP. The earlier &#x27;0.12-0.34 projected&#x27; headline is superseded.</p>
+        <h3>H30 · arrangement-matched habitat emission (H24 ranking, audit-constrained) · QA only</h3>
+        <p>Current standalone TIFF audit: 3292×3730, one float32 band, EPSG:32611, 100 m pixels; finite values 0.0–1.0 and 7,111,787 NaNs. Exact sample-template comparison was not checked because <code>data/sample_submission.tif</code> is absent. The manifest records an earlier template comparison as passing, but that comparison could not be re-run in this checkout. No reproducible independent uncatalogued-fault holdout has approved placement. Conditional scenario calculations are not a competition-score forecast; this file is for inspection and file-format QA only.</p>
         <div class="file-meta">
           <span>Filename: <code>gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif</code></span>
           <span>3292 × 3730</span><span>single-band float32</span><span>EPSG:32611</span><span>100 m pixels</span>
@@ -71,20 +70,22 @@
           <span>emitted mass 91,533 px</span>
           <span>dispersion efficiency η = 0.931</span>
         </div>
+        <div class="callout"><strong>Do not upload or spend a weekly slot.</strong> No reproducible, non-withdrawn independent uncatalogued-fault spatial holdout/current-best OOF comparison is registered. The current-best registry is BLOCKED. Format checks and a standalone TIFF audit do not validate placement or authorize a competition upload. Do not spend a submission slot.</div>
       </div>
       <div class="button-row">
-        <a class="button" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif" download>Download submission .tif ↓</a>
+        <a class="button" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif" download>Download QA candidate .tif ↓</a>
         <a class="button button-secondary" href="data/submission-manifest.json">Manifest JSON</a>
+        <a class="button button-secondary" href="data/current-tiff-audit.json">Current TIFF audit</a>
         <a class="button button-secondary" href="clustering.html">Audit &amp; clustering evidence</a>
         <a class="button button-secondary" href="data/submission-build.json">Budget evidence</a>
         <a class="button button-secondary" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif" download>All-finite variant</a>
       </div>
     </div>
-    <div class="copy-row" aria-label="Copy submission note" style="margin-top:1rem">
-      <input id="submission-note" readonly value="GEMSDOE23 H30 | lidar scarps + detrended slope + low U habitat, off-catalogue | 91,533 dots, tie-broken 400 m NMS on the top 30% of the score, row-phase equalised (no 400 m flight-line comb) | unscored; central expectation ~ h19-5: DTI 0.17-0.18 if TP per emitted pixel matches | sha256 38539dc6">
-      <button type="button" data-copy-target="submission-note">Copy submission note</button>
+    <div class="copy-row" aria-label="QA candidate note preview, not for upload" style="margin-top:1rem">
+      <input id="submission-note" readonly value="GEMSDOE23 H30 | QA-only, unscored; no score forecast; release blocked pending independent uncatalogued-fault holdout | 91,533 dots | sha256 38539dc6">
+      <button type="button" data-copy-target="submission-note">Copy QA candidate note</button>
     </div>
-    <p class="small" style="margin-top:.9rem"><strong>Other audited files</strong> (same ranking, all validated against the official template, none scored):
+    <p class="small" style="margin-top:.9rem"><strong>Other QA files</strong> (main-branch records list earlier template checks; the official sample is absent now; none scored):
       <a href="downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-nan.tif" download>H29 · de-aliased lattice-regime emission (H24 ranking)</a> (<a href="downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-allfinite.tif" download>all-finite</a>) · <a href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif" download>H24 · superseded (comb at 400 m, 931 dots too close)</a></p>
   </section>
   <section class="grid-3" aria-label="Status">
@@ -93,7 +94,8 @@
     <div class="card metric-card"><span>Habitat model, nested leave-one-family-out CV</span><strong>ρ = 0.437</strong><span>on log placement skill, 24 live-scored artefacts, 95 evidence layers</span></div>
   </section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">What changed in this session</div><h2>Six findings from fitting the fault statistic before touching the model</h2></div></div>
+    <div class="section-head"><div><div class="eyebrow">Recorded in the 2026-10-02 audit · inputs currently absent</div><h2>Six findings from fitting the fault statistic before touching the model</h2></div></div>
+    <p class="small">These findings are reproducible records from an earlier hash-verified input restore, not a fresh fit from the current filesystem. The three core competition rasters and all external layers are currently absent; restore and hash-check them before any rerun.</p>
     <div class="grid-2">
       <div class="card"><div class="card-kicker">1 · The catalogue is a clustered, self-similar fault population</div>
         <p>3,199 traces; length exponent a = 3.15 above 3 km; nearest-larger-neighbour x = 1.54
@@ -106,22 +108,20 @@
         <p>Faults missing from the catalogue (independent SGMC sample) are enriched ×1.8 at 200–400 m and ×2.1 in the continuation wedge beyond tips, but ≈ 1 beyond 1 km; the continuation zone covers 0.7 % of the domain. Live scores reward no concentration near known faults.
         The prior is therefore wired in as a tie-break (≤ 0.003 rank units, ~1 % of dots move).</p></div>
       <div class="card"><div class="card-kicker">4 · Dispersal is not the free lever it was presented as</div>
-        <p>In the one controlled pair (same score, same 155,021 pixels) dispersal raised K̄ 2.7× and lowered skill 2.6×, leaving TP — and DTI (0.1152 → 0.1193) — unchanged. The “0.12–0.34 projected” headline assumed skill would transfer; the central expectation is about h19-5.</p></div>
+        <p>In the one controlled pair (same score, same 155,021 pixels) dispersal raised K̄ 2.7× and lowered skill 2.6×, leaving TP — and DTI (0.1152 → 0.1193) — unchanged. The “0.12–0.34 projected” headline assumed skill would transfer; no score forecast is supported.</p></div>
       <div class="card"><div class="card-kicker">5 · Arrangement orders the live scores</div>
         <p>Signed divergence of an emission's pair statistics from the catalogue's: Spearman -0.66 with live DTI (n = 23, post-hoc bins, correlational). Over-clustered detectors average 0.034, lattices 0.093,
         mildly-less-clustered emissions 0.170. H24 was in the lattice bin; H30 is in the best one.</p></div>
-      <div class="card"><div class="card-kicker">6 · Reproducibility, verified</div>
+      <div class="card"><div class="card-kicker">6 · Reproducibility, prior-run record</div>
         <p>H24 rebuilds bit-for-bit from public inputs; all 23 live-scored artefacts re-fetch with exact pixel-count identity; the full habitat refit reproduces the committed model <em>only</em> when anchors are listed in the committed order (tie-breaking on a duplicate anchor, flag I-20).</p></div>
     </div>
     <p class="small">Earlier findings that still stand: |G| is 5,564–14,944 pixels, not 125,000; the habitat is lidar uphill-facing scarps, steps and crests plus 700 m detrended-slope heterogeneity and low radiometric U (nested-CV ρ = 0.437); no offline proxy truth ranks the live artefacts better than chance
     (best ρ = 0.326, p = 0.120).</p>
   </section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">Budget choice</div><h2>Expected DTI against emitted pixels (the H24 budget table; H29/H30 keep its 100,000-dot logic)</h2>
-      <p><strong>q</strong> = kernel-weighted true positives per emitted pixel. Unlike a “skill” ratio, q does not depend on the assumed |G|. Measured over the 24 live artefacts q spans 0.0005 to
-      <strong>0.0518</strong> (h28-dotted-ridge), with h19-5 at 0.0475. The q grid below (0.04–0.11) is a <em>prior</em>, not a measurement: its lower half is what the best artefacts achieved; values above ≈ 0.06 assume that placement skill
-      survives dispersal, which the one controlled pair (pindrop ridge vs nodes) does not support. Read the table as an upper envelope.</p></div></div>
-    <div class="table-wrap"><table class=""><thead><tr><th>emitted px (H24 budget table)</th><th>η</th><th>300 m coverage</th><th>DTI at |G| = 6k for q = 0.04 / 0.06 / 0.08 / 0.11</th><th>|G| = 10k</th><th>|G| = 15k</th><th>q-weighted, worst |G|</th></tr></thead><tbody><tr><td>20,000</td><td>0.977</td><td>0.096</td><td>0.090 / 0.133 / 0.176 / 0.239</td><td>0.066 / 0.099 / 0.131 / 0.178</td><td>0.050 / 0.074 / 0.099 / 0.135</td><td>0.0864</td></tr><tr><td>30,000</td><td>0.977</td><td>0.143</td><td>0.109 / 0.162 / 0.214 / 0.290</td><td>0.085 / 0.126 / 0.167 / 0.227</td><td>0.066 / 0.099 / 0.131 / 0.178</td><td>0.1147</td></tr><tr><td>45,000</td><td>0.961</td><td>0.209</td><td>0.128 / 0.190 / 0.250 / 0.337</td><td>0.105 / 0.155 / 0.205 / 0.278</td><td>0.085 / 0.127 / 0.168 / 0.228</td><td>0.1468</td></tr><tr><td>60,000</td><td>0.956</td><td>0.274</td><td>0.140 / 0.207 / 0.272 / 0.336</td><td>0.118 / 0.176 / 0.231 / 0.313</td><td>0.099 / 0.148 / 0.195 / 0.264</td><td>0.1706</td></tr><tr><td>80,000</td><td>0.952</td><td>0.358</td><td>0.150 / 0.222 / 0.275 / 0.275</td><td>0.131 / 0.195 / 0.256 / 0.346</td><td>0.113 / 0.168 / 0.222 / 0.300</td><td>0.1943</td></tr><tr><td>100,000</td><td>0.946</td><td>0.438</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.2120</td></tr><tr><td>120,000</td><td>0.941</td><td>0.516</td><td>0.163 / 0.202 / 0.202 / 0.202</td><td>0.148 / 0.218 / 0.287 / 0.298</td><td>0.132 / 0.196 / 0.258 / 0.347</td><td>0.1920</td></tr><tr><td>150,000</td><td>0.933</td><td>0.627</td><td>0.168 / 0.168 / 0.168 / 0.168</td><td>0.155 / 0.229 / 0.253 / 0.253</td><td>0.142 / 0.209 / 0.275 / 0.339</td><td>0.1682</td></tr><tr><td>180,000</td><td>0.926</td><td>0.734</td><td>0.144 / 0.144 / 0.144 / 0.144</td><td>0.161 / 0.221 / 0.221 / 0.221</td><td>0.149 / 0.220 / 0.289 / 0.300</td><td>0.1442</td></tr><tr><td>220,000</td><td>0.918</td><td>0.872</td><td>0.121 / 0.121 / 0.121 / 0.121</td><td>0.166 / 0.188 / 0.188 / 0.188</td><td>0.156 / 0.230 / 0.259 / 0.259</td><td>0.1212</td></tr></tbody></table></div>
+    <div class="section-head"><div><div class="eyebrow">Budget choice</div><h2>Conditional DTI sensitivity (not a score forecast)</h2>
+      <p>The rows use three historical placement-skill assumptions and the columns vary the unknown hidden-truth size |G|. The computation is metric algebra only; neither q nor skill transfer to H30 is validated, and the public score matches do not identify the underlying files. Read every value only as conditional sensitivity—not a prediction, expected DTI, validation result, or release criterion.</p></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>Conditional placement-skill assumption (not validated)</th><th>|G| = 6,000</th><th>|G| = 10,000</th><th>|G| = 15,000</th></tr></thead><tbody><tr><td>lattice-type skill 2.0 (nodes/discovery/r13 measured 1.9-2.7)</td><td>0.081</td><td>0.118</td><td>0.153</td></tr><tr><td>pindrop-nodes skill 2.7</td><td>0.108</td><td>0.158</td><td>0.204</td></tr><tr><td>dotted-ridge skill 5.5 (best dotted, measured)</td><td>0.216</td><td>0.311</td><td>0.399</td></tr></tbody></table></div>
   </section>
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">Live public leaderboard</div><h2>Current standings</h2>

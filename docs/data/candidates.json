@@ -1,81 +1,101 @@
 {
- "candidates": [
-  {
-   "id": "h29",
-   "label": "H29 \u00b7 de-aliased lattice-regime emission (H24 ranking)",
-   "nan": {
-    "name": "gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-nan.tif",
-    "href": "downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-nan.tif",
-    "bytes": 1706230,
-    "sha256": "28f30b31c5d054764038144c2742364c5e4f1e2ca79f122281d04cb9d15cd5db",
-    "variant": "nan-outside-footprint",
-    "ok_to_upload": true
-   },
-   "allfinite": {
-    "name": "gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-allfinite.tif",
-    "href": "downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-allfinite.tif",
-    "bytes": 933862,
-    "sha256": "ae5c5aafce85a395af73944ab10f3fc2cad7bcc1244d49a52d53443bd0f5c3c2",
-    "variant": "zeros-outside-footprint",
-    "ok_to_upload": true
-   },
-   "note": "GEMSDOE23 H29 | lidar scarps + detrended slope + low U habitat, off-catalogue | 100,000 dots, tie-broken 400 m NMS on the top 100% of the score, row-phase equalised (no 400 m flight-line comb) | unscored; central expectation ~ h19-5: DTI 0.18-0.19 if TP per emitted pixel matches | sha256 28f30b31",
-   "keep_top": 1.0,
-   "signed_divergence": -0.589236110357475,
-   "arrangement_bin": "lattice-like (flat, Poisson-like at >= 1 km)",
-   "y400_strength": 2.445862999427605,
-   "y400_p": 0.7377049180327869,
-   "kbar": 0.1749013066291809,
-   "eta": 0.9521162618644673,
-   "coverage": 0.441224662848571,
-   "n_dots": 100000,
-   "separation_violating_pairs": 0,
-   "evidence": "data/h29-build.json"
+  "candidates": [
+    {
+      "id": "h29",
+      "label": "H29 · de-aliased lattice-regime emission (H24 ranking)",
+      "nan": {
+        "name": "gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-nan.tif",
+        "href": "downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-nan.tif",
+        "bytes": 1706230,
+        "sha256": "28f30b31c5d054764038144c2742364c5e4f1e2ca79f122281d04cb9d15cd5db",
+        "variant": "nan-outside-footprint",
+        "ok_to_upload": false,
+        "release_approved": false,
+        "format_preflight_passed": true,
+        "format_preflight_scope": "Prior template comparison recorded as passed; not rerun in current checkout."
+      },
+      "allfinite": {
+        "name": "gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-allfinite.tif",
+        "href": "downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-allfinite.tif",
+        "bytes": 933862,
+        "sha256": "ae5c5aafce85a395af73944ab10f3fc2cad7bcc1244d49a52d53443bd0f5c3c2",
+        "variant": "zeros-outside-footprint",
+        "ok_to_upload": false,
+        "release_approved": false,
+        "format_preflight_passed": true,
+        "format_preflight_scope": "Prior template comparison recorded as passed; not rerun in current checkout."
+      },
+      "note": "GEMSDOE23 H29 | QA-only, unscored; no score forecast; release blocked pending independent holdout | 100,000 dots | sha256 28f30b31",
+      "keep_top": 1.0,
+      "signed_divergence": -0.589236110357475,
+      "arrangement_bin": "lattice-like (flat, Poisson-like at >= 1 km)",
+      "y400_strength": 2.445862999427605,
+      "y400_p": 0.7377049180327869,
+      "kbar": 0.1749013066291809,
+      "eta": 0.9521162618644673,
+      "coverage": 0.441224662848571,
+      "n_dots": 100000,
+      "separation_violating_pairs": 0,
+      "evidence": "data/h29-build.json"
+    },
+    {
+      "id": "h30",
+      "label": "H30 · arrangement-matched habitat emission (H24 ranking, audit-constrained)",
+      "nan": {
+        "name": "gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif",
+        "href": "downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif",
+        "bytes": 1692444,
+        "sha256": "38539dc647d5ede0d8fa90123810d18130ee15e524097f55e83b6b8a57976ea9",
+        "variant": "nan-outside-footprint",
+        "ok_to_upload": false,
+        "release_approved": false,
+        "format_preflight_passed": true,
+        "format_preflight_scope": "Prior template comparison recorded as passed; not rerun in current checkout."
+      },
+      "allfinite": {
+        "name": "gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif",
+        "href": "downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif",
+        "bytes": 922168,
+        "sha256": "d07cbb6f69076e76f1a8a4806ddc5639421bc9a59b10d80a09b9fb423bb99427",
+        "variant": "zeros-outside-footprint",
+        "ok_to_upload": false,
+        "release_approved": false,
+        "format_preflight_passed": true,
+        "format_preflight_scope": "Prior template comparison recorded as passed; not rerun in current checkout."
+      },
+      "note": "GEMSDOE23 H30 | QA-only, unscored; no score forecast; release blocked pending independent holdout | 91,533 dots | sha256 38539dc6",
+      "keep_top": 0.3,
+      "signed_divergence": -0.2093849541970085,
+      "arrangement_bin": "mildly less clustered than the catalogue (the bin holding the best live scores)",
+      "y400_strength": 2.287610964490471,
+      "y400_p": 0.8360655737704918,
+      "kbar": 0.15661264955997467,
+      "eta": 0.9314210940316786,
+      "coverage": 0.3794449498030407,
+      "n_dots": 91533,
+      "separation_violating_pairs": 0,
+      "evidence": "data/h30-build.json"
+    }
+  ],
+  "generated_utc": "2026-10-02T17:48:17Z",
+  "h24_reference": {
+    "id": "h24",
+    "name": "gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif",
+    "y400_strength": 243.28327597883398,
+    "y400_p": 0.01639344262295082,
+    "signed_divergence": -0.5844954083511664,
+    "arrangement_bin": "lattice-like (flat, Poisson-like at >= 1 km)",
+    "separation_violating_pairs": 6651,
+    "kbar": 0.17378193140029907,
+    "eta": 0.946022680409377,
+    "coverage": 0.437935839150397
   },
-  {
-   "id": "h30",
-   "label": "H30 \u00b7 arrangement-matched habitat emission (H24 ranking, audit-constrained)",
-   "nan": {
-    "name": "gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif",
-    "href": "downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif",
-    "bytes": 1692444,
-    "sha256": "38539dc647d5ede0d8fa90123810d18130ee15e524097f55e83b6b8a57976ea9",
-    "variant": "nan-outside-footprint",
-    "ok_to_upload": true
-   },
-   "allfinite": {
-    "name": "gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif",
-    "href": "downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif",
-    "bytes": 922168,
-    "sha256": "d07cbb6f69076e76f1a8a4806ddc5639421bc9a59b10d80a09b9fb423bb99427",
-    "variant": "zeros-outside-footprint",
-    "ok_to_upload": true
-   },
-   "note": "GEMSDOE23 H30 | lidar scarps + detrended slope + low U habitat, off-catalogue | 91,533 dots, tie-broken 400 m NMS on the top 30% of the score, row-phase equalised (no 400 m flight-line comb) | unscored; central expectation ~ h19-5: DTI 0.17-0.18 if TP per emitted pixel matches | sha256 38539dc6",
-   "keep_top": 0.3,
-   "signed_divergence": -0.2093849541970085,
-   "arrangement_bin": "mildly less clustered than the catalogue (the bin holding the best live scores)",
-   "y400_strength": 2.287610964490471,
-   "y400_p": 0.8360655737704918,
-   "kbar": 0.15661264955997467,
-   "eta": 0.9314210940316786,
-   "coverage": 0.3794449498030407,
-   "n_dots": 91533,
-   "separation_violating_pairs": 0,
-   "evidence": "data/h30-build.json"
+  "status": "QA_CANDIDATE_ONLY",
+  "score_forecast": false,
+  "release_decision": {
+    "status": "BLOCKED",
+    "eligible_for_submission": false,
+    "reason": "No reproducible, non-withdrawn independent uncatalogued-fault spatial holdout/current-best OOF comparison is registered. The current-best registry is BLOCKED. Format checks and a standalone TIFF audit do not validate placement or authorize a competition upload. Do not spend a submission slot.",
+    "current_best_registry_sha256": "ef9ae8f326d5a886320c0d07b0f4e6711ea8501095b4b02dc885d1f9c822412c"
   }
- ],
- "generated_utc": "2026-10-02T12:35:41Z",
- "h24_reference": {
-  "id": "h24",
-  "name": "gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif",
-  "y400_strength": 243.28327597883398,
-  "y400_p": 0.01639344262295082,
-  "signed_divergence": -0.5844954083511664,
-  "arrangement_bin": "lattice-like (flat, Poisson-like at >= 1 km)",
-  "separation_violating_pairs": 6651,
-  "kbar": 0.17378193140029907,
-  "eta": 0.946022680409377,
-  "coverage": 0.437935839150397
- }
 }

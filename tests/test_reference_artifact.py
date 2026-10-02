@@ -72,8 +72,12 @@ class ReferenceArtifactTests(unittest.TestCase):
                          "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc")
         self.assertTrue(man.get("note"), "a submission must carry a short identifying note")
         self.assertLessEqual(len(man["note"]), 300, "the note is meant to be short")
+        self.assertEqual(man.get("release_decision", {}).get("status"), "BLOCKED")
+        self.assertFalse(man.get("release_decision", {}).get("eligible_for_submission"))
         for key in ("primary", "compatibility"):
-            self.assertTrue(man[key].get("ok_to_upload"), f"{key} failed template validation")
+            self.assertTrue(man[key].get("format_preflight_passed"), f"{key} failed template validation")
+            self.assertFalse(man[key].get("release_approved"), f"{key} was not holdout-approved")
+            self.assertFalse(man[key].get("ok_to_upload"), f"{key} must not be treated as slot-approved")
             for check in man["validation"]["nan" if key == "primary" else "allfinite"]["checks"]:
                 if check["kind"] == "hard requirement":
                     self.assertTrue(check["passed"], check["check"])

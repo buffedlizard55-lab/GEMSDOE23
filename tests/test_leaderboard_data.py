@@ -63,7 +63,7 @@ class LeaderboardFeedSchemaTests(unittest.TestCase):
         self.assertIn("2026-10-02", feed["retrieved_utc"])
         caveat = feed["attribution_caveat"]
         self.assertNotIn("rank 24 (smrtdoog5)", caveat)
-        self.assertIn("rank 26 (smrtdoog5)", caveat)
+        self.assertIn("rank 27 (smrtdoog5)", caveat)
 
     def test_failed_refresh_preserves_rows_and_surfaces_stale_status(self):
         with tempfile.TemporaryDirectory() as tmp:

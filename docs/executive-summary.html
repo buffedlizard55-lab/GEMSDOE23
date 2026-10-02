@@ -30,24 +30,22 @@
 
   <section class="hero"><div class="hero-grid"><div>
     <div class="eyebrow">Executive summary</div>
-    <h1>How to submit this file, and what it is expected to score</h1>
-    <p class="lead">Five steps, one file, one note. The upload takes under a minute; the reasoning behind the file is on the
-    <a href="evidence.html">evidence page</a>.</p></div>
-    <aside class="hero-aside"><span class="status status-ok">Template-verified</span>
+    <h1>Submission steps—only after holdout approval</h1>
+    <p class="lead">The H30 GeoTIFF is a QA candidate, not an approved submission. The current independent spatial-holdout gate is BLOCKED; do not spend a slot. These are the upload steps to follow only after a future candidate is explicitly approved in the manifest.</p></div>
+    <aside class="hero-aside"><span class="status status-warning">TIFF value/structure audit PASS · template match not rechecked · release BLOCKED</span>
       <strong style="margin:.8rem 0 .45rem">1.69 MB · 38539dc647d5ede0…</strong>
-      <p class="small">Single band, float32, EPSG:32611, 3292 × 3730, 100 m, values in [0, 1], NaN outside the footprint —
-      checked against <code>data/sample_submission.tif</code> (SHA-256 2176d08e485aa2cd…).</p></aside></div></section>
+      <p class="small">Current standalone TIFF audit: 3292×3730, one float32 band, EPSG:32611, 100 m pixels; finite values 0.0–1.0 and 7,111,787 NaNs. Exact sample-template comparison was not checked because <code>data/sample_submission.tif</code> is absent. A prior template-validation record names <code>data/sample_submission.tif</code> (SHA-256 2176d08e485aa2cd…), but that raster is absent and the comparison was not re-run in this checkout.</p></aside></div></section>
 
   <section class="section" id="download">
     <div class="section-head">
-      <div><div class="eyebrow">First-click download · verified against the official template</div>
-      <h2>The submission file</h2></div>
-      <span class="status status-ok">All hard checks passed</span>
+      <div><div class="eyebrow">First-page download · format preflight, not upload approval</div>
+      <h2>Downloadable QA candidate</h2></div>
+      <span class="status status-warning">TIFF value/structure audit PASS · template match not rechecked · release BLOCKED</span>
     </div>
     <div class="download-card">
       <div>
-        <h3>H30 · arrangement-matched habitat emission (H24 ranking, audit-constrained)</h3>
-        <p>No score is predicted. Central expectation: this emission performs like h19-5 (live 0.1922) if its TP per emitted pixel q matches that artefact, i.e. DTI 0.17-0.18 at this budget (|G| 6k-15k). Scenario range 0.08-0.40 depends on whether placement skill survives the arrangement: lattice-type skill (1.9-2.7, measured on the group&#x27;s dispersed artefacts) gives 0.08-0.20, ridge-level skill (5.5+) gives 0.22-0.40. The one controlled pair (pindrop ridge vs nodes) shows dispersal alone did not raise TP. The earlier &#x27;0.12-0.34 projected&#x27; headline is superseded.</p>
+        <h3>H30 · arrangement-matched habitat emission (H24 ranking, audit-constrained) · QA only</h3>
+        <p>Current standalone TIFF audit: 3292×3730, one float32 band, EPSG:32611, 100 m pixels; finite values 0.0–1.0 and 7,111,787 NaNs. Exact sample-template comparison was not checked because <code>data/sample_submission.tif</code> is absent. The manifest records an earlier template comparison as passing, but that comparison could not be re-run in this checkout. No reproducible independent uncatalogued-fault holdout has approved placement. Conditional scenario calculations are not a competition-score forecast; this file is for inspection and file-format QA only.</p>
         <div class="file-meta">
           <span>Filename: <code>gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif</code></span>
           <span>3292 × 3730</span><span>single-band float32</span><span>EPSG:32611</span><span>100 m pixels</span>
@@ -56,38 +54,37 @@
           <span>emitted mass 91,533 px</span>
           <span>dispersion efficiency η = 0.931</span>
         </div>
+        <div class="callout"><strong>Do not upload or spend a weekly slot.</strong> No reproducible, non-withdrawn independent uncatalogued-fault spatial holdout/current-best OOF comparison is registered. The current-best registry is BLOCKED. Format checks and a standalone TIFF audit do not validate placement or authorize a competition upload. Do not spend a submission slot.</div>
       </div>
       <div class="button-row">
-        <a class="button" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif" download>Download submission .tif ↓</a>
+        <a class="button" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif" download>Download QA candidate .tif ↓</a>
         <a class="button button-secondary" href="data/submission-manifest.json">Manifest JSON</a>
+        <a class="button button-secondary" href="data/current-tiff-audit.json">Current TIFF audit</a>
         <a class="button button-secondary" href="clustering.html">Audit &amp; clustering evidence</a>
         <a class="button button-secondary" href="data/submission-build.json">Budget evidence</a>
         <a class="button button-secondary" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif" download>All-finite variant</a>
       </div>
     </div>
-    <div class="copy-row" aria-label="Copy submission note" style="margin-top:1rem">
-      <input id="submission-note" readonly value="GEMSDOE23 H30 | lidar scarps + detrended slope + low U habitat, off-catalogue | 91,533 dots, tie-broken 400 m NMS on the top 30% of the score, row-phase equalised (no 400 m flight-line comb) | unscored; central expectation ~ h19-5: DTI 0.17-0.18 if TP per emitted pixel matches | sha256 38539dc6">
-      <button type="button" data-copy-target="submission-note">Copy submission note</button>
+    <div class="copy-row" aria-label="QA candidate note preview, not for upload" style="margin-top:1rem">
+      <input id="submission-note" readonly value="GEMSDOE23 H30 | QA-only, unscored; no score forecast; release blocked pending independent uncatalogued-fault holdout | 91,533 dots | sha256 38539dc6">
+      <button type="button" data-copy-target="submission-note">Copy QA candidate note</button>
     </div>
-    <p class="small" style="margin-top:.9rem"><strong>Other audited files</strong> (same ranking, all validated against the official template, none scored):
+    <p class="small" style="margin-top:.9rem"><strong>Other QA files</strong> (main-branch records list earlier template checks; the official sample is absent now; none scored):
       <a href="downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-nan.tif" download>H29 · de-aliased lattice-regime emission (H24 ranking)</a> (<a href="downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-allfinite.tif" download>all-finite</a>) · <a href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif" download>H24 · superseded (comb at 400 m, 931 dots too close)</a></p>
   </section>
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">Step by step</div><h2>Upload procedure</h2></div></div>
     <ol class="list-clean">
-      <li><strong>Download</strong> <code>gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif</code> with the button above. It is the official variant: NaN outside the footprint, exactly as the format rules require.</li>
-      <li><strong>Sign in</strong> at <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">drivendata.org/competitions/306</a> and open the <em>Submissions</em> tab. The account must be the entity registered for this competition.</li>
-      <li><strong>Upload</strong> the <code>.tif</code> unchanged. Do not open and re-save it in GIS software: that rewrites the nodata tag and can turn NaN into a large negative sentinel.</li>
-      <li><strong>Paste the note</strong> from the copy box above into the submission description field. It records the method, the emitted pixel count, η and the file hash, so the upload is traceable back to this repository.</li>
-      <li><strong>Record the score</strong> the moment it appears: <code>python scripts/record_score.py --score &lt;X&gt; --id 38539dc6</code>. The script finds the uploaded file by that hash, logs the score, adds the file as a 25th anchor (in the same cross-validation family as the other emissions built from the H24 ranking) and refits into <code>docs/data/habitat-model-refit.json</code>; the committed model is left untouched so the shipped files stay reproducible. Every live score tightens the |G| and skill estimates on the <a href="evidence.html">evidence page</a>.</li>
+      <li><strong>First check approval.</strong> Do not upload the current QA candidate. Proceed only when <code>docs/data/submission-manifest.json</code> records an explicit spatial-holdout release approval and its report hashes match <code>docs/data/current-holdout-best.json</code>.</li>
+      <li><strong>Download only the approved file</strong> named in the updated release manifest. The button above is currently for QA and format inspection, not an upload.</li>
+      <li><strong>Sign in</strong> at <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">drivendata.org/competitions/306</a> and open the <em>Submissions</em> tab only after approval. The account must be the entity registered for this competition.</li>
+      <li><strong>Upload the approved <code>.tif</code> unchanged</strong> and use its unique filename/note. Do not open and re-save it in GIS software: that may rewrite nodata or raster metadata.</li>
+      <li><strong>Record the score only after an approved upload</strong>: <code>python scripts/record_score.py --score &lt;X&gt; --id &lt;approved-sha8&gt;</code>. Do not use this step to justify an unvalidated upload or alter a release decision retroactively.</li>
     </ol>
-    <div class="callout"><strong>If the uploader rejects the file with “Predicted values must be in range [0, 1]”</strong>, upload the
-    all-finite variant instead (gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif). It is byte-identical inside the footprint and writes 0.0 rather than NaN outside it; some
-    server-side checkers read the whole array before applying the footprint mask. Both variants are produced and validated by
-    <code>scripts/build_audited_emission.py</code> (H24: <code>scripts/build_submission_live.py</code>).</div>
+    <div class="callout"><strong>The [0, 1] compatibility fallback is also QA-only today.</strong> If a future release-approved upload is rejected with “Predicted values must be in range [0, 1]”, use only the matching approved all-finite variant (<code>gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif</code>) after confirming the manifest/hash. It writes 0.0 outside the footprint; the historical manifest records a prior template check, but the template is missing here and no online uploader test was made. Current H30/H29 files must not be uploaded.</div>
   </section>
   <section class="section">
-    <div class="callout"><strong>What the audit changed in the file you are about to upload.</strong> The previous file (H24) carried a spectral line at exactly the 400 m GeoDAWN flight-line spacing
+    <div class="callout"><strong>What the audit changed in the H30 QA candidate (not an upload recommendation).</strong> The previous file (H24) carried a spectral line at exactly the 400 m GeoDAWN flight-line spacing
     (strength 243 against a control 95th percentile of 10), had 931 dots closer than its stated 400 m, and was statistically a uniform lattice
     (signed divergence from the catalogue -0.58). H30 has no such line (strength 2.3),
     0 pairs closer than 400 m, and signed divergence -0.21. Evidence: <a href="clustering.html">clustering audit</a>.</div>
@@ -96,15 +93,11 @@
     <div class="section-head"><div><div class="eyebrow">Rules that constrain the decision</div><h2>Before you spend the slot</h2></div></div>
     <div class="grid-2">
       <div class="card"><div class="card-kicker">Three uploads per rolling seven days</div>
-        <p>Official rules §3.2/§3.4 (re-read 2026-10-02); the competition closes <strong>3 December 2026, 23:59 UTC</strong>, about nine weeks, so at most about 26 uploads remain. Slots are the only ground-truth channel, so the standing rule in this repository is:
-        never upload something that has not beaten the current best on a validated holdout. <strong>That rule cannot be satisfied honestly</strong>: no offline proxy correlates with the live board
-        (best ρ = 0.326) and no blocked holdout can test hidden-fault placement. This session adds an arrangement audit that orders the live scores, but it is correlational and post-hoc, so it does not replace the rule.</p></div>
+        <p>Official rules §3.2/§3.4 (re-read 2026-10-02) permit up to three feedback submissions per rolling seven days. The standing project rule is stricter: a candidate must beat the registered current best on an independent uncatalogued-fault spatial holdout before an upload is considered. <strong>No such holdout exists.</strong> The current registry is BLOCKED; public-board correlations and known-catalogue folds are not substitutes. Keep every slot unused until the gate can be met; a competition upload is not a validation set.</p></div>
       <div class="card"><div class="card-kicker">Which file, and what to expect</div>
-        <p><strong>H30</strong> (the download above) has the same ranking as H24 with the audit defects removed and an arrangement in the bin that holds the best live scores. <strong>H29</strong> is the same ranking as a de-aliased lattice;
-        H24 is superseded. Central expectation if TP per emitted pixel matches h19-5 (live 0.1922): <strong>DTI 0.17–0.18</strong>; scenario range 0.08–0.40 depends on whether placement skill survives the arrangement.
-        An upload would therefore most likely <em>equal</em> the group's best, not beat it; the leader is at 0.3195. If a slot is spent, record the score immediately (<code>scripts/record_score.py</code>) and refit: one live observation is worth more than more offline work.</p></div>
-      <div class="card"><div class="card-kicker">If you want slots to buy information, not score</div>
-        <p>Hypothesis H-32 on the <a href="hypotheses.html">hypotheses page</a> sketches two controlled pairs (arrangement: H29 vs H30; near-field band vs a score-matched control) with pre-registered readouts. Spending slots that way overrides the standing rule, so it is the owner's decision, not an automatic one.</p></div>
+        <p><strong>H30</strong> (the QA download above) is an arrangement-audited emission whose main-branch manifest records a prior template-format pass; the sample template is absent here and the comparison was not re-run. <strong>H29</strong> is the de-aliased lattice control; H24 is superseded. None has a live score or release approval. Numbers in the historical budget file are conditional sensitivities, not a forecast. No expected leaderboard score is claimed.</p></div>
+      <div class="card"><div class="card-kicker">No experiment slot is authorized</div>
+        <p>H-32 on the <a href="hypotheses.html">hypotheses page</a> describes possible paired experiments, but those designs do not waive the independent-holdout rule. They must not be run through competition slots unless the user later revises that standing constraint.</p></div>
       <div class="card"><div class="card-kicker">One submission for both prize rounds</div>
         <p>The same file is scored on the private test set at the close (Initial Round, 5 × $10,000) and re-scored against the
         expanded expert labels in the Final Round ($250,000 pool). Known USGS/INGENIOUS fault pixels are masked out in
@@ -116,7 +109,7 @@
   </section>
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">Traceability</div><h2>Every number on this page</h2></div></div>
-    <div class="table-wrap"><table class=""><thead><tr><th>file</th><th>what it records</th></tr></thead><tbody><tr><td><a href='data/submission-manifest.json'>submission-manifest.json</a></td><td>filename, SHA-256, byte size, validation checks, the submission note</td></tr><tr><td><a href='data/submission-build.json'>submission-build.json</a></td><td>the whole budget/η/expected-DTI table and the family-consensus weights</td></tr><tr><td><a href='data/habitat-model.json'>habitat-model.json</a></td><td>the habitat regression: selected layers, weights, nested-CV ρ, per-artefact implied TP and skill</td></tr><tr><td><a href='data/live-model-bounds.json'>live-model-bounds.json</a></td><td>exact bounds on |G| per artefact</td></tr><tr><td><a href='data/offline-proxy-audit.json'>offline-proxy-audit.json</a></td><td>the negative result: every offline proxy truth vs the live ordering</td></tr><tr><td><a href='data/oof-evaluation.json'>oof-evaluation.json</a></td><td>the deep ensemble's out-of-fold DTI against a random-emission control, and the admission gate</td></tr><tr><td><a href='data/phase2-candidates.json'>phase2-candidates.json</a></td><td>reviewer candidates with the epistemic/aleatoric split and survey coverage</td></tr><tr><td><a href='data/fault-statistics.json'>fault-statistics.json</a></td><td>the fault-population statistics fitted on the known catalogue before any model, the prior and the tip-wedge analysis</td></tr><tr><td><a href='data/prediction-audit.json'>prediction-audit.json</a></td><td>the audit of 23 live-scored emissions and of H24/H29/H30, with the calibration against the live scores</td></tr><tr><td><a href='data/h29-build.json'>h29-build.json</a> · <a href='data/h30-build.json'>h30-build.json</a> · <a href='data/candidates.json'>candidates.json</a></td><td>before/after audit of each file, the equalisation statistics and the scenario table</td></tr></tbody></table></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>file</th><th>what it records</th></tr></thead><tbody><tr><td><a href='data/submission-manifest.json'>submission-manifest.json</a></td><td>H30 QA filename/hash and separate format-preflight versus release-blocked status</td></tr><tr><td><a href='data/current-template-validation.json'>current-template-validation.json</a></td><td>historical independent TIFF hard checks for H29/H30 variants; format only, not re-run here</td></tr><tr><td><a href='data/current-tiff-audit.json'>current-tiff-audit.json</a></td><td>fresh standard-library audit of H30 files; value bounds and TIFF tags only, exact sample-template comparison unavailable</td></tr><tr><td><a href='data/current-holdout-best.json'>current-holdout-best.json</a></td><td>current-best spatial holdout release registry; BLOCKED</td></tr><tr><td><a href='data/submission-build.json'>submission-build.json</a></td><td>historical budget/η/conditional-DTI sensitivities; not a score forecast</td></tr><tr><td><a href='data/habitat-model.json'>habitat-model.json</a></td><td>the habitat regression: selected layers, weights, nested-CV ρ, per-artefact implied TP and skill</td></tr><tr><td><a href='data/live-model-bounds.json'>live-model-bounds.json</a></td><td>exact bounds on |G| per artefact</td></tr><tr><td><a href='data/offline-proxy-audit.json'>offline-proxy-audit.json</a></td><td>the negative result: every offline proxy truth vs the live ordering</td></tr><tr><td><a href='data/oof-evaluation.json'>oof-evaluation.json</a></td><td>the deep ensemble's out-of-fold DTI against a random-emission control, and the admission gate</td></tr><tr><td><a href='data/phase2-candidates.json'>phase2-candidates.json</a></td><td>reviewer candidates with the epistemic/aleatoric split and survey coverage</td></tr><tr><td><a href='data/fault-statistics.json'>fault-statistics.json</a></td><td>the fault-population statistics fitted on the known catalogue before any model, the prior and the tip-wedge analysis</td></tr><tr><td><a href='data/prediction-audit.json'>prediction-audit.json</a></td><td>the audit of 23 live-scored emissions and of H24/H29/H30, with the calibration against the live scores</td></tr><tr><td><a href='data/h29-build.json'>h29-build.json</a> · <a href='data/h30-build.json'>h30-build.json</a> · <a href='data/candidates.json'>candidates.json</a></td><td>before/after audit of each file, the equalisation statistics and the scenario table</td></tr></tbody></table></div>
   </section>
 </main>
 <footer class="site-footer">

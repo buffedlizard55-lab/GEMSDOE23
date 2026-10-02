@@ -113,7 +113,10 @@ class SpatialPipelineIntegrationTests(unittest.TestCase):
             result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=60)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             gate = json.loads(gate_path.read_text(encoding="utf-8"))
-            self.assertTrue(gate["eligible_for_submission"])
+            self.assertEqual(gate["status"], "PROXY_ONLY")
+            self.assertFalse(gate["eligible_for_submission"])
+            self.assertTrue(gate["gate"]["screen_passed"])
+            self.assertEqual(gate["truth_semantics"], "known_catalogue_faults; proxy-only and excluded from competition scoring")
             self.assertEqual(gate["spatial_design"]["prediction_type"], "out_of_fold")
             self.assertEqual(gate["gate"]["fold_wins"], 4)
 
@@ -143,6 +146,21 @@ class SpatialPipelineIntegrationTests(unittest.TestCase):
                 "files": {"mean_probability_sha256": sha256(probability_path)},
             })
             output_dir = root / "submissions"
+            current_best_path = root / "current-holdout-best.json"
+            baseline_prediction, _baseline_metadata = oof_paths["baseline-unet"]
+            _baseline_config, baseline_config_digest, _ = config_paths["baseline-unet"]
+            current_best = {
+                "status": "VERIFIED",
+                "truth_semantics": "independent_uncatalogued_faults",
+                "folds": [0, 1, 2, 3],
+                "holdout_id": "synthetic-test-holdout",
+                "candidate_id": "baseline-unet",
+                "candidate_spec_sha256": baseline_config_digest,
+                "oof_prediction_sha256": sha256(baseline_prediction),
+                "validation_report_sha256": "d" * 64,
+                "truth_sha256": sha256(truth_path),
+            }
+            write_json(current_best_path, current_best)
             command = [
                 sys.executable, str(ROOT / "scripts/build_submission.py"),
                 "--strategy", "H1-edge-consensus",
@@ -151,16 +169,38 @@ class SpatialPipelineIntegrationTests(unittest.TestCase):
                 "--config", str(config_path),
                 "--inference-report", str(inference_path),
                 "--gate-report", str(gate_path),
+                "--current-best-report", str(current_best_path),
                 "--out-dir", str(output_dir),
             ]
+            # Even a four-fold metric pass on known labels is proxy-only and must not create
+            # a candidate for a real competition submission slot.
+            result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=30)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("status must be PASSED", result.stdout + result.stderr)
+            self.assertFalse(output_dir.exists())
+
+            # Exercise the successful writer path with an explicitly synthetic test fixture.
+            # This tests serialization/provenance mechanics only; it is not project evidence.
+            release_gate = dict(gate)
+            release_gate["status"] = "PASSED"
+            release_gate["eligible_for_submission"] = True
+            release_gate["truth_semantics"] = current_best["truth_semantics"]
+            release_gate["truth_sha256"] = current_best["truth_sha256"]
+            release_gate["current_best_holdout_id"] = current_best["holdout_id"]
+            release_gate["gate"] = dict(gate["gate"], eligible_for_submission=True)
+            release_gate_path = root / "synthetic-release-gate.json"
+            write_json(release_gate_path, release_gate)
+            command[command.index("--gate-report") + 1] = str(release_gate_path)
             result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=30)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             manifest = json.loads(result.stdout)
+            self.assertEqual(manifest["release_status"], "APPROVED_BY_SPATIAL_HOLDOUT_GATE")
             self.assertIn("inference_report_sha256", manifest)
             self.assertIn("candidate_spec", manifest)
             self.assertEqual(manifest["candidate_spec"]["config_sha256"], config_digest)
             self.assertEqual(manifest["probabilities_sha256"], sha256(probability_path))
             self.assertEqual(manifest["template_sha256"], sha256(template_path))
+            self.assertEqual(manifest["current_holdout_best"]["holdout_id"], current_best["holdout_id"])
             artifact_path = output_dir / manifest["file"]
             self.assertTrue(artifact_path.is_file())
             self.assertTrue(artifact_path.with_suffix(".json").is_file())

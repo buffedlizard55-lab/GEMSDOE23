@@ -29,11 +29,10 @@
 <main id="main">
 
   <section class="hero"><div class="hero-grid"><div>
-    <div class="eyebrow">Clustering audit · fitted before the model</div>
-    <h1>Faults are a spatial statistic. We fitted it on the known catalogue, then audited our own submission with it.</h1>
-    <p class="lead">The known INGENIOUS/USGS traces are strongly clustered (4.2× the random expectation at 1 km, still 1.15× at 30 km; D ≈ 1.51–1.66)
-    and, above 3.0 km, follow the Bour &amp; Davy (1999) scaling. Held against that statistic, the shipped H24 emission is a uniform lattice that carries a spectral line at exactly
-    the 400 m flight-line spacing and breaks its own separation rule. H29 and H30 fix that. The prior the statistic gives for <em>missing</em> faults is real but small.</p></div>
+    <div class="eyebrow">Clustering audit · prior data-enabled analysis · source rasters absent now</div>
+    <h1>Faults are a spatial statistic. The saved run fitted it before auditing its candidate emission.</h1>
+    <p class="lead">The following statistics were computed in an earlier hash-verified restore; the labels/features are absent in this checkout, so they are not a fresh fit. The known INGENIOUS/USGS traces were strongly clustered (4.2× the random expectation at 1 km, still 1.15× at 30 km; D ≈ 1.51–1.66)
+    and, above 3.0 km, followed the Bour &amp; Davy (1999) scaling. The saved audit found that H24 carried a 400 m line and separation violations; H29/H30 remove those measured artefacts in the archived files, but do not validate fault placement. The SGMC missing-fault proxy suggests a small prior signal, not ground truth.</p></div>
     <aside class="hero-aside"><span class="status status-warning">Correlational · not validated against hidden labels</span>
       <strong style="margin:.8rem 0 .45rem">Signed arrangement divergence orders the live scores</strong>
       <p class="small">Spearman -0.66 (p = 0.001, n = 23). Bins defined after looking at the data; the one controlled pair says dispersal alone changes nothing. Flags I-14 … I-24 on the <a href="verification.html">audit page</a>.</p></aside></div></section>
@@ -106,7 +105,7 @@
     Neither adds placement skill; neither has a live score; the blocked-holdout gate is <strong>not passed</strong> because no valid holdout exists (I-05).</p>
     <p class="small"><strong>Minimum-regret check.</strong> If the score carried <em>no</em> information (skill 1, hidden faults uniform), H30's concentration would cost
     -3.3 % at |G| = 6k, -4.1 % at |G| = 10k, -4.8 % at |G| = 15k of DTI relative to H24 (H29: +0.6 %, +0.6 %, +0.6 %);
-    if the score is informative, the concentration gains. That asymmetry, not a validated forecast, is the case for H30 over H29.</p>
+    If placement skill transfers, the concentration might gain; that transfer is unvalidated, and the no-information case is only a sensitivity boundary. Treat the H29/H30 comparison as a hypothesis for an independent holdout, not a deployment rationale.</p>
   </section>
 
   <section class="section">

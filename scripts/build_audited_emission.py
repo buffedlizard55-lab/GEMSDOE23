@@ -188,13 +188,14 @@ def main() -> int:
     rid = [v for v in sc_list[2].values()]
     sc_lo, sc_hi = min(lat + rid), max(lat + rid)
     summary = dict(central=[q_lo, q_hi], lattice_type_skill=[min(lat), max(lat)], ridge_level_skill=[min(rid), max(rid)], scenario_range=[sc_lo, sc_hi])
-    note = (f"GEMSDOE23 {args.variant.upper()} | lidar scarps + detrended slope + low U habitat, off-catalogue | {int(g['area']):,} dots, "
-            f"tie-broken 400 m NMS on the top {keep:.0%} of the score, row-phase equalised (no 400 m flight-line comb) | unscored; "
-            f"central expectation ~ h19-5: DTI {q_lo:.2f}-{q_hi:.2f} if TP per emitted pixel matches | sha256 {sha256_file(nan_path)[:8]}")
+    note = (f"GEMSDOE23 {args.variant.upper()} | QA ONLY — not approved for upload | audited {int(g['area']):,}-dot emission, "
+            f"row-phase equalised | sha256 {sha256_file(nan_path)[:8]}")
     files = dict(nan=dict(name=os.path.basename(nan_path), href="downloads/" + os.path.basename(nan_path), bytes=os.path.getsize(nan_path),
-                          sha256=sha256_file(nan_path), variant="nan-outside-footprint", ok_to_upload=v1["passed"]),
+                          sha256=sha256_file(nan_path), variant="nan-outside-footprint", format_preflight_passed=v1["passed"],
+                          release_approved=False, ok_to_upload=False),
                  allfinite=dict(name=os.path.basename(allf_path), href="downloads/" + os.path.basename(allf_path), bytes=os.path.getsize(allf_path),
-                                sha256=sha256_file(allf_path), variant="zeros-outside-footprint", ok_to_upload=v2["passed"]))
+                                sha256=sha256_file(allf_path), variant="zeros-outside-footprint", format_preflight_passed=v2["passed"],
+                                release_approved=False, ok_to_upload=False))
     ev = dict(generated_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), variant=args.variant, label=pre["label"], keep_top=keep,
               prior_weight=args.prior_weight, budget=args.budget, r_min_px=args.r_min,
               equalisation=dict(n_moved=eq["n_moved"], share_moved=eq["share_moved"], mean_abs_shift_px=eq["mean_abs_shift_px"],
@@ -204,8 +205,12 @@ def main() -> int:
                                       status="post-hoc target; see docs/data/prediction-audit.json arrangement_target"),
               audit_before_h24=before, audit_after=after, geometry=g, files=files, expected_dti_scenarios=scen, expected_dti_if_q_equals_h19_5=q_eq,
               expectation_summary=summary, uninformative_score_check=null_chk, note=note,
-              what_is_not_claimed="No placement skill is added or validated. Blocked-holdout gate: NOT PASSED (no valid holdout exists, I-05); the file is provided "
-                                  "for the owner's slot decision, not recommended on score grounds.")
+              candidate_status="QA_CANDIDATE_ONLY", score_forecast=False, release_approved=False, ok_to_upload=False,
+              expected_dti_semantics="Conditional metric-algebra sensitivity only; assumed hidden-truth size and transfer of placement skill are unvalidated. Not an expected score, forecast, or release criterion.",
+              release_decision=dict(status="BLOCKED", eligible_for_submission=False,
+                                    reason="No verified independent uncatalogued-fault spatial holdout/current-best OOF record is registered; format preflight is not release approval."),
+              what_is_not_claimed="No placement skill is added or validated. The independent uncatalogued-fault holdout gate is BLOCKED (no valid holdout/current-best artifact exists). "
+                                  "This raster is for format QA and inspection only; do not upload or spend a submission slot.")
     json.dump(ev, open(os.path.join(ROOT, "docs", "data", f"{args.variant}-build.json"), "w"), indent=1)
 
     cands = json.load(open(args.candidates)) if os.path.exists(args.candidates) else dict(candidates=[])
@@ -215,6 +220,11 @@ def main() -> int:
                  separation_violating_pairs=after["separation_violating_pairs"], evidence=f"data/{args.variant}-build.json")
     cands["candidates"] = [c for c in cands.get("candidates", []) if c["id"] != args.variant] + [entry]
     cands["generated_utc"] = ev["generated_utc"]
+    cands["status"] = "QA_CANDIDATE_ONLY"
+    cands["score_forecast"] = False
+    cands["release_decision"] = dict(
+        status="BLOCKED", eligible_for_submission=False,
+        reason="No verified independent uncatalogued-fault spatial holdout/current-best OOF record is registered; do not upload or spend a submission slot.")
     cands["h24_reference"] = dict(id="h24", name=os.path.basename(args.h24), y400_strength=y0["strength"], y400_p=y0["p_rank"],
                                   signed_divergence=before["signed_divergence"], arrangement_bin=before["arrangement_bin"],
                                   separation_violating_pairs=before["separation_violating_pairs"], kbar=before["kbar"], eta=before["eta"], coverage=before["coverage"])
@@ -222,14 +232,22 @@ def main() -> int:
 
     if args.set_primary:
         man = json.load(open(args.manifest))
-        man.update(generated_utc=ev["generated_utc"], note=note, geometry=g, r_min_px=args.r_min, candidate_label=pre["label"],
+        registry_path = os.path.join(ROOT, "docs", "data", "current-holdout-best.json")
+        registry_hash = sha256_file(registry_path) if os.path.isfile(registry_path) else None
+        release_decision = dict(
+            status="BLOCKED",
+            eligible_for_submission=False,
+            reason="No verified independent uncatalogued-fault spatial holdout/current-best OOF record is registered. Format preflight is not release approval.",
+            current_best_report="docs/data/current-holdout-best.json",
+            current_best_report_sha256=registry_hash,
+        )
+        man.update(schema_version=2, generated_utc=ev["generated_utc"], note=note, geometry=g, r_min_px=args.r_min, candidate_label=pre["label"],
                    primary=files["nan"], compatibility=files["allfinite"], validation=dict(nan=v1, allfinite=v2), expected_dti=scen,
+                   expected_dti_semantics="Conditional metric-algebra sensitivity only; assumed |G| and transfer of placement skill are unvalidated. Not an expected score, forecast, or release criterion.",
+                   release_decision=release_decision, release_approved=False, ok_to_upload=False,
                    claims=dict(score_predicted=False, statement=(
-                       "No score is predicted. Central expectation: this emission performs like h19-5 (live 0.1922) if its TP per emitted pixel q matches "
-                       f"that artefact, i.e. DTI {q_lo:.2f}-{q_hi:.2f} at this budget (|G| 6k-15k). Scenario range {sc_lo:.2f}-{sc_hi:.2f} depends on whether placement skill survives the "
-                       f"arrangement: lattice-type skill (1.9-2.7, measured on the group's dispersed artefacts) gives {min(lat):.2f}-{max(lat):.2f}, ridge-level skill (5.5+) "
-                       f"gives {min(rid):.2f}-{max(rid):.2f}. The one controlled pair (pindrop ridge vs nodes) shows dispersal alone did not raise TP. The earlier "
-                       "'0.12-0.34 projected' headline is superseded.")),
+                       "No numerical score forecast is claimed. Scenario values are conditional metric-algebra sensitivities under unverified assumptions about hidden-truth size and placement-skill transfer; they are not measured performance, an expected DTI, validation evidence, or permission to spend a submission slot.")),
+                   score_forecast=False, candidate_status="QA_CANDIDATE_ONLY", format_preflight_scope="format only; does not establish placement quality or release approval",
                    supersedes=dict(name="gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif",
                                    reason="audit: 400 m comb (strength 243, rank p 0.016), 931 dots violating the stated 400 m separation, lattice-like arrangement"))
         json.dump(man, open(args.manifest, "w"), indent=1)

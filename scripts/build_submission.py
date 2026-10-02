@@ -23,10 +23,47 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def validate_gate_report(gate: dict) -> None:
-    """Recompute the four-fold gate rather than trusting one Boolean flag."""
+def validate_current_best_record(record: dict) -> None:
+    """Require an auditable registry entry for the current spatial-holdout incumbent."""
+    if record.get("status") != "VERIFIED":
+        raise ValueError("No verified current holdout best is registered; submission release is blocked")
+    if record.get("truth_semantics") != "independent_uncatalogued_faults":
+        raise ValueError("Current holdout best must use independent uncatalogued-fault truth")
+    if record.get("folds") != [0, 1, 2, 3]:
+        raise ValueError("Current holdout best must be registered on four spatial folds")
+    for key in ("holdout_id", "candidate_id"):
+        if not isinstance(record.get(key), str) or not record[key].strip():
+            raise ValueError(f"Current holdout best is missing {key}")
+    for key in ("candidate_spec_sha256", "oof_prediction_sha256", "validation_report_sha256", "truth_sha256"):
+        value = record.get(key)
+        if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
+            raise ValueError(f"Current holdout best is missing a valid {key}")
+
+
+def validate_gate_report(gate: dict, current_best: dict) -> None:
+    """Recompute the four-fold gate and bind it to the registered current best.
+
+    A proxy-only, withdrawn, missing, or stale comparison must never authorize a weekly
+    submission. The candidate must beat the exact OOF map registered in current-best.json.
+    """
+    validate_current_best_record(current_best)
+    if gate.get("status") != "PASSED":
+        raise ValueError("Holdout report status must be PASSED; proxy-only or withdrawn reports cannot release a submission")
     if gate.get("eligible_for_submission") is not True:
         raise ValueError("Holdout report does not explicitly set eligible_for_submission=true")
+    if gate.get("truth_semantics") != current_best["truth_semantics"]:
+        raise ValueError("Candidate and current-best reports do not use the registered independent truth semantics")
+    if gate.get("truth_sha256") != current_best["truth_sha256"]:
+        raise ValueError("Candidate report truth does not match the registered current-best truth")
+    if gate.get("incumbent_id") != current_best["candidate_id"]:
+        raise ValueError("Candidate was not compared against the registered current holdout best")
+    if gate.get("incumbent_spec_sha256") != current_best["candidate_spec_sha256"]:
+        raise ValueError("Incumbent spec does not match the registered current holdout best")
+    if gate.get("incumbent_prediction_sha256") != current_best["oof_prediction_sha256"]:
+        raise ValueError("Incumbent OOF prediction does not match the registered current holdout best")
+    if gate.get("current_best_holdout_id") != current_best["holdout_id"]:
+        raise ValueError("Candidate report does not reference the registered holdout ID")
+
     stats = gate.get("gate")
     folds = gate.get("fold_results")
     design = gate.get("spatial_design")
@@ -62,6 +99,8 @@ def main() -> int:
     parser.add_argument("--config", type=Path, required=True, help="Same candidate config used for the holdout and final full-data model")
     parser.add_argument("--inference-report", type=Path, required=True, help="uncertainty-report.json from final full-data ensemble inference")
     parser.add_argument("--gate-report", type=Path, required=True, help="Spatially blocked validation JSON with eligible_for_submission=true")
+    parser.add_argument("--current-best-report", type=Path, default=Path("docs/data/current-holdout-best.json"),
+                        help="Verified registry record for the current best spatial holdout (release fails closed unless VERIFIED)")
     parser.add_argument("--out-dir", type=Path, default=Path("outputs/submissions"))
     parser.add_argument("--strategy", default="ensemble", help="Short strategy slug included in the filename")
     parser.add_argument("--note", default=None, help="Short DrivenData note; otherwise generated from strategy and hash")
@@ -71,10 +110,11 @@ def main() -> int:
         from gems.submission import validate_submission, write_submission_raster
 
         gate = json.loads(args.gate_report.read_text(encoding="utf-8"))
+        current_best = json.loads(args.current_best_report.read_text(encoding="utf-8"))
         config = json.loads(args.config.read_text(encoding="utf-8"))
         inference = json.loads(args.inference_report.read_text(encoding="utf-8"))
         config_hash = hashlib.sha256(args.config.read_bytes()).hexdigest()
-        validate_gate_report(gate)
+        validate_gate_report(gate, current_best)
         candidate_id = config.get("candidate_id", "unnamed")
         expected_slug = re.sub(r"[^a-z0-9-]+", "-", candidate_id.lower()).strip("-")
         if gate.get("candidate_id") != candidate_id:
@@ -114,7 +154,7 @@ def main() -> int:
             final = args.out_dir / f"{base_name}-{collision:02d}.tif"
             collision += 1
         temp.rename(final)
-        note = args.note or f"GEMSDOE23 {slug} | four-fold known-label spatial proxy gate passed | artifact {digest[:8]}"
+        note = args.note or f"GEMSDOE23 {slug} | independent four-fold holdout gate passed vs registered current best | artifact {digest[:8]}"
         manifest = {
             "file": final.name,
             "sha256": digest,
@@ -136,6 +176,17 @@ def main() -> int:
             },
             "gate_report": str(args.gate_report),
             "gate_report_sha256": sha256(args.gate_report),
+            "current_best_report": str(args.current_best_report),
+            "current_best_report_sha256": sha256(args.current_best_report),
+            "current_holdout_best": {
+                "holdout_id": current_best["holdout_id"],
+                "candidate_id": current_best["candidate_id"],
+                "candidate_spec_sha256": current_best["candidate_spec_sha256"],
+                "oof_prediction_sha256": current_best["oof_prediction_sha256"],
+                "validation_report_sha256": current_best["validation_report_sha256"],
+                "truth_sha256": current_best["truth_sha256"],
+            },
+            "release_status": "APPROVED_BY_SPATIAL_HOLDOUT_GATE",
             "candidate_spec_sha256": config_hash,
             "inference_report": str(args.inference_report),
             "inference_report_sha256": sha256(args.inference_report),

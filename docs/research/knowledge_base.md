@@ -213,39 +213,24 @@ and the record is in `docs/data/`.
   come from PyPI and the CPU path then imports and runs normally. The `*-cu13` placeholder packages are
   empty and must not be used.
 
-## Current hypothesis register and gate
+## Current hypothesis register and release gate — continuation audit, 2026-10-02
 
-The ranked shortlist is on [`../hypotheses.html`](../hypotheses.html) and is now led by a built,
-shipped candidate:
+The full research register is on [`../hypotheses.html`](../hypotheses.html). H-24–H-33 and the fault-statistics/audit work are preserved from the main-branch clustering session. The latest files H29 (de-aliased lattice control) and H30 (arrangement-matched habitat emission) are **QA candidates only**; they are not live-scored and the main-branch conditional DTI scenario figures are not score forecasts.
 
-1. **H-24 dispersed habitat emission** (built): habitat-fitted ranking + skill-weighted consensus of the
-   nine live-scored artefact families, emitted as 400 m-spaced dots at a budget chosen by maximin
-   expected DTI. Expected 0.14–0.44; verified group best 0.1922; live leader 0.3195.
-2. **H-25 relocation, not detection**: displace catalogue trace geometry onto the nearest lidar scarp
-   crest inside a 500 m window. Motivated by the ~400 m catalogue-to-lidar misregistration reported by
-   Hermant et al. (2025), the paper the official About page cites. Needs no new data.
-3. **H-26 thermal-conduit inversion, spring-avoiding**: 2 m temperature-probe and geothermometer
-   anomaly density, but only the residual the catalogue cannot explain — the live scores say the raw
-   spring neighbourhood is anti-predictive.
-4. **H-27 acquisition-lineament deconfounding**: suppress east–west magnetic-derivative lineaments
-   aligned with the 400 m Area-2 flight lines and re-spend that budget on cross-line structure.
-5. **H-28 coverage-void targeting**: the explicit intersection of low mapped-geology density and high
-   lidar scarp evidence — the mechanism behind H-24's weights, made separately testable.
+This continuation adds four genuinely distinct geological tests, ranked within this new set by ordinal potential/cost because no valid ΔDTI estimate is available: **H-34** potential-field Euler source-depth stability; **H-35** multi-height magnetic/gravity edge persistence; **H-36** drainage deflection/knickpoint persistence from USGS 3DEP; **H-37** native-resolution depth-integrated USGS MT conductance as a broad structural/fluid-pathway prior. They are unimplemented and unvalidated. The hypotheses page records their layers, signatures, uncatalogued-fault rationale, differences from existing code, cost, official/free sources, and validation stop rules.
 
-**Gate.** A component may influence the submitted raster only after passing a pre-registered gate. The
-deep ensemble's gate was "out-of-fold DTI at the operating budget must beat a seed-matched random
-emission of the same size on a majority of blocked folds" (`scripts/evaluate_oof.py`); it did not pass,
-so its weight in the emission is 0 and the reason is recorded in `docs/data/submission-build.json`.
-The standing rule "never spend a slot on something that has not beaten the holdout best" **cannot be
-satisfied honestly in this competition**, because no offline proxy correlates with the live board; the
-substitute is the pre-registered decision rule printed on the executive-summary page, plus recording
-every returned score with `scripts/record_score.py`.
+**Release gate is BLOCKED.** `docs/data/current-holdout-best.json` has no verified independent uncatalogued-fault truth/current-best OOF hashes. Known-catalogue OOF folds, SGMC proxy correlations and post-hoc leaderboard correlations do not supply that truth. The deep-ensemble admission report records 0/5 folds beating the random-emission control; this is a separate model-admission result, not evidence of hidden-fault generalization. Format preflight and `ok_to_upload` are not release approval. The first-page H30 TIFF and its all-finite variant must remain marked QA-only; no slot was used, no live uploader test was made, and no candidate has passed the independent spatial-holdout comparison.
+
+**Current leaderboard**: the latest validated headless-render capture in `docs/data/leaderboard.json` was recorded at `2026-10-02T16:54:29+00:00`. Top three: DARD 0.3195, nchuzhoy 0.3128, alexoktaba 0.3042. The user-reported 0.3049 is absent; H19-like values 0.1922 and 0.1894 match ranks 27 and 29 but are not artifact/account attribution. An older passage calls 0.1894 the highest even though 0.1922 is numerically higher. Keep historical manual captures date-specific and do not borrow a timestamp from another record.
+
+`data/training_features.tif`, `data/labels.tif`, `data/sample_submission.tif`, and `data/external/` are absent in this post-merge checkout. A historical restore receipt is not proof that these rasters are available now; restore and recheck hashes, licenses, metadata and AOI/valid-pixel coverage before any data-dependent work, H36/H37 or survey-coverage uncertainty is trusted.
+
+The three-pass implementation/review log is [`review-log-2026-10-02.md`](review-log-2026-10-02.md).
 
 ## Open unknowns
 
 * The exact value of |G| (bounded 4,607–12,486, not measured) and therefore the exact optimal budget.
-* The placement skill this emission will actually achieve; the projection assumes 2.0–5.5 against a
-  best-observed 4.8–5.4.
+* Whether any historical placement-skill assumption transfers to H30. The prior 2.0–5.5 values are conditional sensitivity inputs, not a projection or forecast; no independent uncatalogued-fault holdout exists.
 * Whether the masked-pixel ruling also removes a masked pixel's ability to supply TP credit to a new
   fault within 300 m of it (flag I-11). This submission emits nothing on catalogue pixels, which is
   safe under both readings.
@@ -344,9 +329,7 @@ here produced it, `INFERENCE` = argued, not measured.
 
 ### Dispersion revisited (supersedes "Dispersion is a model-free lever" above)
 
-* **COMPUTED.** The earlier reading — η correlates with TP per emitted pixel (ρ = +0.61) and does not cost skill (ρ = +0.13) — is cross-sectional and confounded by emission type. The controlled pair shows η ×2.7 with skill ÷ 2.6 and
-  unchanged TP (implied TP/|G| 0.70 vs 0.72 at |G| = 6,000). If H24/H30 match h19-5's TP per emitted pixel their DTI is 0.17–0.19; lattice-type skill gives 0.08–0.21; ridge-level skill (≥ 5.5) 0.22–0.42. The "0.12–0.34 projected"
-  headline is superseded (flag I-17).
+* **COMPUTED, conditional sensitivity only.** The earlier reading — η correlates with TP per emitted pixel (ρ = +0.61) and does not cost skill (ρ = +0.13) — is cross-sectional and confounded by emission type. The controlled pair shows η ×2.7 with skill ÷ 2.6 and unchanged TP (implied TP/|G| 0.70 vs 0.72 at |G| = 6,000). Legacy H24/H30 values under assumed h19-5 transfer (0.17–0.19), lattice-type skill (0.08–0.21), and ridge-level skill (0.22–0.42) are algebraic scenarios, not expected scores or forecasts: none validates H30 placement. The earlier “0.12–0.34 projected” headline is withdrawn (flag I-17).
 
 ### Reproducibility facts
 
@@ -369,7 +352,6 @@ here produced it, `INFERENCE` = argued, not measured.
 
 ### Hypotheses of this session
 
-H-29 audit-matched arrangement (built as the file H30; file H29 is its lattice-regime control) · H-30 along-strike continuation beyond tips (measured; tie-break only) · H-31 survey-aware low-pass of magnetic
-inputs (queued) · H-32 slots as controlled experiments (needs the owner to override standing rule 1) · H-33 completeness-corrected short-fault deficit (queued). H-25 was tested on the aggregate and is not supported. H-26 in its simplest form (hot springs more than 500 m from any mapped fault,
+H-29 audit-matched arrangement (historical build; H29/H30 files are QA-only) · H-30 along-strike continuation beyond tips (proxy-only tie-break; not independent validation) · H-31 survey-aware low-pass of magnetic inputs (not implemented; bands must be restored) · H-32 controlled slot experiments (not authorized; conflicts with the current no-slot rule) · H-33 completeness-corrected short-fault deficit (not implemented; requires independent completeness data). H-25 was tested on the aggregate and is not supported. H-26 in its simplest form (hot springs more than 500 m from any mapped fault,
 `springs_hot_offmapped_*`, already in the 95-layer bank) shows no signal (density ρ = +0.08, p = 0.71; inverse distance −0.22, p = 0.31, against −0.52 for raw hot springs; superseded
 attribution record, sign and order only): the residual removes the anti-predictive sign but adds no skill. A fitted-residual form (anomaly given distance to the nearest fault) is still open.

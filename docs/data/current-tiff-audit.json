@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "reviewed_utc": "2026-10-02T17:48:17Z",
+  "status": "FILE_FORMAT_AUDIT_PASSED_TEMPLATE_COMPARISON_NOT_CHECKED",
+  "tool": "scripts/audit_reference_tif.py (stdlib-only, strip-by-strip decode)",
+  "scope": "Independent structural/value audit of the published H30 primary and all-finite TIFFs. Does not replace the strict template comparison.",
+  "current_inputs": {
+    "data/training_features.tif": false,
+    "data/labels.tif": false,
+    "data/sample_submission.tif": false,
+    "data/external/": false
+  },
+  "expected_template_sha256_from_historical_manifest": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc",
+  "template_comparison": "NOT CHECKED: official data/sample_submission.tif is absent from the current checkout; its SHA-256 and grid are recorded in historical validation records only.",
+  "results": {
+    "primary": {
+      "path": "docs/downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif",
+      "sha256": "38539dc647d5ede0d8fa90123810d18130ee15e524097f55e83b6b8a57976ea9",
+      "bytes": 1692444,
+      "classic_tiff": true,
+      "byte_order": "little",
+      "width": 3292,
+      "height": 3730,
+      "samples_per_pixel": 1,
+      "bits_per_sample": 32,
+      "sample_format": "IEEE float",
+      "compression": "LZW",
+      "predictor": 1,
+      "epsg": 32611,
+      "pixel_scale": [
+        100.0,
+        100.0,
+        0.0
+      ],
+      "tiepoint": [
+        0.0,
+        0.0,
+        0.0,
+        243350.0,
+        4508550.0,
+        0.0
+      ],
+      "gdal_nodata": "nan",
+      "decoded_pixels": 12279160,
+      "finite_pixels": 5167373,
+      "nan_pixels": 7111787,
+      "positive_infinity_pixels": 0,
+      "negative_infinity_pixels": 0,
+      "finite_min": 0.0,
+      "finite_max": 1.0,
+      "finite_value_counts": {
+        "0.0": 5075840,
+        "1.0": 91533
+      },
+      "finite_values_in_0_1": true,
+      "template_match": "NOT CHECKED; official sample_submission.tif is required"
+    },
+    "allfinite": {
+      "path": "docs/downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif",
+      "sha256": "d07cbb6f69076e76f1a8a4806ddc5639421bc9a59b10d80a09b9fb423bb99427",
+      "bytes": 922168,
+      "classic_tiff": true,
+      "byte_order": "little",
+      "width": 3292,
+      "height": 3730,
+      "samples_per_pixel": 1,
+      "bits_per_sample": 32,
+      "sample_format": "IEEE float",
+      "compression": "LZW",
+      "predictor": 1,
+      "epsg": 32611,
+      "pixel_scale": [
+        100.0,
+        100.0,
+        0.0
+      ],
+      "tiepoint": [
+        0.0,
+        0.0,
+        0.0,
+        243350.0,
+        4508550.0,
+        0.0
+      ],
+      "gdal_nodata": "0",
+      "decoded_pixels": 12279160,
+      "finite_pixels": 12279160,
+      "nan_pixels": 0,
+      "positive_infinity_pixels": 0,
+      "negative_infinity_pixels": 0,
+      "finite_min": 0.0,
+      "finite_max": 1.0,
+      "finite_value_counts": {
+        "0.0": 12187627,
+        "1.0": 91533
+      },
+      "finite_values_in_0_1": true,
+      "template_match": "NOT CHECKED; official sample_submission.tif is required"
+    }
+  }
+}

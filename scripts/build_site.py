@@ -56,12 +56,23 @@ NAV = [("index.html", "Overview"), ("executive-summary.html", "How to submit"),
 
 
 def evidence_stamp() -> str:
-    """Newest `generated_utc` across the evidence records.
+    """Show the leaderboard capture's actual time precision in the global site stamp.
 
-    Deliberately not the wall clock: `build_site.py` must be idempotent, because CI fails
-    when the committed site differs from a freshly generated one. A timestamp that changes
-    on every run would make that check fire on nothing.
+    Prefer the public-board capture over unrelated validation timestamps. When an official
+    capture exposes only a date, never borrow a generated_utc from another record to imply
+    an exact retrieval time. Otherwise fall back to the newest evidence-record timestamp.
     """
+    board_path = os.path.join(DATA, "leaderboard.json")
+    try:
+        board = json.load(open(board_path))
+    except Exception:
+        board = {}
+    retrieved = board.get("retrieved_utc") if isinstance(board, dict) else None
+    if isinstance(retrieved, str) and retrieved:
+        if len(retrieved) == 10 and retrieved[4] == "-" and retrieved[7] == "-":
+            return retrieved + " UTC"
+        return retrieved[:16].replace("T", " ") + " UTC"
+
     stamps = []
     for name in os.listdir(DATA) if os.path.isdir(DATA) else []:
         if not name.endswith(".json"):
@@ -70,9 +81,10 @@ def evidence_stamp() -> str:
             rec = json.load(open(os.path.join(DATA, name)))
         except Exception:
             continue
-        for key in ("generated_utc", "retrieved_utc", "reviewed_utc"):
-            if isinstance(rec, dict) and isinstance(rec.get(key), str):
-                stamps.append(rec[key])
+        for key in ("generated_utc", "reviewed_utc"):
+            value = rec.get(key) if isinstance(rec, dict) else None
+            if isinstance(value, str):
+                stamps.append(value)
     return max(stamps)[:16].replace("T", " ") + " UTC" if stamps else "date not recorded"
 
 
@@ -261,11 +273,10 @@ def clustering_page(st, pa, cdx, h29, h30, man):
 
     return f"""
   <section class="hero"><div class="hero-grid"><div>
-    <div class="eyebrow">Clustering audit · fitted before the model</div>
-    <h1>Faults are a spatial statistic. We fitted it on the known catalogue, then audited our own submission with it.</h1>
-    <p class="lead">The known INGENIOUS/USGS traces are strongly clustered ({f2(ncc['sum_ratio'][2], 1)}× the random expectation at 1 km, still {f2(ncc['sum_ratio'][-1], 2)}× at 30 km; D ≈ {f2(cdim['centroids_1p5_30km']['D'])}–{f2(cdim['centroids_0p5_10km']['D'])})
-    and, above {ld['xmin_m']/1000:.1f} km, follow the Bour &amp; Davy (1999) scaling. Held against that statistic, the shipped H24 emission is a uniform lattice that carries a spectral line at exactly
-    the 400 m flight-line spacing and breaks its own separation rule. H29 and H30 fix that. The prior the statistic gives for <em>missing</em> faults is real but small.</p></div>
+    <div class="eyebrow">Clustering audit · prior data-enabled analysis · source rasters absent now</div>
+    <h1>Faults are a spatial statistic. The saved run fitted it before auditing its candidate emission.</h1>
+    <p class="lead">The following statistics were computed in an earlier hash-verified restore; the labels/features are absent in this checkout, so they are not a fresh fit. The known INGENIOUS/USGS traces were strongly clustered ({f2(ncc['sum_ratio'][2], 1)}× the random expectation at 1 km, still {f2(ncc['sum_ratio'][-1], 2)}× at 30 km; D ≈ {f2(cdim['centroids_1p5_30km']['D'])}–{f2(cdim['centroids_0p5_10km']['D'])})
+    and, above {ld['xmin_m']/1000:.1f} km, followed the Bour &amp; Davy (1999) scaling. The saved audit found that H24 carried a 400 m line and separation violations; H29/H30 remove those measured artefacts in the archived files, but do not validate fault placement. The SGMC missing-fault proxy suggests a small prior signal, not ground truth.</p></div>
     <aside class="hero-aside"><span class="status status-warning">Correlational · not validated against hidden labels</span>
       <strong style="margin:.8rem 0 .45rem">Signed arrangement divergence orders the live scores</strong>
       <p class="small">Spearman {cal[sig_key]['rho_live_dti']:+.2f} (p = {cal[sig_key]['p_live_dti']:.3f}, n = {cal[sig_key]['n']}). Bins defined after looking at the data; the one controlled pair says dispersal alone changes nothing. Flags I-14 … I-24 on the <a href="verification.html">audit page</a>.</p></aside></div></section>
@@ -338,7 +349,7 @@ def clustering_page(st, pa, cdx, h29, h30, man):
     Neither adds placement skill; neither has a live score; the blocked-holdout gate is <strong>not passed</strong> because no valid holdout exists (I-05).</p>
     <p class="small"><strong>Minimum-regret check.</strong> If the score carried <em>no</em> information (skill 1, hidden faults uniform), H30's concentration would cost
     {", ".join(f"{100*v['relative_change']:+.1f} % at |G| = {int(k)//1000}k" for k, v in (h30.get('uninformative_score_check') or {}).items())} of DTI relative to H24 (H29: {", ".join(f"{100*v['relative_change']:+.1f} %" for v in (h29.get('uninformative_score_check') or {}).values())});
-    if the score is informative, the concentration gains. That asymmetry, not a validated forecast, is the case for H30 over H29.</p>
+    If placement skill transfers, the concentration might gain; that transfer is unvalidated, and the no-information case is only a sensitivity boundary. Treat the H29/H30 comparison as a hypothesis for an independent holdout, not a deployment rationale.</p>
   </section>
 
   <section class="section">
@@ -369,6 +380,7 @@ python -m unittest tests.test_faultstats tests.test_audit tests.test_clusterprio
 def build():
     stamp = evidence_stamp()
     man = j("submission-manifest.json", {}) or {}
+    tiff_audit_record = j("current-tiff-audit.json", {}) or {}
     bld = j("submission-build.json", {}) or {}
     hab = j("habitat-model.json", {}) or {}
     bnd = j("live-model-bounds.json", {}) or {}
@@ -385,6 +397,46 @@ def build():
     h30 = j("h30-build.json", {}) or {}
     prim = man.get("primary", {}) or {}
     comp = man.get("compatibility", {}) or {}
+    validation = man.get("validation", {}) or {}
+    release_decision = man.get("release_decision", {}) or {}
+    release_status = release_decision.get("status", "BLOCKED")
+    release_approved = (
+        release_status in {"APPROVED", "APPROVED_BY_SPATIAL_HOLDOUT_GATE"}
+        and prim.get("release_approved") is True
+        and prim.get("ok_to_upload") is True
+    )
+    format_preflight = prim.get("format_preflight_passed")
+    if format_preflight is None:
+        format_preflight = bool((validation.get("nan") or {}).get("passed"))
+    tiff_audit = (tiff_audit_record.get("results") or {}).get("primary") or man.get("current_tiff_audit") or {}
+    audit_summary = ""
+    audit_passed = bool(
+        tiff_audit.get("samples_per_pixel") == 1
+        and tiff_audit.get("bits_per_sample") == 32
+        and tiff_audit.get("epsg") == 32611
+        and tiff_audit.get("finite_values_in_0_1") is True
+        and tiff_audit.get("positive_infinity_pixels") == 0
+        and tiff_audit.get("negative_infinity_pixels") == 0
+        and tiff_audit.get("template_match", "").startswith("NOT CHECKED")
+    )
+    if audit_passed:
+        audit_summary = (
+            f"Current standalone TIFF audit: {tiff_audit['width']}×{tiff_audit['height']}, "
+            f"one float32 band, EPSG:{tiff_audit['epsg']}, 100 m pixels; finite values "
+            f"{tiff_audit['finite_min']}–{tiff_audit['finite_max']} and "
+            f"{tiff_audit['nan_pixels']:,} NaNs. Exact sample-template comparison was not checked "
+            "because <code>data/sample_submission.tif</code> is absent."
+        )
+    else:
+        audit_summary = "No current standalone TIFF audit is recorded."
+    format_status_text = (
+        "TIFF value/structure audit PASS · template match not rechecked · release BLOCKED"
+        if audit_passed else
+        ("Historical template-format preflight recorded · release BLOCKED" if format_preflight else "Format preflight not passed")
+    )
+    release_reason = release_decision.get(
+        "reason", "No verified independent uncatalogued-fault spatial holdout is registered; format checks do not approve a competition upload."
+    )
     geo = man.get("geometry") or bld.get("geometry", {}) or {}      # the manifest describes the file being offered
     dti_exp = man.get("expected_dti", {}) or {}
     note = man.get("note", "")
@@ -434,14 +486,14 @@ def build():
     dl_block = f"""
   <section class="section" id="download">
     <div class="section-head">
-      <div><div class="eyebrow">First-click download · verified against the official template</div>
-      <h2>The submission file</h2></div>
-      <span class="status {'status-ok' if prim.get('ok_to_upload') else 'status-warning'}">{'All hard checks passed' if prim.get('ok_to_upload') else 'Not built yet'}</span>
+      <div><div class="eyebrow">First-page download · format preflight, not upload approval</div>
+      <h2>Downloadable QA candidate</h2></div>
+      <span class="status {'status-ok' if audit_passed and release_approved else 'status-warning'}">{esc(format_status_text)}</span>
     </div>
     <div class="download-card">
       <div>
-        <h3>{esc(man.get('candidate_label') or 'H24 · dispersed-habitat emission')}</h3>
-        <p>{esc(man.get('claims', {}).get('statement', ''))}</p>
+        <h3>{esc(man.get('candidate_label') or 'H30 · arrangement-matched habitat')} · QA only</h3>
+        <p>{audit_summary} The manifest records an earlier template comparison as passing, but that comparison could not be re-run in this checkout. No reproducible independent uncatalogued-fault holdout has approved placement. Conditional scenario calculations are not a competition-score forecast; this file is for inspection and file-format QA only.</p>
         <div class="file-meta">
           <span>Filename: <code>{esc(fname)}</code></span>
           <span>3292 × 3730</span><span>single-band float32</span><span>EPSG:32611</span><span>100 m pixels</span>
@@ -450,34 +502,38 @@ def build():
           <span>emitted mass {esc(f'{area:,.0f}' if area else '—')} px</span>
           <span>dispersion efficiency η = {esc(num(eta,3)) if eta else '—'}</span>
         </div>
+        <div class="callout"><strong>Do not upload or spend a weekly slot.</strong> {esc(release_reason)}</div>
       </div>
       <div class="button-row">
-        <a class="button" href="{esc(download_href)}" download>Download submission .tif ↓</a>
+        <a class="button" href="{esc(download_href)}" download>Download QA candidate .tif ↓</a>
         <a class="button button-secondary" href="data/submission-manifest.json">Manifest JSON</a>
+        <a class="button button-secondary" href="data/current-tiff-audit.json">Current TIFF audit</a>
         <a class="button button-secondary" href="clustering.html">Audit &amp; clustering evidence</a>
         <a class="button button-secondary" href="data/submission-build.json">Budget evidence</a>
         <a class="button button-secondary" href="{esc('downloads/' + comp.get('name','')) if comp else '#'}" download>All-finite variant</a>
       </div>
     </div>
-    <div class="copy-row" aria-label="Copy submission note" style="margin-top:1rem">
+    <div class="copy-row" aria-label="QA candidate note preview, not for upload" style="margin-top:1rem">
       <input id="submission-note" readonly value="{esc(note)}">
-      <button type="button" data-copy-target="submission-note">Copy submission note</button>
+      <button type="button" data-copy-target="submission-note">Copy QA candidate note</button>
     </div>
-    <p class="small" style="margin-top:.9rem"><strong>Other audited files</strong> (same ranking, all validated against the official template, none scored):
+    <p class="small" style="margin-top:.9rem"><strong>Other QA files</strong> (main-branch records list earlier template checks; the official sample is absent now; none scored):
       {alt_links}</p>
   </section>"""
 
     budget_rows = []
-
-    def by_g(r, G):
-        d = (r.get("by_G") or {}).get(str(G), {}).get("dti_per_q") or []
-        return " / ".join(num(v, 3) for v in d) if d else "—"
-    for r in (bld.get("table") or []):
-        budget_rows.append([f"{r['area']:,.0f}", num(r["eta"], 3), num(r["coverage"], 3),
-                            by_g(r, 6000), by_g(r, 10000), by_g(r, 15000),
-                            num(r["weighted_min_over_G"], 4)])
-    budget_table = table(["emitted px (H24 budget table)", "η", "300 m coverage", "DTI at |G| = 6k for q = 0.04 / 0.06 / 0.08 / 0.11",
-                          "|G| = 10k", "|G| = 15k", "q-weighted, worst |G|"], budget_rows)
+    for assumption, by_g in (dti_exp or {}).items():
+        if isinstance(by_g, dict):
+            budget_rows.append([
+                esc(assumption),
+                num(by_g.get("6000"), 3),
+                num(by_g.get("10000"), 3),
+                num(by_g.get("15000"), 3),
+            ])
+    budget_table = table(
+        ["Conditional placement-skill assumption (not validated)", "|G| = 6,000", "|G| = 10,000", "|G| = 15,000"],
+        budget_rows,
+    )
 
     anchor_rows = []
     for r in sorted((bnd.get("rows") or []), key=lambda r: -r["dti"]):
@@ -538,24 +594,23 @@ def build():
   <section class="hero">
     <div class="hero-grid">
       <div>
-        <div class="eyebrow">DOE GEMS Prize · DrivenData #306 · evidence records of {esc(stamp)}</div>
-        <h1>Faults are a spatial statistic. We fitted it, then audited our own submission with it.</h1>
+        <div class="eyebrow">DOE GEMS Prize · DrivenData #306 · evidence records of {esc(stamp)} · source rasters absent in current checkout</div>
+        <h1>Faults are spatially structured; this emission remains a QA candidate.</h1>
         <p class="lead">The known catalogue is strongly clustered ({esc(num((fst.get('ncc') or {}).get('centroids_2d', {}).get('sum_ratio', [0,0,0])[2], 1))}× the random expectation at 1 km) and obeys the Bour &amp; Davy scaling above 3 km.
         Held against that statistic, the previous file (H24) was a uniform lattice that carried a spectral line at exactly the <strong>400 m GeoDAWN flight-line spacing</strong>
         and broke its own separation rule in 931 places. This page now ships <strong>H30</strong>: same ranking, those defects removed, arrangement moved into the bin that holds the best live scores.
-        Nothing here has a live score, the central expectation is about h19-5 (<strong>{esc(central)}</strong>), and the live leader is at <strong id="leader-score-lead">{esc(num(leader.get('score'),4))}</strong>.</p>
+        H29/H30 have no live score, and no independent uncatalogued-fault holdout has approved their placement. The downloadable H30 raster is QA-only; conditional metric scenarios are not a score forecast. The live leader in the latest official capture is <strong id="leader-score-lead">{esc(num(leader.get('score'),4))}</strong>.</p>
         <div class="button-row" style="margin-top:1.25rem">
-          <a class="button" href="{esc(download_href)}" download>Download submission .tif ↓</a>
+          <a class="button" href="{esc(download_href)}" download>Download QA candidate .tif ↓</a>
           <a class="button button-secondary" href="executive-summary.html">Exactly how to submit →</a>
           <a class="button button-secondary" href="clustering.html">The clustering audit →</a>
         </div>
       </div>
       <aside class="hero-aside">
-        <span class="status status-neutral">Expectation, not a promise</span>
-        <strong style="margin:.8rem 0 .45rem">Central expectation DTI {esc(central)}</strong>
-        <p class="small">If TP per emitted pixel matches h19-5 (live <strong>0.1922</strong>) at |G| ∈ [6k, 15k]. Scenario range {esc(scen_txt)}: lattice-type skill → {esc(lat_txt)}, ridge-level skill → {esc(rid_txt)}.
-        The earlier “0.12–0.34 projected” is superseded (flag I-17). Live leader: <strong id="leader-score">{esc(num(leader.get('score'),4))}</strong> (<span id="leader-name">{esc(leader.get('participant'))}</span>).</p>
-        <a href="evidence.html">How |G| and q were derived →</a>
+        <span class="status status-warning">Holdout approval: BLOCKED</span>
+        <strong style="margin:.8rem 0 .45rem">QA format pass ≠ upload approval</strong>
+        <p class="small">The main-branch manifest records a prior H30 template preflight, but the official template raster is missing from this checkout and the comparison was not re-run here. Placement has not beaten a verified current-best OOF baseline on independent uncatalogued-fault truth. Do not spend a submission slot. Conditional scenario calculations are not a predicted DTI. Latest public leader: <strong id="leader-score">{esc(num(leader.get('score'),4))}</strong> (<span id="leader-name">{esc(leader.get('participant'))}</span>).</p>
+        <a href="verification.html">Review the release gate and open limitations →</a>
       </aside>
     </div>
   </section>
@@ -566,7 +621,8 @@ def build():
     <div class="card metric-card"><span>Habitat model, nested leave-one-family-out CV</span><strong>ρ = {esc(num(hab.get('nested_cv_spearman'),3))}</strong><span>on log placement skill, {esc(hab.get('n_anchors'))} live-scored artefacts, {esc(hab.get('n_layers'))} evidence layers</span></div>
   </section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">What changed in this session</div><h2>Six findings from fitting the fault statistic before touching the model</h2></div></div>
+    <div class="section-head"><div><div class="eyebrow">Recorded in the 2026-10-02 audit · inputs currently absent</div><h2>Six findings from fitting the fault statistic before touching the model</h2></div></div>
+    <p class="small">These findings are reproducible records from an earlier hash-verified input restore, not a fresh fit from the current filesystem. The three core competition rasters and all external layers are currently absent; restore and hash-check them before any rerun.</p>
     <div class="grid-2">
       <div class="card"><div class="card-kicker">1 · The catalogue is a clustered, self-similar fault population</div>
         <p>3,199 traces; length exponent a = {esc(num((fst.get('length_distribution') or {}).get('extent', {}).get('a_density'), 2))} above 3 km; nearest-larger-neighbour x = {esc(num((fst.get('bour_davy_consistency') or {}).get('x_measured_tail_centroid'), 2))}
@@ -579,21 +635,19 @@ def build():
         <p>Faults missing from the catalogue (independent SGMC sample) are enriched ×1.8 at 200–400 m and ×2.1 in the continuation wedge beyond tips, but ≈ 1 beyond 1 km; the continuation zone covers 0.7 % of the domain. Live scores reward no concentration near known faults.
         The prior is therefore wired in as a tie-break (≤ 0.003 rank units, ~1 % of dots move).</p></div>
       <div class="card"><div class="card-kicker">4 · Dispersal is not the free lever it was presented as</div>
-        <p>In the one controlled pair (same score, same 155,021 pixels) dispersal raised K̄ 2.7× and lowered skill 2.6×, leaving TP — and DTI (0.1152 → 0.1193) — unchanged. The “0.12–0.34 projected” headline assumed skill would transfer; the central expectation is about h19-5.</p></div>
+        <p>In the one controlled pair (same score, same 155,021 pixels) dispersal raised K̄ 2.7× and lowered skill 2.6×, leaving TP — and DTI (0.1152 → 0.1193) — unchanged. The “0.12–0.34 projected” headline assumed skill would transfer; no score forecast is supported.</p></div>
       <div class="card"><div class="card-kicker">5 · Arrangement orders the live scores</div>
         <p>Signed divergence of an emission's pair statistics from the catalogue's: Spearman {esc(num(next((v['rho_live_dti'] for k, v in (pau.get('calibration') or {}).items() if k.startswith('signed')), 0), 2))} with live DTI (n = 23, post-hoc bins, correlational). Over-clustered detectors average 0.034, lattices 0.093,
         mildly-less-clustered emissions 0.170. H24 was in the lattice bin; H30 is in the best one.</p></div>
-      <div class="card"><div class="card-kicker">6 · Reproducibility, verified</div>
+      <div class="card"><div class="card-kicker">6 · Reproducibility, prior-run record</div>
         <p>H24 rebuilds bit-for-bit from public inputs; all 23 live-scored artefacts re-fetch with exact pixel-count identity; the full habitat refit reproduces the committed model <em>only</em> when anchors are listed in the committed order (tie-breaking on a duplicate anchor, flag I-20).</p></div>
     </div>
     <p class="small">Earlier findings that still stand: |G| is {esc(f"{bnd.get('lower_bound_max',0):,.0f}")}–{esc(f"{(bnd.get('upper_bound_from_catalogue_like_truth') or 0):,.0f}")} pixels, not 125,000; the habitat is lidar uphill-facing scarps, steps and crests plus 700 m detrended-slope heterogeneity and low radiometric U (nested-CV ρ = {esc(num(hab.get('nested_cv_spearman'),3))}); no offline proxy truth ranks the live artefacts better than chance
     (best ρ = {esc(num(max((v['spearman_rho'] for v in prox.values()), default=0),3))}, p = {esc(num(min((v['p'] for v in prox.values()), default=1),3))}).</p>
   </section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">Budget choice</div><h2>Expected DTI against emitted pixels (the H24 budget table; H29/H30 keep its 100,000-dot logic)</h2>
-      <p><strong>q</strong> = kernel-weighted true positives per emitted pixel. Unlike a “skill” ratio, q does not depend on the assumed |G|. Measured over the 24 live artefacts q spans 0.0005 to
-      <strong>0.0518</strong> (h28-dotted-ridge), with h19-5 at 0.0475. The q grid below (0.04–0.11) is a <em>prior</em>, not a measurement: its lower half is what the best artefacts achieved; values above ≈ 0.06 assume that placement skill
-      survives dispersal, which the one controlled pair (pindrop ridge vs nodes) does not support. Read the table as an upper envelope.</p></div></div>
+    <div class="section-head"><div><div class="eyebrow">Budget choice</div><h2>Conditional DTI sensitivity (not a score forecast)</h2>
+      <p>The rows use three historical placement-skill assumptions and the columns vary the unknown hidden-truth size |G|. The computation is metric algebra only; neither q nor skill transfer to H30 is validated, and the public score matches do not identify the underlying files. Read every value only as conditional sensitivity—not a prediction, expected DTI, validation result, or release criterion.</p></div></div>
     {budget_table}
   </section>
   <section class="section">
@@ -608,30 +662,25 @@ def build():
     executive = f"""
   <section class="hero"><div class="hero-grid"><div>
     <div class="eyebrow">Executive summary</div>
-    <h1>How to submit this file, and what it is expected to score</h1>
-    <p class="lead">Five steps, one file, one note. The upload takes under a minute; the reasoning behind the file is on the
-    <a href="evidence.html">evidence page</a>.</p></div>
-    <aside class="hero-aside"><span class="status status-ok">Template-verified</span>
+    <h1>Submission steps—only after holdout approval</h1>
+    <p class="lead">The H30 GeoTIFF is a QA candidate, not an approved submission. The current independent spatial-holdout gate is BLOCKED; do not spend a slot. These are the upload steps to follow only after a future candidate is explicitly approved in the manifest.</p></div>
+    <aside class="hero-aside"><span class="status status-warning">{esc(format_status_text)}</span>
       <strong style="margin:.8rem 0 .45rem">{esc(f'{fbytes/1e6:.2f}' if fbytes else '0')} MB · {esc(fsha)}…</strong>
-      <p class="small">Single band, float32, EPSG:32611, 3292 × 3730, 100 m, values in [0, 1], NaN outside the footprint —
-      checked against <code>data/sample_submission.tif</code> (SHA-256 {esc((man.get('template_sha256') or '')[:16])}…).</p></aside></div></section>
+      <p class="small">{audit_summary} A prior template-validation record names <code>data/sample_submission.tif</code> (SHA-256 {esc((man.get('template_sha256') or '')[:16])}…), but that raster is absent and the comparison was not re-run in this checkout.</p></aside></div></section>
 {dl_block}
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">Step by step</div><h2>Upload procedure</h2></div></div>
     <ol class="list-clean">
-      <li><strong>Download</strong> <code>{esc(fname)}</code> with the button above. It is the official variant: NaN outside the footprint, exactly as the format rules require.</li>
-      <li><strong>Sign in</strong> at <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">drivendata.org/competitions/306</a> and open the <em>Submissions</em> tab. The account must be the entity registered for this competition.</li>
-      <li><strong>Upload</strong> the <code>.tif</code> unchanged. Do not open and re-save it in GIS software: that rewrites the nodata tag and can turn NaN into a large negative sentinel.</li>
-      <li><strong>Paste the note</strong> from the copy box above into the submission description field. It records the method, the emitted pixel count, η and the file hash, so the upload is traceable back to this repository.</li>
-      <li><strong>Record the score</strong> the moment it appears: <code>python scripts/record_score.py --score &lt;X&gt; --id {esc((prim.get('sha256') or '')[:8])}</code>. The script finds the uploaded file by that hash, logs the score, adds the file as a 25th anchor (in the same cross-validation family as the other emissions built from the H24 ranking) and refits into <code>docs/data/habitat-model-refit.json</code>; the committed model is left untouched so the shipped files stay reproducible. Every live score tightens the |G| and skill estimates on the <a href="evidence.html">evidence page</a>.</li>
+      <li><strong>First check approval.</strong> Do not upload the current QA candidate. Proceed only when <code>docs/data/submission-manifest.json</code> records an explicit spatial-holdout release approval and its report hashes match <code>docs/data/current-holdout-best.json</code>.</li>
+      <li><strong>Download only the approved file</strong> named in the updated release manifest. The button above is currently for QA and format inspection, not an upload.</li>
+      <li><strong>Sign in</strong> at <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">drivendata.org/competitions/306</a> and open the <em>Submissions</em> tab only after approval. The account must be the entity registered for this competition.</li>
+      <li><strong>Upload the approved <code>.tif</code> unchanged</strong> and use its unique filename/note. Do not open and re-save it in GIS software: that may rewrite nodata or raster metadata.</li>
+      <li><strong>Record the score only after an approved upload</strong>: <code>python scripts/record_score.py --score &lt;X&gt; --id &lt;approved-sha8&gt;</code>. Do not use this step to justify an unvalidated upload or alter a release decision retroactively.</li>
     </ol>
-    <div class="callout"><strong>If the uploader rejects the file with “Predicted values must be in range [0, 1]”</strong>, upload the
-    all-finite variant instead ({esc(comp.get('name','—'))}). It is byte-identical inside the footprint and writes 0.0 rather than NaN outside it; some
-    server-side checkers read the whole array before applying the footprint mask. Both variants are produced and validated by
-    <code>scripts/build_audited_emission.py</code> (H24: <code>scripts/build_submission_live.py</code>).</div>
+    <div class="callout"><strong>The [0, 1] compatibility fallback is also QA-only today.</strong> If a future release-approved upload is rejected with “Predicted values must be in range [0, 1]”, use only the matching approved all-finite variant (<code>{esc(comp.get('name','—'))}</code>) after confirming the manifest/hash. It writes 0.0 outside the footprint; the historical manifest records a prior template check, but the template is missing here and no online uploader test was made. Current H30/H29 files must not be uploaded.</div>
   </section>
   <section class="section">
-    <div class="callout"><strong>What the audit changed in the file you are about to upload.</strong> The previous file (H24) carried a spectral line at exactly the 400 m GeoDAWN flight-line spacing
+    <div class="callout"><strong>What the audit changed in the H30 QA candidate (not an upload recommendation).</strong> The previous file (H24) carried a spectral line at exactly the 400 m GeoDAWN flight-line spacing
     (strength {esc(num((h29.get('audit_before_h24') or {}).get('survey_lines', {}).get('traverse_400m_along_y', {}).get('strength'), 0))} against a control 95th percentile of 10), had {esc(f"{(h29.get('audit_before_h24') or {}).get('dots_with_violation', 0):,}")} dots closer than its stated 400 m, and was statistically a uniform lattice
     (signed divergence from the catalogue {esc(num((h29.get('audit_before_h24') or {}).get('signed_divergence'), 2))}). H30 has no such line (strength {esc(num(((h30.get('audit_after') or {}).get('survey_lines') or {}).get('traverse_400m_along_y', {}).get('strength'), 1))}),
     0 pairs closer than 400 m, and signed divergence {esc(num((h30.get('audit_after') or {}).get('signed_divergence'), 2))}. Evidence: <a href="clustering.html">clustering audit</a>.</div>
@@ -640,15 +689,11 @@ def build():
     <div class="section-head"><div><div class="eyebrow">Rules that constrain the decision</div><h2>Before you spend the slot</h2></div></div>
     <div class="grid-2">
       <div class="card"><div class="card-kicker">Three uploads per rolling seven days</div>
-        <p>Official rules §3.2/§3.4 (re-read 2026-10-02); the competition closes <strong>3 December 2026, 23:59 UTC</strong>, about nine weeks, so at most about 26 uploads remain. Slots are the only ground-truth channel, so the standing rule in this repository is:
-        never upload something that has not beaten the current best on a validated holdout. <strong>That rule cannot be satisfied honestly</strong>: no offline proxy correlates with the live board
-        (best ρ = {esc(num(max((v['spearman_rho'] for v in prox.values()), default=0),3))}) and no blocked holdout can test hidden-fault placement. This session adds an arrangement audit that orders the live scores, but it is correlational and post-hoc, so it does not replace the rule.</p></div>
+        <p>Official rules §3.2/§3.4 (re-read 2026-10-02) permit up to three feedback submissions per rolling seven days. The standing project rule is stricter: a candidate must beat the registered current best on an independent uncatalogued-fault spatial holdout before an upload is considered. <strong>No such holdout exists.</strong> The current registry is BLOCKED; public-board correlations and known-catalogue folds are not substitutes. Keep every slot unused until the gate can be met; a competition upload is not a validation set.</p></div>
       <div class="card"><div class="card-kicker">Which file, and what to expect</div>
-        <p><strong>H30</strong> (the download above) has the same ranking as H24 with the audit defects removed and an arrangement in the bin that holds the best live scores. <strong>H29</strong> is the same ranking as a de-aliased lattice;
-        H24 is superseded. Central expectation if TP per emitted pixel matches h19-5 (live 0.1922): <strong>DTI {esc(central)}</strong>; scenario range {esc(scen_txt)} depends on whether placement skill survives the arrangement.
-        An upload would therefore most likely <em>equal</em> the group's best, not beat it; the leader is at {esc(num(leader.get('score'),4))}. If a slot is spent, record the score immediately (<code>scripts/record_score.py</code>) and refit: one live observation is worth more than more offline work.</p></div>
-      <div class="card"><div class="card-kicker">If you want slots to buy information, not score</div>
-        <p>Hypothesis H-32 on the <a href="hypotheses.html">hypotheses page</a> sketches two controlled pairs (arrangement: H29 vs H30; near-field band vs a score-matched control) with pre-registered readouts. Spending slots that way overrides the standing rule, so it is the owner's decision, not an automatic one.</p></div>
+        <p><strong>H30</strong> (the QA download above) is an arrangement-audited emission whose main-branch manifest records a prior template-format pass; the sample template is absent here and the comparison was not re-run. <strong>H29</strong> is the de-aliased lattice control; H24 is superseded. None has a live score or release approval. Numbers in the historical budget file are conditional sensitivities, not a forecast. No expected leaderboard score is claimed.</p></div>
+      <div class="card"><div class="card-kicker">No experiment slot is authorized</div>
+        <p>H-32 on the <a href="hypotheses.html">hypotheses page</a> describes possible paired experiments, but those designs do not waive the independent-holdout rule. They must not be run through competition slots unless the user later revises that standing constraint.</p></div>
       <div class="card"><div class="card-kicker">One submission for both prize rounds</div>
         <p>The same file is scored on the private test set at the close (Initial Round, 5 × $10,000) and re-scored against the
         expanded expert labels in the Final Round ($250,000 pool). Known USGS/INGENIOUS fault pixels are masked out in
@@ -661,8 +706,11 @@ def build():
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">Traceability</div><h2>Every number on this page</h2></div></div>
     {table(["file", "what it records"], [
-        ["<a href='data/submission-manifest.json'>submission-manifest.json</a>", "filename, SHA-256, byte size, validation checks, the submission note"],
-        ["<a href='data/submission-build.json'>submission-build.json</a>", "the whole budget/η/expected-DTI table and the family-consensus weights"],
+        ["<a href='data/submission-manifest.json'>submission-manifest.json</a>", "H30 QA filename/hash and separate format-preflight versus release-blocked status"],
+        ["<a href='data/current-template-validation.json'>current-template-validation.json</a>", "historical independent TIFF hard checks for H29/H30 variants; format only, not re-run here"],
+        ["<a href='data/current-tiff-audit.json'>current-tiff-audit.json</a>", "fresh standard-library audit of H30 files; value bounds and TIFF tags only, exact sample-template comparison unavailable"],
+        ["<a href='data/current-holdout-best.json'>current-holdout-best.json</a>", "current-best spatial holdout release registry; BLOCKED"],
+        ["<a href='data/submission-build.json'>submission-build.json</a>", "historical budget/η/conditional-DTI sensitivities; not a score forecast"],
         ["<a href='data/habitat-model.json'>habitat-model.json</a>", "the habitat regression: selected layers, weights, nested-CV ρ, per-artefact implied TP and skill"],
         ["<a href='data/live-model-bounds.json'>live-model-bounds.json</a>", "exact bounds on |G| per artefact"],
         ["<a href='data/offline-proxy-audit.json'>offline-proxy-audit.json</a>", "the negative result: every offline proxy truth vs the live ordering"],
@@ -675,86 +723,100 @@ def build():
 
     hypotheses = f"""
   <section class="hero"><div class="hero-grid"><div>
-    <div class="eyebrow">New hypotheses</div><h1>Ten testable ideas in two generations, ranked by expected DTI per unit of effort</h1>
-    <p class="lead">Each names the exact layers, the physical signature, why it catches faults the USGS/INGENIOUS catalogue misses,
-    and how it differs from everything already tried in this group's {esc(len(bnd.get('rows') or []))} live-scored artefacts.
-    Ranked by expected DTI gain ÷ implementation cost. <strong>H-29 … H-33</strong> come from this session's clustering audit; <strong>H-24 … H-28</strong> are the earlier set with their status updated by what was measured.
-    H-29 is the one that is built and shipped (as the file labelled H30).</p></div></div></section>
+    <div class="eyebrow">New hypotheses</div><h1>Ten audited ideas plus four new geological tests</h1>
+    <p class="lead">The register preserves H-24 … H-33 and adds four distinct, unimplemented mechanisms H-34 … H-37. Each new row names layers, physical signature, uncatalogued-fault rationale, difference from prior code, ordinal expected potential, implementation cost and validation stop rule.
+    No numeric ΔDTI is fabricated for H-34 … H-37: without independent uncatalogued-fault holdout truth, ordinal potential/cost is the defensible ranking. H29/H30 are format-QA emissions, not release-approved submissions.</p></div></div></section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">This session (2026-10-02)</div><h2>H-29 … H-33, from the clustering audit (hypothesis IDs; the files built from them are labelled H29/H30)</h2></div></div>
-    {table(["rank", "id", "hypothesis", "layers / transform", "why it catches catalogue-missing faults", "difference from prior work", "expected ΔDTI", "cost", "status"], [
+    <div class="section-head"><div><div class="eyebrow">Historical analysis (2026-10-02)</div><h2>H-29 … H-33, from the clustering audit (hypothesis IDs; the files built from them are labelled H29/H30)</h2></div></div>
+    <p class="small">These values describe a prior data-enabled run, not a fresh computation from this branch. Raw competition and external rasters are absent now; the underlying manifests are retained for audit and must be rechecked after restoration.</p>
+    {table(["rank", "id", "hypothesis", "layers / transform", "why it catches catalogue-missing faults", "difference from prior work", "prior score scenario / benefit (not forecast)", "cost", "status"], [
       [1, "<strong>H-29</strong>", "<strong>Audit-matched arrangement</strong>: emit the H24 ranking in the arrangement the best live emissions share — mildly less clustered than the catalogue (signed NCC divergence ≈ −0.21) — by limiting the NMS candidates to the top 30 % of the score.",
        "<code>S = 0.625 rank(H) + 0.375 rank(V)</code> (unchanged) ⊕ normalised correlation sum of <code>labels.tif</code> pixels at 2–30 km as the arrangement target; row-phase equalisation at the 400 m survey period",
        "It is not a new detector. It stops spending 70 % of the dots on the lowest-scoring ground while keeping the spread, and it targets the one audit statistic that ordered the 23 live scores (ρ = −0.66, p = 0.001).",
        "Earlier emissions were either stacked ridges (η ≈ 0.4) or flat lattices (η &gt; 0.9); none was built to match an arrangement statistic, and none was audited for the flight-line comb.",
-       "−0.01 … +0.04 vs H24 (low confidence; −3 to −5 % relative if the score is uninformative)", "done", "<strong>built as the file H30</strong> (file H29 is its lattice-regime control); unscored"],
+       "Unmeasured; old conditional −0.01 … +0.04 vs H24 is not a forecast (uninformative-score algebra only).", "historical build", "<strong>H29/H30 are QA-only, unscored files; no release approval</strong>"],
       [2, "H-30", "<strong>Along-strike continuation beyond tips</strong>: faults missing from the catalogue continue the strike of known long faults beyond their tips (Bour &amp; Davy clustering extrapolated; Faulds &amp; Hinz: terminations ≈ 25 % and step-overs ≈ 32 % of systems).",
        "tips (endpoints) of the 467 traces ≥ 3 km in <code>labels.tif</code>; wedge ≤ 25° of strike, 300–1,000 m; enrichment profile from the SGMC-missing sample",
        "Measured: ×2.06 [1.74, 2.52] at 300–600 m and ×1.32 at 600–1,000 m in the continuation wedge against ×1.34 and ×0.96 sideways. But the zone covers 0.67 % of the domain and holds 1.1 % of the missing-fault proxy pixels.",
        "The sibling repository inverted the scaling law into an incompleteness prior; this one measures the wedge directly and bounds its capture.",
-       "&lt; +0.003 as a tie-break", "low", "measured; applied only as a ≤ 0.003 rank bonus"],
+       "≤ +0.003 rank bonus in a proxy analysis; no ΔDTI or hidden-fault benefit established.", "low", "proxy statistic measured in the prior data run; tie-break only, not an independent holdout or release signal"],
       [3, "H-31", "<strong>Survey-aware low-pass of magnetic inputs</strong>: filter survey-limited layers with a 4-row boxcar along y (exact zero at the 400 m period) and a 40-column boxcar for the 4 km tie lines before any detector sees them.",
        "<code>of_tmi_hg</code> (line strength 87 vs control p95 6.6), <code>of_tmi_vg</code>, <code>ext_UK</code> (18 vs 6.1), <code>ext_UTh</code>; tie-line period in <code>tmi</code>, <code>rtp</code>, <code>tmi_vg</code>, <code>ext_TMI_up150</code>",
        "A detector fed with these layers can 'find' the flight lines: <code>ens12-adopted</code>, trained on all 19 bands, carries the 400 m line (strength 28.7, p = 0.016). Those pixels are false positives that dilute q.",
        "H-27 proposed deconfounding; this session verified the carriers and the periods on the real bands, so the filter is now specified, not guessed.",
-       "0 … +0.02 for magnetics-using models; ≈ 0 for H24/H30", "low–medium", "queued (needs a retrain)"],
+       "No estimate; old 0 … +0.02 idea is untested and not a forecast.", "low–medium", "not implemented; needs restored bands and blocked validation"],
       [4, "H-32", "<strong>Slots as controlled experiments</strong>: two pairs with pre-registered readouts — arrangement (H29 lattice vs H30 at the same score) and near-field (dots only in the 200–600 m band around long faults vs a same-size, score-matched control elsewhere).",
        "no new layers; the probe sets are generated by <code>scripts/build_audited_emission.py</code> with a band restriction",
        "The only decision-relevant unknowns are the arrangement effect and the hidden-fault lift near known faults; each pair isolates one. DTI differences at equal pixel counts cancel the unknown |G| to first order.",
        "The pindrop ridge/nodes trio was the only controlled design so far; it answered dispersal (no gain) and nothing else.",
-       "information, not score", "2–4 slots", "needs the owner to override standing rule 1"],
+       "Information-value design only; no score forecast.", "moderate offline design cost", "<strong>DO NOT spend a slot</strong>; independent holdout approval still required"],
       [5, "H-33", "<strong>Completeness-corrected short-fault deficit</strong>: above 3 km the catalogue obeys the Bour &amp; Davy relation; below it the nearest-larger-neighbour slope flattens (0.92 vs 1.54). Treat the shortfall of short traces next to larger ones as the expected number of unmapped faults and place it as a density.",
        "<code>fault-statistics.json</code> scaling (a, x, D) ⊕ per-pixel deficit estimate",
        "A self-similar extrapolation predicts how many short faults should sit at each distance from each larger one; the difference to the observed count is the missing population.",
        "Needs an independent completeness check, which the SGMC proxy (blocked AUC 0.55) does not give.",
-       "&lt; +0.005 (weak proxy)", "medium", "queued"]])}
+       "No validated ΔDTI; weak proxy is not a score forecast.", "medium", "not implemented; independent completeness data required"]])}
   </section>
   <section class="section">
-    {table(["rank", "id", "hypothesis", "layers / transform", "why it catches catalogue-missing faults", "difference from prior work", "expected ΔDTI", "cost", "status"], [
+    <div class="section-head"><div><div class="eyebrow">Additional geological mechanisms · continuation review</div><h2>H-34 … H-37: ranked by ordinal potential and cost</h2>
+      <p>These are four distinct fault-discovery mechanisms, not emission-layout variants. The benefit column is an ordinal research priority, not a numerical ΔDTI or score forecast. All remain unimplemented and unvalidated; H-34 is the first candidate to implement, but no weekly slot is authorized without the independent holdout gate.</p></div></div>
+    {table(["rank", "id", "hypothesis", "layers / transform", "physical signature and uncatalogued-fault rationale", "difference from existing code", "estimated benefit (ordinal only)", "cost", "status / stop condition"], [
+      [1, "<strong>H-34</strong>", "<strong>Potential-field Euler source-depth stability.</strong> Solve contact/dyke Euler deconvolution around coherent magnetic and gravity edges; retain clusters stable across window sizes and structural indices with plausible depths.",
+       "Model-layer keys: <code>of_tmi</code>, <code>of_rtp</code>, <code>of_tmi_hg</code>, <code>of_tmi_vg</code>, <code>of_iso_grav_anom</code>, <code>of_iso_grav_anom_hg</code>, <code>of_iso_grav_anom_vg</code>; these are competition bands with the <code>of_</code> layer-bank prefix. Restore the raster inventory and band provenance first.",
+       "Fault contacts/fracture corridors can perturb potential fields; a stable source-depth population can flag structural continuations absent from the surface catalogue. Require independent topographic or radiometric corroboration to reduce lithologic/contact false positives.",
+       "Existing geology code aggregates edge/gradient evidence but does not solve source locations/depths or test structural-index stability. This is a new transform on competition bands, not a new data claim.",
+       "Medium-high potential; ΔDTI unknown (no holdout).", "Medium", "Unimplemented. Stop if solutions are unstable across windows/indices or dominated by flight-line artefacts."],
+      [2, "<strong>H-35</strong>", "<strong>Multi-height potential-field edge persistence.</strong> Upward-continue magnetic and gravity grids at frozen heights; score ridges whose location and orientation persist across heights and property families.",
+       "<code>of_tmi</code>/<code>of_rtp</code>/<code>of_tmi_hg</code> plus <code>of_iso_grav_anom</code>, <code>of_iso_grav_anom_hg</code> and <code>of_iso_grav_anom_vg</code>; pre-register 250, 500, 1,000 and 2,000 m continuation heights.",
+       "Geologic contacts/fault corridors can produce spatially coherent edge ridges; survey-line and shallow-noise artefacts should attenuate or shift with height. Cross-property persistence may expose structure not in mapped fault traces.",
+       "Current code computes local gradients/edge consensus at native support; it does not test multi-height ridge persistence or magnetic-gravity agreement.",
+       "Medium potential; ΔDTI unknown (no holdout).", "Low-medium", "Unimplemented. Stop if line-noise controls persist as strongly as candidate ridges."],
+      [3, "<strong>H-36</strong>", "<strong>Drainage deflection and knickpoint persistence.</strong> Extract channel networks, azimuth changes, profile breaks and knickpoints across nested catchment scales; control for lithology, basin size, base level, roads and landslides.",
+       "Public USGS 3DEP 1 m/10 m DEMs or the restored official DEM derivatives; no external DEM is present in this checkout and exact AOI tile coverage is unknown.",
+       "Active/recent structures can offset channels, create aligned deflections or repeatable profile breaks that reveal unmapped fault strands; require multiple neighboring channels and geomorphic controls to avoid lithologic or engineered drainage signals.",
+       "The existing habitat uses lidar openness/scarp/relief channels; it does not construct channel networks or test profile-knickpoint persistence.",
+       "Moderate potential; ΔDTI unknown (coverage and holdout unverified).", "High", "Not started. First enumerate full AOI coverage and acquisition dates; stop if data gaps or controls dominate."],
+      [4, "<strong>H-37</strong>", "<strong>Depth-integrated conductance as a broad structural prior.</strong> Test whether multi-depth conductance boundaries align with shallow candidate corridors, without upsampling them into false 100 m detail.",
+       "USGS Great Basin MT conductance products for 2–12, 12–20 and 20–50 km depth (ScienceBase item <a href='https://www.sciencebase.gov/catalog/item/62979746d34ec53d276c113b'>62979746d34ec53d276c113b</a>, DOI <a href='https://doi.org/10.5066/P9TWT2LU'>10.5066/P9TWT2LU</a>); not downloaded here.",
+       "Depth-coherent conductive boundaries may mark fluid-rich structures or basin edges that guide fault connectivity and geothermal pathways, including faults not yet mapped. Conductance is non-unique and coarse; it is a regional prior, not a trace or truth label.",
+       "No MT-conductance layer or depth-persistence test is used in the current code. Do not claim novelty against unreviewed external analyses.",
+       "Low-moderate potential; ΔDTI unknown (valid pixels/scale unverified).", "Moderate", "Not started. Verify licenses, CRS, grid, valid-pixel support and AOI overlap; stop if only coarse regional correlation remains."]])}
+    <p class="small">Method context for Euler deconvolution is an open-access mineral-exploration example, not geothermal validation: <a href="https://www.nature.com/articles/s41598-025-26220-9">joint Euler deconvolution/upward-continuation paper</a>. H-36 uses the official <a href="https://www.usgs.gov/3d-elevation-program">USGS 3DEP</a> source. External rasters are not locally present; every data-availability and coverage claim is pending restoration and direct checks.</p>
+  </section>
+  <section class="section">
+    {table(["rank", "id", "hypothesis", "layers / transform", "why it catches catalogue-missing faults", "difference from prior work", "prior score scenario / benefit (not forecast)", "cost", "status"], [
       [1, "<strong>H-24</strong>", "<strong>Dispersed habitat emission</strong>: emit a 400 m-spaced dot lattice restricted to the habitat that 24 live scores identify, at a budget chosen by the metric's own marginal rule.",
        "<code>lid_upface_max</code>, <code>lid_downface_max</code>, <code>lid_step_max</code>, <code>lid_lapneg_max</code>, <code>lid_lappos_max</code>, <code>lid_ex_max</code> (1 m 3DEP), <code>of_det_elev_slope_std7</code> (official band 19, 700 m window), <code>−rad_U</code> (GeoDAWN radiometrics); non-maximum suppression at r = 4 px",
-       "Staff defined a new fault as “any fault pixel not already captured by USGS/INGENIOUS, including newly mapped geometry of an existing system”. Those pixels are scarp expressions that the Quaternary database never recorded: uphill-facing scarps and slope-break clusters are exactly what a lidar-first mapper adds and what a 1:24,000 paper map omits. High uranium marks basin fill and alteration-clay ground, where the live scores say the hidden faults are not.",
+       "Staff define a new fault as geometry not already captured by USGS/INGENIOUS, including newly mapped strands of an existing system. Lidar scarps and slope breaks may expose candidate surface expressions missing from the catalogue, but this does not prove they are faults. The fitted negative U association is correlational and not evidence of geological absence.",
        "Every prior artefact emitted contiguous thick ridges (η = 0.16–0.85). None was built by inverting live scores for a habitat, and none was dispersed to η ≈ 0.94 at a budget set by the marginal rule.",
-       "+0.03 … +0.22 (earlier estimate; see I-17)", "built", "<strong>built; audited 2026-10-02: comb + 931 close pairs + lattice arrangement → superseded by H-29 (built as file H30; file H29 keeps the lattice regime)</strong>"],
-      [2, "H-25", "<strong>Relocation, not detection</strong>: the catalogue's own traces are misregistered by up to ~400 m, so re-emit the catalogue geometry displaced onto the lidar scarp crest within a 500 m search window.",
+       "No validated ΔDTI; legacy +0.03 … +0.22 sensitivity is withdrawn, not a forecast (I-17).", "historical build", "<strong>H24 is superseded. H29/H30 files are QA-only and unscored; no release approval.</strong>"],
+      [2, "H-25", "<strong>Relocation, not detection</strong>: test whether a small subset of mapped traces is locally displaced by comparing each trace to lidar scarp evidence within a bounded search window; do not presume a region-wide 400 m shift.",
        "<code>labels.tif</code> trace skeletons ⊕ <code>lid_lapneg_max</code> (crest convexity) ⊕ <code>lid_upface_max</code>; constrained argmax displacement per trace segment",
-       "Hermant et al. (2025), the paper the official About page cites, reports USGS Quaternary faults sitting up to ~400 m from lidar-based labels. A displaced copy lands on the true surface expression, which is the prediction target, and is by construction a pixel the catalogue does not contain.",
+       "Hermant et al. (2025) report a local maximum of up to 400 m between USGS Quaternary faults and TLS labels in north-central Nevada, not a typical offset or a GeoDAWN-region measurement (I-18). The aggregate lidar profile here peaks at zero displacement; a displaced subset remains unproven.",
        "Prior work used the catalogue only as a prior or a mask; nobody moved it. Catalogue pixels themselves are masked out of scoring, so the gain is entirely in the displacement.",
-       "+0.02 … +0.10", "medium", "<strong>tested on the aggregate: not supported</strong> (scarp metrics decay monotonically from the catalogue, no off-centre ring); Hermant et al. report ‘up to 400 m’ locally (I-18)"],
+       "No estimate; legacy +0.02 … +0.10 scenario is unvalidated, not a forecast.", "medium", "<strong>tested on the aggregate: not supported</strong> (scarp metrics decay monotonically from the catalogue, no off-centre ring); Hermant et al. report ‘up to 400 m’ locally (I-18)"],
       [3, "H-26", "<strong>Thermal-conduit inversion, spring-avoiding</strong>: rank ground by 2 m temperature-probe and chalcedony-geothermometer anomaly density, but only where the anomaly is <em>not</em> explained by a mapped fault.",
        "<code>2m_temperature_probe_INGENIOUS_regional_data.zip</code> (3,800 probes), <code>gdr_wellspring_in_footprint.csv</code> (27,092 records, 2,389 ≥ 60 °C) ⊖ distance-to-catalogue",
        "A near-surface thermal anomaly in an amagmatic extensional setting requires a permeable pathway; where no mapped fault supplies one, an unmapped fault must. 22,561 of the 27,092 spring/well records already sit &gt; 500 m from any mapped fault.",
        "<strong>Contrarian and measured:</strong> the live scores say emitting <em>near</em> ≥ 60 °C springs is anti-predictive (ρ = −0.52, p = 0.009) because famous hot springs are already mapped. The usable signal is the residual — thermal anomaly minus what the catalogue explains — which no prior artefact computed.",
-       "+0.01 … +0.06", "medium", "<strong>simplest form tested, no signal</strong>: <code>springs_hot_offmapped_dens15</code> ρ = +0.08 (p = 0.71), inverse-distance form −0.22 (p = 0.31) in the 95-layer bank (raw hot springs: −0.52); a fitted-residual form is still open"],
+       "No estimate; legacy +0.01 … +0.06 scenario is unvalidated, not a forecast.", "medium", "<strong>simplest form tested, no signal</strong>: <code>springs_hot_offmapped_dens15</code> ρ = +0.08 (p = 0.71), inverse-distance form −0.22 (p = 0.31) in the 95-layer bank (raw hot springs: −0.52); a fitted-residual form is still open"],
       [4, "H-27", "<strong>Acquisition-lineament deconfounding</strong>: suppress east–west magnetic-gradient lineaments that coincide with the GeoDAWN Area-2 400 m flight lines, and spend the freed budget on cross-line structures.",
        "<code>of_tmi_hg</code>, <code>of_tmi_vg</code>, <code>ext_TMI_up150</code> ⊕ <code>GeoDAWN_area2_outline.zip</code> flight-line geometry; directional Fourier filter at the 400 m line spacing",
        "Area 2 was flown with 400 m east–west lines and 4 km north–south tie lines at 150–200 m clearance, so cross-line resolution is coarse and east–west magnetic derivative lineaments can be acquisition artefacts. An expert mapper rejects them; a gradient detector does not.",
        "No prior artefact modelled the survey geometry. <code>of_tmi_vg</code> is one of the few official bands whose enrichment is anti-correlated with live skill (ρ = −0.44).",
-       "+0.005 … +0.04", "medium", "<strong>partly executed</strong>: the flight lines are visible in <code>tmi_hg</code> (strength 87) and the tie lines in <code>tmi</code>/<code>rtp</code>/<code>tmi_vg</code>; the filter is H-31"],
+       "No estimate; legacy +0.005 … +0.04 scenario is unvalidated, not a forecast.", "medium", "<strong>partly executed</strong>: the flight lines are visible in <code>tmi_hg</code> (strength 87) and the tie lines in <code>tmi</code>/<code>rtp</code>/<code>tmi_vg</code>; the filter is H-31"],
       [5, "H-28", "<strong>Coverage-void targeting</strong>: concentrate the budget where mapped-geology density is lowest but lidar scarp evidence is highest — the intersection of “unsurveyed” and “structurally permissive”.",
        "<code>sgmc_density9</code> (USGS SGMC line density, 2.1 km window) inverted ⊕ <code>lid_*_max</code> composite ⊕ lidar validity",
        "The catalogue is a compilation of existing maps, so its gaps follow map coverage, not geology. A pixel with strong lidar scarp expression and no mapped structure nearby is the single most likely place for an expert to add a new fault.",
        "This is the mechanism behind H-24's habitat weights, made explicit and testable on its own: it predicts skill should rise with (scarp evidence × map-void), which is a one-line addition to the attribution regression.",
-       "+0.005 … +0.03", "low", "queued"]])}
-    <div class="callout"><strong>New external data needed, and whether it is obtainable.</strong> H-24, H-25 and H-26 need nothing new: every layer
-    is already on disk and hash-pinned in <code>data/external/</code>. H-27 needs the GeoDAWN Area-2 flight-line geometry, which ships inside the
-    official USGS release already mirrored here (<code>area2_flight_path.zip</code>, 305,715,443 B, listed in
-    <code>data/external/observed_files.json</code> from ScienceBase item 657e1d85d34e23d3533209f7). H-28 needs full-footprint 1 m lidar: the free
-    official source is the <a href="https://www.usgs.gov/3d-elevation-program">USGS 3DEP</a> 1 m tile set via
-    <code>tnmaccess.nationalmap.gov</code>, public domain, no key — 706 of the 716 required tiles were already fetched by a sibling repository and
-    their URLs recorded; the remaining 24.6 % of the footprint (north-east quadrant) is unreachable from this sandbox, which cannot resolve that
-    host, but is reachable from GitHub Actions and from any ordinary machine. The 2026-10-02 audit needed only the published survey spacing and direction (USGS GeoDAWN metadata CSV) and the two area
-    outlines — a few kB, mirrored in a sibling repository and size-checked by <code>scripts/restore_workspace.py</code>; the 305 MB flight-path shapefile would be needed only to measure the <em>phase</em> of the lines exactly (flag I-15).</div>
-    <div class="callout"><strong>Honest status of these numbers.</strong> The ΔDTI column is an order-of-magnitude expectation derived from the
-    metric algebra in <a href="data/submission-build.json">submission-build.json</a>, not a measurement. No offline proxy validates placement
-    (best Spearman ρ = {esc(num(max((v['spearman_rho'] for v in prox.values()), default=0),3))} over 24 live artefacts), so none of these ideas can be confirmed
-    without a submission slot. H-25, ranked second before this session, was tested on the aggregate and is not supported (see its row).</div>
+       "No estimate; legacy +0.005 … +0.03 scenario is unvalidated, not a forecast.", "low", "not implemented; data coverage unverified"]])}
+    <div class="callout"><strong>Data availability and acquisition status.</strong> This post-merge checkout lacks the official feature stack, labels, sample template and all external rasters. Earlier reports document a hash-pinned bridge restore; that is not current local availability. H-34/H-35 need the official GeoDAWN magnetic/gravity bands (<a href="https://doi.org/10.5066/P93LGLVQ">USGS GeoDAWN</a>); H-36 needs AOI-complete public <a href="https://www.usgs.gov/3d-elevation-program">USGS 3DEP</a> elevation; H-37 proposes the open <a href="https://www.sciencebase.gov/catalog/item/62979746d34ec53d276c113b">USGS Great Basin conductance release</a>. Restore only from official/free sources and then verify hashes, terms, CRS, grid, acquisition date, AOI overlap and valid-pixel coverage before fitting. Do not treat historical receipts or a source's regional extent as proof of local coverage.</div>
+    <div class="callout"><strong>Honest status of these numbers.</strong> Legacy benefit ranges in H-24…H-33 were conditional algebra or unvalidated hypotheses—not observed outcomes. They are retained only as historical context and are not forecasts. The current holdout registry is BLOCKED; validation must use a frozen spatial comparison with independent uncatalogued-fault truth, not a competition slot. H-25's blanket relocation premise is not supported by the aggregate profile (see I-18).</div>
   </section>
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">Rejected</div><h2>Ideas this session ruled out with measurements</h2></div></div>
     {table(["idea", "why it was rejected", "evidence"], [
       ["Emit ~550,000 pixels (the “value-based emission budget” inherited from earlier group work)",
-       f"It assumed |G| = 125,000. The exact inversion of 24 live scores bounds |G| at {g_lo:,}–{g_hi:,}; at that |G| a 550,000-pixel emission is far past the marginal rule and scores below the {area or 0:,.0f}-pixel emission.",
+       f"It assumed |G| = 125,000. The historical inversion of 24 live scores bounds |G| at {g_lo:,}–{g_hi:,}; under equal per-pixel placement-quality assumptions, 550,000 pixels exceed the algebraic marginal budget. This is conditional metric analysis, not an observed score comparison or forecast.",
        "<a href='data/live-model-bounds.json'>live-model-bounds.json</a>"],
       ["Train the detector on the supplied catalogue labels and submit its probability map",
        "Known-fault pixels are masked out of evaluation, so the catalogue is worth nothing as a target; and the raw probability field carries ~2.5 M of FP mass at DTI ≈ 0.12.",
@@ -763,7 +825,7 @@ def build():
        "It ranks the 24 live artefacts no better than chance: best Spearman ρ = +0.33 (p = 0.12) at a 2 km catalogue buffer, and it ranks the 0.0297 artefact first.",
        "<a href='data/offline-proxy-audit.json'>offline-proxy-audit.json</a>"],
       ["Admit the deep ensemble to the emission on the strength of its architecture",
-       "Its out-of-fold DTI did not beat a seed-matched random emission of the same size, so the pre-registered admission gate excluded it. The ensemble is still trained and still supplies the uncertainty decomposition.",
+       "The historical out-of-fold DTI did not beat a seed-matched random emission of the same size, so the admission gate excluded it. Saved variance files are prior-run outputs; no fresh Phase 2 ensemble maps or coverage mask were reproduced in this checkout.",
        "<a href='data/oof-evaluation.json'>oof-evaluation.json</a>"],
       ["Use the catalogue's own short-trace enrichment (×2.3 within 1 km of long faults) as the prior for hidden faults",
        "The independent SGMC-missing sample gives only ×1.8 / ×1.4 in the first 600 m and ≈ 1 beyond 1 km (blocked AUC 0.55 vs 0.67); live scores reward no concentration near known faults (emissions at &gt; 3× within 1 km scored 0.002–0.046). The prior is applied only as a ≤ 0.003 tie-break.",
@@ -778,12 +840,12 @@ def build():
 
     uncertainty = f"""
   <section class="hero"><div class="hero-grid"><div>
-    <div class="eyebrow">Uncertainty</div><h1>Epistemic versus aleatoric, from a true deep ensemble</h1>
-    <p class="lead">{esc(ens_cfg.get('n_members_full', 5))} independently initialised, independently trained convolutional members; no test-time dropout anywhere.
+    <div class="eyebrow">Uncertainty · historical model outputs</div><h1>Epistemic versus aleatoric, from a deep ensemble</h1>
+    <p class="lead">The prior run used {esc(ens_cfg.get('n_members_full', 5))} independently initialised, independently trained convolutional members; no test-time dropout. The checkpoint, training rasters and external coverage layers are not present in this checkout, so these saved candidate variances are not freshly reproduced or calibrated here.
     For Bernoulli outputs the total predictive variance decomposes exactly as
     <span class="formula">Var(Y) = E<sub>m</sub>[p<sub>m</sub>(1 − p<sub>m</sub>)] + Var<sub>m</sub>(p<sub>m</sub>)</span>
     — aleatoric first, epistemic second (population variance, ddof = 0) — per Lakshminarayanan, Pritzel &amp; Blundell, NeurIPS 2017.</p></div>
-    <aside class="hero-aside"><span class="status status-neutral">Reported for every candidate</span>
+    <aside class="hero-aside"><span class="status status-warning">Saved prior-run output · not reproduced</span>
       <strong style="margin:.8rem 0 .45rem">Epistemic share {esc(num(ens_full.get('epistemic_share_of_total'),3))}</strong>
       <p class="small">of total predictive variance over the scored domain, {esc(ens_cfg.get('n_members_full',5))} members,
       {esc(ens_cfg.get('n_folds',5))} blocked folds × {esc(ens_cfg.get('n_members_oof',3))} members out-of-fold.</p></aside></div></section>
@@ -802,9 +864,8 @@ def build():
         <p>E<sub>m</sub>[p<sub>m</sub>(1 − p<sub>m</sub>)] is irreducible noise in the observations — 100 m pixels mixing a 3 m scarp with its
         footwall, 400 m flight-line spacing, misregistered source maps. Adding members cannot reduce it, so it is reported but not acted on.</p></div>
       <div class="card"><div class="card-kicker">Coverage is measured, not assumed</div>
-        <p>coverage = 0.5 · (1 m 3DEP lidar validity, band 12 of <code>lidar_scarp_features_u8.tif</code>, {esc(num((ens.get('target') or {}).get('lidar_coverage'),3)) if (ens.get('target') or {}).get('lidar_coverage') else '0.754'} of the footprint)
-        + 0.5 · (rank of USGS SGMC structure-line density in a 2.1 km window). Two independent official products, both hash-pinned in
-        <code>data/external</code>. Priority never modifies the submitted raster — it is a reviewer-ranking aid only.</p></div>
+        <p>The prior run defined coverage = 0.5 · (1 m 3DEP lidar validity, band 12 of <code>lidar_scarp_features_u8.tif</code>, {esc(num((ens.get('target') or {}).get('lidar_coverage'),3)) if (ens.get('target') or {}).get('lidar_coverage') else '0.754'} of the footprint)
+        + 0.5 · (rank of USGS SGMC structure-line density in a 2.1 km window). Those external rasters are absent now, so the mask and AOI validity cannot be checked from this checkout. Priority never modifies the submitted raster — it is a reviewer-ranking aid only.</p></div>
     </div>
   </section>
   <section class="section">
@@ -896,8 +957,8 @@ def build():
       <p>If an offline proxy truth ranked the 24 artefacts the way the live board does, it could be used for model selection. None does.</p></div></div>
     {proxy_table}
     <div class="callout">The proxy with the highest correlation still puts <code>h19-c</code> first (proxy 0.295) when its live score is 0.0297 — 24th of 24.
-    This is why the projection on the overview page is a range and why the earlier “4-quadrant gate passed, 4/4 fold wins” claim was withdrawn:
-    it was measured against a truth the live board says carries no information.</div>
+    This is why no score forecast is shown and why the earlier “4-quadrant gate passed, 4/4 fold wins” claim was withdrawn:
+    it was measured against known-catalogue truth, not independent uncatalogued-fault targets. The current holdout registry remains BLOCKED; do not spend a slot.</div>
   </section>"""
 
     results = f"""
@@ -915,10 +976,11 @@ def build():
     {lb_table}
     <p class="small">{lb_attribution}</p>
     <p class="small">{lb_phase}</p>
+    <div class="callout"><strong>Reported-score reconciliation.</strong> In the latest committed official 50-row capture, the top three are DARD 0.3195, nchuzhoy 0.3128, and alexoktaba 0.3042; the user-reported 0.3049 is absent. H19-like 0.1922 and 0.1894 match rows 27 and 29, but there is no public submission ID or TIFF hash, so these are not verified H19 artifacts. One older project passage calls 0.1894 the highest while listing 0.1922 elsewhere; numerically 0.1922 is higher. The capture time/method is recorded in <code>data/leaderboard.json</code>.</div>
   </section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">The question the brief asked</div><h2>Why did H19 score highest?</h2>
-      <p>Decompose every artefact into the three things the metric actually rewards and the answer is arithmetic, not narrative.</p></div></div>
+    <div class="section-head"><div><div class="eyebrow">The question the brief asked</div><h2>What do local H19-like artifacts suggest—and what remains unverified?</h2>
+      <p>Decompose the locally audited files into the three things the metric actually rewards. This is file-level analysis only: the public score rows do not identify these TIFFs, and the correlations do not prove a causal feature gain.</p></div></div>
     <div class="grid-3">
       <div class="card"><div class="card-kicker">It put its pixels where the hidden faults are</div>
         <p><code>h19-5</code> achieves q = 0.0475 kernel-weighted true positives per emitted pixel — the second highest of 24 artefacts,
@@ -941,7 +1003,7 @@ def build():
     <div class="callout"><strong>Where H19 might have left value on the table — and why that is no longer a claim.</strong> Its dispersion efficiency is η = 0.40: 60 % of the cone weight its
     pixels could have spread over the domain is spent on pixels stacked inside one another's 300 m support. H24 re-emitted the same ranking at η ≈ 0.95 on the assumption that q scales with η at fixed alignment. The one controlled pair
     in the group's record contradicts that: pindrop-v4-ridge → pindrop-v4-nodes (same score, same 155,021 pixels) raised η 2.7× and left the implied true-positive mass unchanged (TP/|G| 0.70 → 0.72 at |G| = 6,000), live DTI 0.1152 → 0.1193.
-    H30 therefore carries a central expectation of about h19-5, not a multiple of it (flag I-17).</div>
+    H30 has no observed score. The scenario table is conditional on unverified transfer of placement skill; it is not an expected DTI or evidence for release (flag I-17).</div>
   </section>
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">This group</div><h2>24 live-scored artefacts, measured geometry</h2>
@@ -950,15 +1012,15 @@ def build():
     {anchor_table}
   </section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">Projection</div><h2>This submission's expected DTI</h2></div></div>
+    <div class="section-head"><div><div class="eyebrow">Conditional sensitivity</div><h2>DTI scenarios are not score forecasts</h2></div></div>
     {budget_table}
+    <p class="small">These algebraic scenarios vary hidden-truth size and TP-per-emission assumptions. They are not validated performance, an empirical score forecast, or submission approval. Current spatial-holdout status: BLOCKED.</p>
   </section>"""
 
     sources = f"""
   <section class="hero"><div class="hero-grid"><div>
     <div class="eyebrow">Sources</div><h1>Every official source used, with the link that verifies it</h1>
-    <p class="lead">Competition pages, staff rulings and public-domain USGS/DOE data. Anything not on this page is inference and is
-    labelled as such where it appears.</p></div></div></section>
+    <p class="lead">Competition pages, staff rulings and public-domain USGS/DOE data. Source links establish provenance and acquisition options—not current local availability, AOI coverage, or model value. Anything not on this page is inference and is labelled as such where it appears.</p></div></div></section>
   <section class="section">
     {table(["source", "what it establishes", "link"], [
       ["DrivenData problem description", "task, data, metric formulas, worked example (0.60), submission format", "<a href='https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/'>page 967</a>"],
@@ -981,22 +1043,19 @@ def build():
       ["Ackermann &amp; Schlische 1997 (Geology 25, 1127–1130)", "anticlustering of small normal faults around larger faults (a stress-shadow effect cited by Bour &amp; Davy); not seen at 100 m resolution here (enrichment ×2.3 from 200 m out)", "<a href='https://doi.org/10.1130/0091-7613(1997)025%3C1127:AOSNFA%3E2.3.CO;2'>doi:10.1130/0091-7613(1997)025&lt;1127:AOSNFA&gt;2.3.CO;2</a>"],
       ["USGS GeoDAWN metadata (survey geometry)", "traverse lines 400 m (Area 2) / 200 m (Area 1), east–west; tie lines 4,000 m / 2,000 m, north–south; terrain clearance 150–200 m / 100–150 m; area outlines reproduce 2,411.7 km² (Area 1) and 51,695 km² (data extent)", "<a href='https://doi.org/10.5066/P93LGLVQ'>doi:10.5066/P93LGLVQ</a>"],
       ["DrivenData competition page and forum 11527", "end date 3 Dec 2026 23:59 UTC; Phase 2 labels come from ‘expert review of all submissions’; staff decline to describe the data sources, fault types or coverage behind the new faults", "<a href='https://www.drivendata.org/competitions/306/competition-doe-gems/'>competition</a> · <a href='https://community.drivendata.org/t/how-were-the-new-test-faults-identified-data-sources-and-fault-types/11527'>forum 11527</a>"],
+      ["USGS Electrical Conductance Maps of the Great Basin (Peacock &amp; Bedrosian 2022)", "public 3-D MT inversion products spanning five depth intervals from 2 to 200 km; conductance integrates electrical conductivity over depth. Candidate H-37 use is a regional structural prior, not a 100 m fault trace; local availability and coverage are unverified.", "<a href='https://www.sciencebase.gov/catalog/item/62979746d34ec53d276c113b'>ScienceBase</a> · <a href='https://doi.org/10.5066/P9TWT2LU'>DOI 10.5066/P9TWT2LU</a>"],
+      ["Hosseini et al. 2025, joint Euler deconvolution/upward continuation", "open method example for potential-field source-depth estimation in an iron-mineral exploration case; method context only, not geothermal-fault validation", "<a href='https://www.nature.com/articles/s41598-025-26220-9'>Scientific Reports</a> · <a href='https://doi.org/10.1038/s41598-025-26220-9'>DOI 10.1038/s41598-025-26220-9</a>"],
       ["Lakshminarayanan, Pritzel &amp; Blundell 2017", "deep ensembles and the epistemic/aleatoric decomposition used on the uncertainty page", "<a href='https://papers.nips.cc/paper_files/paper/2017/hash/9ef2ed4b7fd2c810847ffa5fa85bce38-Abstract.html'>NeurIPS 2017</a>"]])}
   </section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">Data held locally</div><h2>Hash-verified inputs</h2></div></div>
-    {table(["file", "bytes", "SHA-256"], [
+    <div class="section-head"><div><div class="eyebrow">Historical input manifest</div><h2>Previously hash-verified core rasters · not present now</h2></div></div>
+    <p class="small">Filesystem audit for this branch: <code>data/training_features.tif</code>, <code>data/labels.tif</code>, <code>data/sample_submission.tif</code> and <code>data/external/</code> are absent. The values below come from the prior restore receipt only; they do not certify present files.</p>
+    {table(["expected file path", "bytes in prior restore", "historical SHA-256"], [
       ["<code>data/training_features.tif</code> (official 19-band stack)", "418,912,844", "<code>4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5</code>"],
       ["<code>data/labels.tif</code> (rasterised known faults)", "425,830", "<code>7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093</code>"],
       ["<code>data/sample_submission.tif</code> (official template)", "1,599,597", "<code>2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc</code>"],
-      ["<code>data/external/lidar_scarp_features_u8.tif</code>", "36,943,606", "<code>d580bb8bdcdb941e32fefb8b38044bc5bf04e199bf2e83498c3576e6fc465568</code>"],
-      ["<code>data/external/geodawn_rad_u8.tif</code>", "26,612,970", "<code>c22420f75999030d7cc65c9e31e50d232ea6158423bca051613a18a8b20ba682</code>"],
-      ["<code>data/external/geodawn_extensions_u8.tif</code>", "27,132,925", "<code>a35a9c6d2a14786f4dab85481ee59769213072f5dab5b2535ea82ae4d9bb7d9b</code>"],
-      ["<code>data/external/derived_sgmc_faults_100m_u8.tif</code>", "198,602", "<code>643cbe992ef4ba37588fb469163ed8291e3ceb23d6c1f78a3cfaa462430c2da0</code>"]])}
-    <div class="callout">The competition originals live behind a login-gated data tab. These copies were reassembled from the group's
-    git data bridge and every part- and whole-file SHA-256 was verified against the bridge manifest before use
-    (<code>scripts/fetch_data_bridge.py</code>); the bridge manifest itself pins an independent inventory generated on a GitHub-hosted
-    runner on 2026-09-17. Nothing here bypasses an access control.</div>
+])}
+    <div class="callout">The competition originals live behind a login-gated data tab. A previous restore reassembled copies from the group's public git data bridge and verified part- and whole-file SHA-256 against its manifest (<code>scripts/fetch_data_bridge.py</code>); that receipt documents historical verification only. Restore and verify the files again before local analysis. Nothing here bypasses the organizer's access controls.</div>
   </section>"""
 
     verification = f"""
@@ -1012,16 +1071,16 @@ def build():
     {table(["previous claim", "why it was withdrawn", "what replaces it"], [
       ["“4-Fold Spatial Holdout Gate Passed · mean OOF DTI 0.21177 · 4/4 fold wins”",
        "The gate scored a detector against the <em>supplied catalogue</em> using geographic quadrant folds. Known-fault pixels are masked out of the official evaluation, so the catalogue cannot score; and quadrant folds delete the fault population from the held-out region. Measured here: no offline proxy truth ranks the 24 live artefacts better than chance (best ρ = +0.33, p = 0.12).",
-       "An explicit statement that placement cannot be validated offline, plus a projection range derived from the exact metric algebra and a skill prior fitted to live scores."],
+       "The current-best registry is BLOCKED because independent uncatalogued-fault truth/OOF hashes are unavailable. The H30 TIFF is a QA candidate only; scenario algebra is not a score forecast or release decision."],
       ["“|G| ≈ 125,000 hidden truth pixels”",
-       f"Refuted by exact inversion: TP<sub>w</sub> ≤ |G| gives |G| ≥ {g_lo:,} and the 98.9 %-coverage lattice artefact gives |G| ≤ {g_hi:,}.",
-       f"|G| ∈ [{g_lo:,}, {g_hi:,}], with {g_proj_lo:,}–{g_proj_hi:,} carried as the projection range."],
+       f"Refuted under the assumptions stated in live-model-bounds.json: TP<sub>w</sub> ≤ |G| gives |G| ≥ {g_lo:,} and the broad-coverage artifact gives an upper bound {g_hi:,}.",
+       "Historical metric bounds remain assumption-dependent and do not validate H29/H30 placement or authorize a competition upload."],
       ["“Emit ~550,000 pixels (value-based emission budget)”",
        "That budget was derived from |G| = 125,000, which also understated the cost of an emitted pixel by 21% (fp_relief 0.810 instead of 0.985). At the measured |G| it is far past the marginal rule: DTI falls monotonically once A exceeds |G|/q.",
-       "A ≈ 120,000 chosen by maximin expected DTI over the |G| and skill ranges."],
+       "The current H30 artifact emits 91,533 dots, but its conditional budget calculation is not a measured optimum or a release recommendation."],
       ["“Dispersion is a free 2.4× lever that does not trade against placement skill”; “projected public DTI 0.12 – 0.34”",
        "The only controlled pair (pindrop ridge vs nodes: same score, same 155,021 pixels) shows η ×2.7 with skill ÷ 2.6 and unchanged TP; the cross-artefact η–q correlation (ρ = +0.61) is confounded by emission type. The projection assumed skill transfers.",
-       f"Central expectation ≈ h19-5 ({central} if TP per emitted pixel matches), scenario range {scen_txt}; flag I-17."],
+       "No score forecast is claimed. Any conditional H19 transfer scenario is not validated and cannot substitute for a current-best independent spatial holdout; flag I-17."],
       ["“H24 emits dots at least 400 m apart”",
        "931 dots (6,651 pairs) are closer than 4 px; equal-score plateaus are accepted together in one non-maximum-suppression round.",
        "H29/H30 break ties deterministically: 0 violating pairs; flag I-16."],
@@ -1041,12 +1100,12 @@ def build():
       <li><strong>The arrangement audit is correlational.</strong> Signed divergence orders the 23 live emissions (ρ = −0.66) but the bins were drawn after looking at them, emissions fall in families, and the only controlled pair scored alike at +0.20 and −0.62. H30's target is a rule fixed after the table was seen.</li>
       <li><strong>The clustering prior is weak for the faults that matter</strong> (missing-fault proxy: blocked AUC 0.55; the continuation zone beyond tips covers 0.7 % of the domain), and the NCC is a 2-D adaptation of a 1-D published method.</li>
       <li><strong>The habitat refit is order-dependent</strong> through a duplicate anchor (I-20); fix the order or use average ranks before refitting with a new live score.</li>
-      <li><strong>No offline validation of placement.</strong> The single largest limitation. Model and budget choices rest on the metric algebra plus a 24-observation regression; only a submission slot can confirm them.</li>
+      <li><strong>No valid independent hidden-target holdout.</strong> The single largest limitation. The current-best registry is BLOCKED. Model and budget choices are not release evidence; a competition slot is not a substitute validation set and must remain unused until the registered gate passes.</li>
       <li><strong>|G| is bounded, not measured.</strong> The upper bound assumes no artefact is actively anti-correlated with the hidden truth. If one is, |G| could be larger.</li>
-      <li><strong>The deep ensemble is undertrained and was excluded.</strong> {esc(ens_cfg.get('n_members_full',5))} members × {esc(ens_cfg.get('epochs',5))} epochs × {esc(ens_cfg.get('patches_per_epoch',1536))} patches on 2 CPU cores; its out-of-fold DTI did not beat a random-emission control, so its weight in the emission is 0. It still supplies the epistemic/aleatoric decomposition, whose validity does not depend on the members being accurate.</li>
-      <li><strong>Lidar coverage is 75.4 % of the footprint</strong> and the gap is systematic (north-east quadrant), so the habitat score is weakest exactly where survey coverage is lowest.</li>
+      <li><strong>The historical deep ensemble was excluded by its model-admission gate.</strong> The report records {esc(ens_cfg.get('n_members_full',5))} full-domain members and an out-of-fold DTI below a random-emission control; its weight in the H30 emission is 0. The variance decomposition is mathematical, but no fresh independently trained Phase 2 candidate maps/calibration were reproduced in this continuation. Retrain and revalidate before reuse.</li>
+      <li><strong>Historical lidar coverage report: 75.4 %.</strong> The external rasters are absent in the current checkout, so the mask/alignment is not independently reproduced here. Do not treat it as a verified survey-gap layer or adjust uncertainty until restored and checked.</li>
       <li><strong>Public ≠ private.</strong> All 24 live scores are public-test scores; the region is chunked, the split is unpublished, and the Final Round re-scores against expanded labels.</li>
-      <li><strong>Sandbox egress.</strong> DrivenData, Dropbox, USGS, ScienceBase and the National Map are unreachable from the development sandbox, so the official data tab and external downloads were obtained through the group's hash-pinned git bridge and the leaderboard through a fetch that GitHub Actions can repeat but this sandbox cannot.</li>
+      <li><strong>Data availability and egress.</strong> The main-branch restore receipt documents a prior hash-pinned bridge run, but <code>data/external/</code> is absent in this checkout. Re-check local availability, hashes, license, AOI coverage and metadata before reuse. The latest public leaderboard was successfully rendered by GitHub Actions; a shell fetch in the sandbox is not the source of that live capture.</li>
     </ul>
   </section>
   <section class="section">
@@ -1070,12 +1129,12 @@ python scripts/build_site.py                  # this site</pre>
     pages = {
         "clustering.html": ("Clustering audit · GEMSDOE23", clustering, "clustering.html",
                             "Fault-population statistics fitted on the known catalogue, the geometric prior, and the post-hoc audit of predicted rasters."),
-        "index.html": ("GEMSDOE23 · Audited habitat fault emission", index, "index.html",
-                       "One-click validated GeoTIFF for the DOE GEMS Prize, with the fault-population statistics, the arrangement audit, the |G| bounds and the habitat model behind it."),
+        "index.html": ("GEMSDOE23 · QA candidate and evidence", index, "index.html",
+                       "One-click QA-only GeoTIFF candidate with the current blocked release gate, fault-population evidence and documented limitations."),
         "executive-summary.html": ("How to submit · GEMSDOE23", executive, "executive-summary.html",
                                    "Exact upload steps, the submission note, the decision rule and the traceability index."),
-        "hypotheses.html": ("New hypotheses · GEMSDOE23", hypotheses, "hypotheses.html",
-                            "Five ranked, testable geological hypotheses with layers, transforms, expected gain and cost."),
+        "hypotheses.html": ("Hypothesis register · GEMSDOE23", hypotheses, "hypotheses.html",
+                            "Four new testable geological mechanisms plus the retained hypothesis register, with sources, ordinal benefit and implementation cost."),
         "uncertainty.html": ("Uncertainty · GEMSDOE23", uncertainty, "uncertainty.html",
                              "Deep-ensemble epistemic/aleatoric decomposition, survey-coverage priority rule and Phase 2 candidates."),
         "evidence.html": ("Evidence · GEMSDOE23", evidence, "evidence.html",

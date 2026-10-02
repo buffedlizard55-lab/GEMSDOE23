@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "generated_utc": "2026-10-02T15:32:18+00:00",
+  "status": "QA_CANDIDATE_ONLY",
+  "artifact_role": "research_candidate_preflight_only",
+  "candidate_id": "H24-distributed-habitat-archived-candidate",
+  "artifact": {
+    "file": "gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif",
+    "sha256": "e29e8f04e048a4aa210edbc1128dc39703e9271a11c02a5a391c7753339b0125",
+    "bytes": 1705590,
+    "geometry": {
+      "area": 100000,
+      "eta": 0.946022680409377,
+      "kbar": 0.17378193140029907,
+      "coverage": 0.437935839150397
+    }
+  },
+  "template": {
+    "file": "data/sample_submission.tif",
+    "sha256": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc"
+  },
+  "format_preflight": {
+    "status": "PASS",
+    "report": "docs/data/current-template-validation.json",
+    "scope": "Format preflight only. Passing this file-format audit does not validate fault placement, does not establish a score, and does not release a competition slot."
+  },
+  "spatial_holdout": {
+    "status": "BLOCKED",
+    "record": "docs/data/current-holdout-best.json",
+    "reason": "No reproducible, non-withdrawn spatially blocked comparison is registered as the current best. docs/data/validation-report.json is WITHDRAWN (I-05); the public H19 page's holdout claims cannot be reproduced from this checkout, and its score-to-file attribution is unresolved. Do not spend a competition submission slot until a verified independent-uncatalogued-fault holdout and exact current-best OOF artifact are registered here."
+  },
+  "release_decision": {
+    "status": "BLOCKED",
+    "eligible_for_submission": false,
+    "approved": false,
+    "reason": "No reproducible, non-withdrawn spatially blocked comparison is registered as the current best. docs/data/validation-report.json is WITHDRAWN (I-05); the public H19 page's holdout claims cannot be reproduced from this checkout, and its score-to-file attribution is unresolved. Do not spend a competition submission slot until a verified independent-uncatalogued-fault holdout and exact current-best OOF artifact are registered here.",
+    "current_best_registry": "docs/data/current-holdout-best.json"
+  },
+  "score_projection": {
+    "status": "NOT_REPORTED",
+    "reason": "No valid spatially blocked comparison against a registered current-best OOF map; no numerical score/placement projection is presented."
+  },
+  "legacy_record_note": "Supersedes the prior submission-build record that contained unvalidated projected DTI values; those values are not release evidence and are intentionally not carried forward.",
+  "archived_utc": "2026-10-02T17:48:17Z",
+  "archive_note": "Historical H24 preflight record; superseded as the canonical candidate record by the H30 QA-only record. Kept for audit, not release approval."
+}

@@ -49,7 +49,15 @@ Own the result end-to-end: data access, model, validation, geospatial format, in
 
 ## Current research shortlist — 2026-10-02
 
-After comparing newly discovered USGS data leads with the supplied H19/H20 methods and this repository's code, the ranked unvalidated geological tests are: **(1)** GeoDAWN radiometric K/eU/eTh ratio/gradient features corroborated by independent structure (official USGS/DOE DOI `10.5066/P93LGLVQ`, CC0; public GeoTIFF archives listed, but not downloaded/aligned); **(2)** 3DEP drainage deflection and channel-profile breaks (public-domain source; the 1 m index query found only an intersecting dissolved polygon, not exact tile/full-footprint coverage); **(3)** depth-coherent upper-crustal MT conductance boundaries (USGS DOI `10.5066/P9TWT2LU`, five public GeoTIFFs listed; exact valid-pixel support/alignment/reuse terms not checked). Ranking, layer transforms, physical rationale, prior-art differences, cost, and stop conditions are in [`docs/hypotheses.html`](hypotheses.html) and the source register in [`docs/sources.html`](sources.html). No new geological feature has been implemented or validated. The previously coded edge-consensus path is an unscored diagnostic, not the top-ranked hypothesis or a real holdout incumbent. The radiometric test must beat a reproducible baseline on frozen, buffered spatial folds before a weekly slot is considered.
+The existing register H-24–H-33 and the clustering audit remain in [`docs/hypotheses.html`](hypotheses.html). This continuation adds four further, unvalidated geological mechanism tests, ranked **within this set** by evidence-based potential/cost rather than invented ΔDTI: **H-34** multi-window Euler source-depth stability on existing magnetic/gravity bands (medium-high potential; medium cost); **H-35** multi-height upward-continuation edge persistence across magnetic and gravity families (medium potential; low-medium cost); **H-36** drainage deflection and channel-profile knickpoint persistence from public USGS 3DEP DEMs (moderate potential; high processing/coverage cost); **H-37** native-resolution, depth-integrated USGS MT conductance boundaries as a regional structural/fluid-pathway prior (low-moderate potential; moderate cost). Exact layers, signatures, reasoning about uncatalogued faults, prior-art differences, sources and stopping/validation rules are documented on the hypotheses and source pages. The core feature/label/template rasters and `data/external/` are absent in this current checkout; external 3DEP/conductance coverage and validity are not checked. H-34 is the top candidate for implementation, but no candidate is approved until a frozen, buffered spatial comparison uses independent uncatalogued-fault truth and beats the registered current best. No new geological feature from H-34–H-37 has been implemented or validated.
+
+## Continuation status — 2026-10-02 (live snapshot and release audit)
+
+- The latest committed headless-rendered official leaderboard capture is `2026-10-02T16:54:29+00:00`: DARD 0.3195, nchuzhoy 0.3128, alexoktaba 0.3042. The user's 0.3049 is absent from the 50 rows. H19-like values 0.1922 and 0.1894 appear at ranks 27 and 29, respectively, but the board supplies no public TIFF hashes/submission IDs; neither score is verified as an H19 artifact. An older project passage calls 0.1894 the highest while also listing 0.1922; 0.1922 is numerically larger. Keep older date-specific rank captures labeled historical.
+- H30 remains the current downloadable **QA candidate**, not a release-approved submission. A fresh standard-library TIFF audit confirms one float32 band, EPSG:32611, 3292×3730, 100 m pixels, finite values `[0,1]`, and the recorded NaN-outside mask; exact comparison with the official sample template was **not checked** because `data/sample_submission.tif` is absent. The main-branch manifest records a prior template pass. `docs/data/current-holdout-best.json` is `BLOCKED`. The known-catalogue ensemble OOF gate is a model-admission diagnostic, not truth for uncatalogued faults. No weekly slot was used and no online uploader test was performed.
+- `data/training_features.tif`, `data/labels.tif`, `data/sample_submission.tif`, and `data/external/` are absent from this post-merge checkout despite historical restore/hash records. Do not claim current local data availability or coverage; re-run a documented restore and verify hashes before data-dependent work.
+- The deep-ensemble uncertainty decomposition remains a documented method; the main report says the detector failed its admission gate. No fresh model training, independent hidden-fault spatial holdout, or current Phase 2 uncertainty package was produced in this continuation.
+- Three implementation/review passes and final site/test checks are recorded in [`research/review-log-2026-10-02.md`](research/review-log-2026-10-02.md). Further implementation is contingent on acquiring independent uncatalogued-fault truth and registering exact current-best OOF hashes.
 
 ## Supplied submission-score history (user-provided; not all artifact/account links independently verified)
 
@@ -92,12 +100,12 @@ The entries below preserve the score list in the project request. A blank or das
 
 ## Score interpretation and research question
 
-The request calls `0.1894` the best local score, while also listing H19-5 at `0.1922`. The full listed local history's highest numeric value is therefore `0.1922`. The official public leaderboard page retrieved 2026-10-02 showed DARD at `0.3195` (rank 1) and alexoktaba at `0.3042` (rank 2); at the 09:33 UTC retrieval, public rows at ranks 26 and 28 displayed `0.1922` and `0.1894`, respectively — at 02:38 UTC the same two scores displayed at ranks 24 and 26, because `kinghorton42` (`0.2635`) and `Ehimenathan` (`0.1949`) entered above them. Rank is therefore a fast-decaying quantity on this board and only the score is worth quoting. Thus:
+The request calls `0.1894` the best local score, while also listing H19-5 at `0.1922`; numerically `0.1922` is higher. Earlier manual page-reader captures on 2026-10-02 showed the same scores at ranks 24/26 and later 26/28. The newer headless-rendered official capture at `2026-10-02T16:54:29Z` supersedes those rows: rank 27 is `0.1922`, rank 29 is `0.1894`, and the top three are DARD `0.3195`, nchuzhoy `0.3128`, alexoktaba `0.3042`. Rank is a fast-decaying quantity on this board; always cite the capture and do not infer artifact attribution. Thus:
 
-- **The prompt-reported former leader `.3049` is not the current leader.** Its historical provenance was not authenticated in this retrieval; the current visible rank 1 and rank 2 are `.3195` and `.3042`.
-- **A local H19 result exists above `.1894` in the supplied values:** `.1922`, a `+0.0028` absolute difference. Its matching public score is a score-level match only; the page exposes no file digest, public submission ID, or verified account/team mapping.
+- **The prompt-reported `.3049` is absent from the latest official 50-row capture.** Its historical provenance is not authenticated here; the visible top three are `.3195`, `.3128`, and `.3042`.
+- **A local H19 result exists above `.1894` in the supplied values:** `.1922`, a `+0.0028` absolute difference. The current rows at 0.1922 and 0.1894 are rank 27 and 29, but the page exposes no file digest, public submission ID, or verified account/team mapping.
 - **The official public board is not the private Initial Prize Round (Phase 1) score or the expert-updated Final Prize Round (Phase 2) score.** It also cannot explain why a model scored as it did: it shows no ablations, hidden-label composition, or file-hash-to-account mapping.
-- A complete dated 50-row capture, retrieval method, attribution caveat, and phase caveat are stored in `docs/data/leaderboard.json`. Direct shell refresh fails TLS/SSL in the sandbox, so the delivered rows were read through the web reader and transcribed; the caveat is recomputed from the rows on every refresh so a rank claim cannot go stale silently. GitHub Actions refreshes automatically on every push to `main` and daily at 12:00 UTC through headless Chromium, because the official board is client-rendered and a plain GET returns no table (flag I-13).
+- The complete 50-row capture, retrieval method, attribution caveat, and phase caveat are stored in `docs/data/leaderboard.json`. Earlier direct shell/manual retrievals were limited; the latest headless Chromium capture was successfully rendered and parsed by the GitHub Actions Pages workflow at `2026-10-02T16:54:29Z`. The feed is client-rendered and its refresh status/diagnostics are retained in `docs/data/leaderboard-status.json` (flag I-13).
 - **No reliable causal statement about H19 is warranted from scores alone.** The old H19 pages claim a power-law completeness budget, thermal/geochemical conduit inversion, high-resolution topographic openness/local relief, and geophysical lineaments, plus a sparse emission budget. The exact file's independently observed values are binary (`0`/`1`) inside its finite area; the page's score and mechanism claims are not official evaluation evidence.
 - Under the official distance-weighted Tversky metric, false negatives carry the larger coefficient (`beta=0.8` versus `alpha=0.2`), with distance tolerance around ground-truth/predicted traces. A limited budget of thin, structurally plausible traces could trade precision for recall, but this is a rationale to test—not an explanation proven by the public result.
 
@@ -138,9 +146,11 @@ All three review passes for this documentation/CI/feed update are complete. They
 - **Pass 3 — requirement audit:** `python -m unittest discover -s tests -v` passed **29 tests** in a temporary `/tmp` environment with NumPy/SciPy/rasterio; Python compilation, 7-page local-link/fragment checks, JavaScript syntax, shell syntax, JSON parsing, YAML workflow parsing, active-branch assertion, and `git diff --check` passed. The independent reference-TIFF audit re-read all 12,279,160 pixels and reconfirmed one float32 band, EPSG:32611, 100 m, finite `[0,1]`, and NaN nodata; it still cannot check the absent official sample template.
 - **Scope limitation:** no competition data or labels, model training, PyTorch ensemble, real spatial holdout, calibrated uncertainty report, external-raster download/alignment, or new submission was produced. The local public-board refresh still fails TLS/SSL; the dated public snapshot came from the official page via the web reader. Do not claim a new result or spend a weekly slot.
 
-## Current blockers and next work — updated 2026-10-02 (data-enabled session)
+## Historical blockers and next work — 2026-10-02 (data-enabled run; superseded by continuation status above)
 
-**Resolved this session.**
+The following is a faithful record of the earlier data-enabled run, when the private rasters were present. It is not the current checkout status: the core rasters and `data/external/` are now absent, and the current release gate remains BLOCKED.
+
+**Resolved in that historical run.**
 
 * **Competition data placement is no longer blocked.** `bash scripts/download_competition_data.sh` now
   acquires the official rasters autonomously through `scripts/fetch_data_bridge.py`, which reassembles
@@ -197,7 +207,7 @@ variance → gate every component against a random-emission control → choose t
 own marginal rule → write and validate both raster variants → export the reviewer sidecars → publish →
 record the returned score.
 
-## Current review record — 2026-10-02 (data-enabled session, three passes)
+## Historical review record — 2026-10-02 (data-enabled run, three passes; not the current filesystem state)
 
 All three passes were run against real, hash-verified official rasters, not synthetic fixtures.
 
@@ -234,23 +244,17 @@ All three passes were run against real, hash-verified official rasters, not synt
   `git ls-remote origin` cannot authenticate. Everything is committed locally on the session branch and
   nothing is lost; pushing and opening the PR is the first action once the connection is restored.
 
-## Next session, in order — updated after the 2026-10-02 clustering session
+## Next steps — current continuation after the PR #9 review
 
-Status of the previous list: (1) blocked — no live score for H24 was supplied; (2) H-25 tested and **not supported** on the aggregate;
-(3) the north-east lidar gap is **diagnosed but not closed** (flag I-26); (4) ensemble retraining **not done** (no GPU, 2 cores);
-(5) H-26 spring-residual: its simplest form is already in the 95-layer bank and carries **no signal**; a fitted-residual form is open.
+1. Check PR #9 and its required checks on GitHub. If it is still open, merge only after the integrated branch is pushed, clean, and CI is green; if it is already merged, verify the main-branch Pages deployment. Do not infer PR state from a local merge or commit. This is independent of the BLOCKED scientific release gate.
+2. Keep the H30/H29 download files as QA-only. Restore the missing official rasters only through documented, access-control-compliant sources; verify their pinned hashes, license/terms, metadata and coverage before any data-dependent rerun.
+3. Re-run the strict one-band/value/nodata/CRS/shape/transform comparison against the exact official sample template once restored. A file-only TIFF audit is not a template match and not a release decision.
+4. Do not spend a competition slot. First acquire an independent uncatalogued-fault target, freeze spatial buffers/folds and equal-budget baselines, compare each candidate to the exact registered current-best OOF artifact, and store all hashes. If no valid independent truth is obtainable, leave the gate BLOCKED.
+5. Implement H-34 first only after the band inventory is restored; then evaluate H-35, H-36 and H-37 as separate pre-registered mechanisms. Track prior/current code differences, null/control tests, coverage and cost. Give only ordinal or explicitly conditional benefit estimates until the holdout supports a calibrated ΔDTI.
+6. Reproduce Phase 2 uncertainty from independently initialized/trained ensemble members, not test-time dropout. Check training/inference hashes, calibration and survey-coverage provenance; treat high epistemic variance in under-surveyed terrain as a possible gap signal and high variance in well-surveyed terrain with suspicion.
+7. Only after a candidate passes the spatial-holdout gate and strict geospatial preflight may its manifest become release-approved. A competition upload is never the validation set.
 
-1. **Reconnect GitHub, push, open the pull request, merge** (flag I-27). The work is committed locally on `arena/01a0fc3f-gemsdoe23`.
-2. **Record the first live score of this session's file** with `python scripts/record_score.py --score <X> --id 38539dc6` (H30; H29 is `28f30b31`).
-   It now adds the file as a new anchor and refits into `docs/data/habitat-model-refit.json` (flag I-25). Before trusting that refit, apply the fix recommended in
-   flag I-20 (average ranks for ties, layer selection by stability across the leave-family-out folds) — the anchor *order* currently decides near-ties.
-3. **Decide whether to use slots as controlled experiments** (hypothesis H-32): arrangement (H29 vs H30) and near-field band vs a score-matched control. This overrides standing rule 1 and is the owner's call.
-4. **Enumerate the footprint's 1 m 3DEP tiles from the public National Map API** (no key) from a machine with egress and compare with the OCR-recovered 716-tile list (flag I-26); fetch the difference; re-aggregate; refit.
-5. **Survey-aware low-pass of magnetic and radiometric-ratio inputs** (H-31) before any retrain; then retrain the ensemble with a GPU and re-run its admission gate.
-6. **Read the Data-tab terms** (flag I-22) — the official rasters are mirrored in public repositories.
-7. If a vector fault geometry for the INGENIOUS/USGS traces is obtainable (GDR 1391 ships shapefiles; the CSV in `data/external` has centroids and lengths only), repeat the along-strike and edge-distance analyses on true vector tips and test the displaced-subset form of H-25 by `map_scale`.
-
-## Current review record — 2026-10-02 (clustering session, three passes)
+## Historical review record — 2026-10-02 (clustering session, three passes; later PR state tracked in the continuation log)
 
 - **Pass 1 — implement and verify.** Verified at source: the Bour & Davy and Marrett et al. abstracts (relation x = (a − 1)/D; the normalised correlation count), Wang et al. 2019, Clauset et al. 2009, Bonnet et al. 2001,
   Ackermann & Schlische 1997 (existence and citation), the staff rulings in forum 11516 / 11536 / 11527 (including the Discourse `.json` for the hidden replies), the rules PDF §1.1, §3.2–§3.6, the competition page (end date, Phase 2 from expert review of all

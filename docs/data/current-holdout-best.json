@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "status": "BLOCKED",
+  "reviewed_utc": "2026-10-02",
+  "holdout_id": null,
+  "candidate_id": null,
+  "candidate_spec_sha256": null,
+  "oof_prediction_sha256": null,
+  "validation_report_sha256": null,
+  "truth_semantics": null,
+  "truth_sha256": null,
+  "folds": [],
+  "reason": "No reproducible, non-withdrawn spatially blocked comparison is registered as the current best. docs/data/validation-report.json is WITHDRAWN (I-05); the public H19 page's holdout claims cannot be reproduced from this checkout, and its score-to-file attribution is unresolved. Do not spend a competition submission slot until a verified independent-uncatalogued-fault holdout and exact current-best OOF artifact are registered here.",
+  "review_note": "Rechecked during the 2026-10-02 continuation: still BLOCKED; no new independent target or verified current-best OOF map was acquired."
+}
