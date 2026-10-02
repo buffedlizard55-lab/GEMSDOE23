@@ -1,7 +1,7 @@
 {
   "competition": "DOE GEMS Prize / DrivenData #306",
   "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-  "retrieved_utc": "2026-10-02T00:30:42Z",
+  "retrieved_utc": "2026-10-02T02:38:00Z",
   "source_status": "snapshot",
   "capture_method": "Official leaderboard page retrieved with Arena web reader; shell urllib refresh remained blocked by TLS/SSL EOF.",
   "source_note": "The rows were captured from the official public leaderboard via Arena's web reader on 2026-10-02. The subsequent local urllib refresh failed with TLS/SSL EOF, so this dated capture was retained; it is not a private Phase 1 or Phase 2 result.",
@@ -53,38 +53,38 @@
     },
     {
       "rank": 10,
+      "participant": "ad3002",
+      "score": 0.2627
+    },
+    {
+      "rank": 11,
       "participant": "No Fault of Our Own",
       "score": 0.2624
     },
     {
-      "rank": 11,
+      "rank": 12,
       "participant": "tchu",
       "score": 0.2511
     },
     {
-      "rank": 12,
+      "rank": 13,
       "participant": "BrandenKMurray",
       "score": 0.2469
     },
     {
-      "rank": 13,
+      "rank": 14,
       "participant": "ndavis7",
       "score": 0.2368
     },
     {
-      "rank": 14,
+      "rank": 15,
       "participant": "moongrega",
       "score": 0.2342
     },
     {
-      "rank": 15,
+      "rank": 16,
       "participant": "Ndabenhle",
       "score": 0.2304
-    },
-    {
-      "rank": 16,
-      "participant": "ad3002",
-      "score": 0.2297
     },
     {
       "rank": 17,

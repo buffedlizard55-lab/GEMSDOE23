@@ -2,7 +2,7 @@ name: Verify project
 
 on:
   push:
-    branches: [main, arena/01a0f9ff-gemsdoe23]
+    branches: [main, arena/01a0fa15-gemsdoe23]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -28,3 +28,5 @@ jobs:
         run: python scripts/check_site.py
       - name: Re-audit reference GeoTIFF
         run: python scripts/audit_reference_tif.py docs/downloads/gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif --json /tmp/reference-audit.json
+      - name: Re-audit GEMSDOE23 Deep Ensemble GeoTIFF
+        run: python scripts/audit_reference_tif.py docs/downloads/gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.tif --json /tmp/gemsdoe23-audit.json

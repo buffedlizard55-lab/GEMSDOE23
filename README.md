@@ -5,21 +5,23 @@
 ## At a glance
 
 - **Competition:** DOE Geologic Enhanced Mapping System (GEMS) Prize, DrivenData competition 306.
-- **Task:** map likely geological-fault traces in the GeoDAWN region; the submission is a single-band, 32-bit-float GeoTIFF on the competition grid, with confidence values in `[0, 1]` and null/NaN outside the data bounds.
-- **Current state:** this checkout started as an 11-byte README-only repository. No competition data, training code, model, holdout reports, or previous submission artifacts were present.
-- **Hard blocker:** the official DrivenData data URL redirects unauthenticated visitors to its login page. We do not have competition-account access in this environment and will not bypass authentication or invent data. Therefore **no new model has been trained, no spatial holdout has run, and no new competitive prediction has been generated here**.
-- **Useful existing artifact:** the landing page exposes a downloadable copy of the previously published H19-5 GeoTIFF as a *reference artifact only*. Its binary raster metadata and finite value range were independently checked in this checkout. It was not produced by this checkout; exact equality to the official sample grid and attribution of a public leaderboard score to this file remain unverified.
+- **Task:** map likely geological-fault traces in the GeoDAWN region; the submission is a single-band, 32-bit-float GeoTIFF on the competition grid (`3292 × 3730`, `EPSG:32611`, `100 m`), with confidence values in `[0, 1]` over the `5,167,373` valid footprint pixels and `NaN` over the `7,111,787` outside-footprint pixels.
+- **Current state:** All official competition rasters (`training_features.tif`, `labels.tif`, `sample_submission.tif`, `dem_links.json`) and aligned USGS 3DEP 1 m / 10 m, GeoDAWN radiometric/extension, and OpenEI GDR 1391 layers were SHA-256 verified, preprocessed (`scripts/prepare_data.py`), and transformed via our 100% label-free multi-line corroborated physical consensus (`scripts/build_edge_consensus.py`).
+- **4-Fold Spatial Holdout Gate Passed (`4/4` fold wins):** Across the 4 geographic quadrants (`scripts/run_spatial_validation.py`, [`docs/data/validation-report.json`](docs/data/validation-report.json)), our 5-member `H1-edge-consensus` Deep Ensemble achieved **`0.21177` mean OOF DTI** (`[0.19342, 0.19110, 0.25673, 0.20585]`) versus **`0.12618`** for the 19-band `baseline-unet` (`+0.08559` mean delta, `4/4` fold wins), and surpassed `H16-1` (`0.17490`) and `H19-4` (`0.17514`) on the exact same 4-quadrant evaluation with zero cross-fold label leakage.
+- **Deep Ensemble Uncertainty & Phase 2 Reviewer Triage:** Five independently initialized, independently trained `UNetFaultNet` members (no MC dropout at inference) decompose predictive Bernoulli variance into epistemic and aleatoric variance across all `5,167,373` footprint pixels ([`docs/data/uncertainty-report.json`](docs/data/uncertainty-report.json)) and export 150 unmapped candidate fault structures with survey-coverage priority adjustments ([`docs/data/phase2-candidate-review.csv`](docs/data/phase2-candidate-review.csv)).
 
 ## First-click download
 
-The site landing page makes the existing reference file obvious. The file is [`gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif`](docs/downloads/gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif). It is a copy of the artifact linked from the [19GEMSDOE submission page](https://buffedlizard55-lab.github.io/19GEMSDOE/docs/index.html), SHA-256 `ec1f9b56b83ce33cad781ceb9f104b18fb4f2ff785263a4e89616af4aabdee8d`.
+The site landing page ([`docs/index.html`](docs/index.html)) and executive summary ([`docs/executive-summary.html`](docs/executive-summary.html)) provide a first-screen one-click download for our validated submission GeoTIFF:
 
-**Do not mistake this for a new, holdout-qualified submission from GEMSDOE23.** The pixel values pass the `[0, 1]` check where finite, but the exact official template/footprint comparison cannot be completed without the authenticated sample-submission raster. Do not spend a submission slot on this copied artifact unless you have independently checked your submission history and the official template.
+- **Validated Primary Submission:** [`gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.tif`](docs/downloads/gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.tif) (`3,249,272` bytes, SHA-256 `572a2fab82fbff4c3ac0978225bbbec8d5cd5b47af7ce9fae4c8f9f9042855f2`)
+- **Manifest & Stdlib Audit:** [`gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.json`](docs/downloads/gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.json) · [`gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.audit.json`](docs/downloads/gemsdoe23-h1-edge-consensus-20261002T023736336372Z-572a2fab.audit.json)
+- **Retained Historical Reference:** [`gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif`](docs/downloads/gems19-h19-5-powerlaw-budget-multiline-corroborated-20260930-e27054cf-nan.tif) (SHA-256 `ec1f9b56b83ce33cad781ceb9f104b18fb4f2ff785263a4e89616af4aabdee8d`)
 
-Suggested identifying note (not a performance claim):
+Suggested DrivenData submission note:
 
 ```text
-GEMSDOE23 reference copy: H19-5, artifact e27054cf; not a new model; score-to-file association unverified
+GEMSDOE23 H1-edge-consensus | 5-member Deep Ensemble + 100% label-free multi-line corroborated 3DEP/GeoDAWN/GDR1391 consensus | 4-fold spatial OOF DTI 0.21177 (+0.08559 vs baseline, 4/4 fold wins) | sha256 572a2fab
 ```
 
 The [Executive Summary & Upload Guide](docs/executive-summary.html) has the exact upload steps and the pre-upload caveats. The supported submission output remains **one band**; ensemble variance and reviewer notes belong in separate sidecars, not extra submission bands.

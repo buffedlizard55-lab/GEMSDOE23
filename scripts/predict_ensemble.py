@@ -27,7 +27,7 @@ def main() -> int:
     parser.add_argument("--footprint", type=Path, default=None)
     parser.add_argument("--model-dir", type=Path, required=True)
     parser.add_argument("--out-dir", type=Path, required=True)
-    parser.add_argument("--tile-size", type=int, default=256)
+    parser.add_argument("--tile-size", type=int, default=1024)
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--calibration-report", type=Path, default=None)
     parser.add_argument("--device", default=None)
@@ -103,18 +103,26 @@ def main() -> int:
             model.eval()  # model has no dropout; inference is deterministic
             if checkpoint.get("dropout_at_inference") is not False:
                 raise ValueError(f"Checkpoint {checkpoint_path.name} does not assert dropout_at_inference=false")
+            halo = 16
             with torch.inference_mode():
                 for row in range(0, h, args.tile_size):
                     for col in range(0, w, args.tile_size):
                         th = min(args.tile_size, h - row)
                         tw = min(args.tile_size, w - col)
-                        tile = np.asarray(x[:, row:row + th, col:col + tw], dtype=np.float32).copy()
+                        r0 = max(0, row - halo)
+                        r1 = min(h, row + th + halo)
+                        c0 = max(0, col - halo)
+                        c1 = min(w, col + tw + halo)
+                        ry = row - r0
+                        rx = col - c0
+                        tile = np.asarray(x[:, r0:r1, c0:c1], dtype=np.float32).copy()
+                        tile = np.where(np.isfinite(tile) & (np.abs(tile) < 1e30), tile, 0.0)
                         tensor = torch.from_numpy(tile[None]).to(device)
-                        pad_h = (-th) % 8
-                        pad_w = (-tw) % 8
+                        pad_h = (-tensor.shape[-2]) % 8
+                        pad_w = (-tensor.shape[-1]) % 8
                         if pad_h or pad_w:
                             tensor = F.pad(tensor, (0, pad_w, 0, pad_h), mode="replicate")
-                        probs = torch.sigmoid(model(tensor) / args.temperature)[0, 0, :th, :tw]
+                        probs = torch.sigmoid(model(tensor) / args.temperature)[0, 0, ry:ry + th, rx:rx + tw]
                         p = probs.cpu().numpy().astype(np.float32, copy=False)
                         region = (slice(row, row + th), slice(col, col + tw))
                         if member_index == 1:
