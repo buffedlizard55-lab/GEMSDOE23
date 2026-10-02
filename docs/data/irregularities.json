@@ -1,151 +1,311 @@
 {
-  "schema_version": 2,
-  "reviewed_utc": "2026-10-02T09:55:00Z",
-  "rule": "A row exists only if it was measured or read from an official source in this session. 'how_established' says which. Nothing here is inferred from a previous session's claim without re-measurement.",
-  "flags": [
-    {
-      "id": "I-01",
-      "severity": "medium",
-      "status": "open",
-      "title": "The official sample_submission.tif is not an all-absence template",
-      "evidence": "The problem page says 'A sample submission that predicts total fault absence is provided'. The file (sha256 2176d08e\u2026, 1,599,597 B) contains 60,988 pixels equal to 1.0, exactly the known-fault catalogue, and 0.0 elsewhere inside the footprint.",
-      "action": "Used only for its grid, CRS, transform and footprint. Never as a zero baseline, and never as a prediction.",
-      "how_established": "measured here (docs/data/anchor-geometry.json, data_verification)",
-      "links": [
-        "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/#submission-format"
-      ]
-    },
-    {
-      "id": "I-02",
-      "severity": "medium",
-      "status": "open",
-      "title": "Band 6 'tc' is mislabelled in the feature file's own tags",
-      "evidence": "The tag reads 'Tilt angle or total curvature - magnetic field derivative for edge detection' with data_category=magnetic_data. Measured on 5,164,300 valid in-footprint pixels: r = +0.9971 with the USGS GeoDAWN radiometric TOTAL COUNT channel, r = +0.8817 with its potassium channel, r = -0.1624 with the official magnetic horizontal-gradient band, and all values are positive (2.95 to 88.57) while a tilt angle spans both signs.",
-      "action": "Treat band 6 as radiometric total count (surface lithology / soil chemistry), not as a magnetic edge detector. Any hypothesis that assumed a magnetic meaning is mis-specified. The official problem page's own layer list includes 'Total radiometric counts per second', which agrees with the measurement.",
-      "how_established": "measured here (docs/data/band6-tc-audit.json)",
-      "links": [
-        "https://www.sciencebase.gov/catalog/item/657e1d85d34e23d3533209f7"
-      ]
-    },
-    {
-      "id": "I-03",
-      "severity": "medium",
-      "status": "fixed",
-      "title": "Invalid feature pixels use a finite float32 sentinel, not NaN",
-      "evidence": "Every one of the 19 bands carries 3,061 (band 6: 3,073) invalid pixels INSIDE the footprint, stored as -3.4028234663852886e+38. np.isfinite() accepts that value, so a naive validity test silently feeds -3.4e38 to a model.",
-      "action": "All loaders in src/gems mask on abs(value) < 1e30 as well as isfinite (src/gems/layers.py SENTINEL, scripts/prepare_data.py). A regression test was added.",
-      "how_established": "measured here (outputs of scripts/prepare_data.py, src/gems/featurecube.py)",
-      "links": []
-    },
-    {
-      "id": "I-04",
-      "severity": "high",
-      "status": "fixed",
-      "title": "The previous download script could never have worked",
-      "evidence": "scripts/download_competition_data.sh hard-coded Dropbox URLs whose rlkey/st/file-id values do not match the shares recorded in the data-bridge manifest (for example example_submission.tif?rlkey=6ec338c4c38e42f1a71587d89 versus the manifest's rlkey=kbykilvau066xuogoosbf4cq8). Even with network access those URLs 404.",
-      "action": "Rewritten to fail closed: scripts/fetch_data_bridge.py acquires the rasters from the hash-pinned public git bridge, falls back to the mirrors named in that bridge's own manifest, verifies every part and the whole file, and never authenticates to the login-gated data tab.",
-      "how_established": "read and compared against GEMSDOE2:data/bridge/manifest.json",
-      "links": []
-    },
-    {
-      "id": "I-05",
-      "severity": "high",
-      "status": "withdrawn",
-      "title": "The headline '4-fold spatial holdout gate passed' claim measured the wrong population",
-      "evidence": "docs/data/validation-report.json claims mean out-of-fold DTI 0.21177 over four geographic quadrant folds with 4/4 wins. Its truth is the supplied catalogue (59,969 positives across the folds) and its folds are quadrants. Known-fault pixels are masked out of the official evaluation, so the catalogue cannot contribute score; and quadrant folds delete the fault population from the held-out region. Measured independently this session: no offline proxy truth ranks the 24 live-scored artefacts better than chance (best Spearman rho = +0.326, p = 0.12, and it ranks the 0.0297 artefact first).",
-      "action": "Claim withdrawn from README.md, docs/PROJECT_BRIEF.md and every site page. Replaced by an explicit statement that placement cannot be validated offline, plus a projection range derived from the exact metric algebra.",
-      "how_established": "measured here (docs/data/offline-proxy-audit.json) plus the official staff ruling",
-      "links": [
-        "https://community.drivendata.org/t/11516/2"
-      ]
-    },
-    {
-      "id": "I-06",
-      "severity": "high",
-      "status": "corrected",
-      "title": "|G| = 125,000 hidden truth pixels is refuted by an order of magnitude",
-      "evidence": "TP_w <= |G| applied to the 24 live scores gives |G| >= 4,607. The r13-lattice-s5 artefact covers 98.9% of the scored domain within 300 m, so its TP_w is nearly independent of where the truth sits; measuring its mean kernel envelope on two real trace populations gives |G| <= 7,709 (SGMC-like geometry) or <= 11,410 (catalogue-like geometry).",
-      "action": "The 550,000-pixel 'value-based emission budget' inherited from earlier group work is abandoned: at the measured |G| it is far past the metric's marginal rule. The shipped emission uses ~120,000 pixels chosen by maximin expected DTI.",
-      "how_established": "measured here (docs/data/live-model-bounds.json)",
-      "links": [
-        "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/#performance-metric"
-      ]
-    },
-    {
-      "id": "I-07",
-      "severity": "medium",
-      "status": "open",
-      "title": "A previously reported proxy correlation did not reproduce",
-      "evidence": "Earlier group work reported Spearman rho = 0.518 (p = 0.048, n = 15) between the SGMC-gap proxy DTI and the public score. Recomputed here on 24 artefacts with the official metric, the same proxy gives rho = +0.194 (p = 0.36) strict and +0.326 (p = 0.12) with a 2 km catalogue buffer; the catalogue proxy gives +0.134 (p = 0.53).",
-      "action": "No offline proxy is used for model or budget selection. The only instrument with out-of-family validation is the habitat regression fitted to the live scores themselves (nested-CV rho = +0.46).",
-      "how_established": "measured here (docs/data/offline-proxy-audit.json)",
-      "links": []
-    },
-    {
-      "id": "I-08",
-      "severity": "medium",
-      "status": "open",
-      "title": "The deep ensemble failed its own admission gate",
-      "evidence": "Five independently initialised and independently trained U-Net members were trained on faults from an independent compilation that the catalogue does not contain. Out of fold, the ensemble's DTI at the operating budget did not beat a seed-matched random emission of the same size on a majority of blocked folds.",
-      "action": "The pre-registered gate set the detector's weight in the submitted emission to 0. The ensemble is still reported in full and still supplies the epistemic/aleatoric decomposition, whose validity does not depend on the members being accurate. Compute was the binding constraint: 2 CPU cores, 3 GB RAM, no GPU.",
-      "how_established": "measured here (docs/data/oof-evaluation.json, docs/data/ensemble-report.json)",
-      "links": []
-    },
-    {
-      "id": "I-09",
-      "severity": "low",
-      "status": "fixed",
-      "title": "The leaderboard feed had silently gone stale",
-      "evidence": "docs/data/leaderboard-status.json recorded status 'stale-snapshot-retained' with error 'URLError: TLS/SSL connection has been closed (EOF)', so the site was serving an older snapshot without saying when.",
-      "action": "Snapshot refreshed manually for 2026-10-02 and the page now prints the retrieval timestamp and a live/stale badge next to the table; .github/workflows/pages.yml refreshes it on every push and daily at 12:00 UTC.",
-      "how_established": "read here and re-fetched from the official leaderboard page",
-      "links": [
-        "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/"
-      ]
-    },
-    {
-      "id": "I-10",
-      "severity": "low",
-      "status": "open",
-      "title": "Sandbox egress blocks every official host except GitHub and PyPI",
-      "evidence": "From the development sandbox, drivendata.org, dropbox.com, usgs.gov, sciencebase.gov, docs.nlr.gov, index.nationalmap.gov, gdr.openei.org, raw.githubusercontent.com and download.pytorch.org all fail the TLS handshake (curl exit 35). api.github.com, codeload.github.com, pypi.org and files.pythonhosted.org succeed.",
-      "action": "Official rasters arrive through the hash-pinned git bridge; official page text arrives through a text fetch; torch is installed from PyPI. GitHub Actions has full egress and re-does the leaderboard fetch there.",
-      "how_established": "measured here (connection matrix, this session)",
-      "links": []
-    },
-    {
-      "id": "I-11",
-      "severity": "medium",
-      "status": "open",
-      "title": "Ambiguity in the masking ruling that this submission resolves conservatively",
-      "evidence": "Staff wrote that known-fault pixels 'are masked / excluded from evaluation, so they do not count towards penalty terms'. That is explicit about FP and silent about whether a prediction on a masked pixel can still supply TP credit to a new fault within 300 m of it.",
-      "action": "This submission emits nothing on catalogue pixels, which is safe under both readings and matches every top-scoring artefact (on-catalogue mass = 0 for h19-5, h19-4, h16-1, lidarscarp). The alternative reading would make catalogue pixels free upside; it is not taken because the downside under the strict reading is 60,988 pixels of unrepaid FP mass.",
-      "how_established": "read from the official forum; geometry measured here",
-      "links": [
-        "https://community.drivendata.org/t/11516/2"
-      ]
-    },
-    {
-      "id": "I-12",
-      "severity": "high",
-      "status": "resolved",
-      "title": "GitHub credentials expired mid-session, blocking the pull request (restored; PRs #4-#6 merged)",
-      "evidence": "`gh auth status` now reports 'The github.com token in GH_TOKEN is no longer valid'; `git ls-remote origin` fails with 'could not read Username'. Unauthenticated api.github.com calls return 401 Bad credentials and codeload.github.com returns 404 for the sibling repositories that were reachable two hours earlier, which also means scripts/fetch_data_bridge.py can no longer re-download the bridge from this sandbox.",
-      "action": "Resolved the same day: authentication was restored, the work was pushed, and pull requests #4 (main delivery), #5 (Pages contents:write) and #6 (leaderboard feed) were reviewed with green CI and merged to main; the site is deployed. No re-acquisition of data was needed - the official rasters on disk stayed hash-verified throughout.",
-      "how_established": "measured here (gh auth status / git push, 2026-10-02T06:20Z failure; gh pr merge confirmations 2026-10-02T09:17Z-09:44Z)",
-      "links": []
-    },
-    {
-      "id": "I-13",
-      "severity": "medium",
-      "status": "mitigated",
-      "title": "The published leaderboard feed was silently stale: the official board is built by JavaScript, so the automatic refresh could never see it",
-      "evidence": "The first pages.yml run on main exited 0 from the refresh step having written 'status: stale-snapshot-retained, error: ValueError: Could not find a leaderboard table with rank and Tversky headers'. Diagnostics added by the rewrite show what the runner actually received: HTTP 200, 30,166 bytes, correct page title, but tables: 0, rows: 0, cell_text_bytes: 0, user_links: 0, tversky_mentions: 0, loading_placeholder: true. The board is client-rendered. There is no anonymous JSON endpoint either: https://www.drivendata.org/api/competitions/306/leaderboard/ returns 404 with 'please make sure that you are signed in and signed up for that competition'. Meanwhile the delivered snapshot had already gone wrong: the board moved between 02:38 UTC and 09:33 UTC, kinghorton42 (0.2635) entered at rank 10, and the rows coinciding with 0.1922 and 0.1894 are now displayed at ranks 26 and 28, not 24 and 26.",
-      "action": "Three fixes. (1) The snapshot was re-captured from the official page at 09:33 UTC - all 50 displayed rows, with retrieval timestamp, capture method and a note of exactly what moved. (2) scripts/update_leaderboard.py was rewritten to collect tables at any nesting depth, match columns by priority-ordered hints, prefer displayed names over /users/ slugs, validate before accepting (>=10 rows, unique ascending ranks, scores in [0,1]) and record diagnostics on every failure; scripts/render_leaderboard.py plus --render execute the page's public JavaScript in anonymous headless Chromium, which pages.yml installs - no credentials, no signed-in endpoint, no access control bypassed. (3) The attribution caveat is now computed from the rows, and both caveats are printed under every leaderboard table, so a stale or unattributed board cannot pass unnoticed. Verified: the CI probe and the pages.yml refresh both run; the render path is covered by tests using a stub renderer because the sandbox has no egress to drivendata.org.",
-      "how_established": "measured here (runner-side diagnostics committed to docs/data/leaderboard-status.json at 2026-10-02T09:45Z; official page read through the web reader at 02:38Z and 09:33Z; api endpoint probed 2026-10-02)",
-      "links": [
-        "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/"
-      ]
-    }
-  ]
+ "schema_version": 2,
+ "reviewed_utc": "2026-10-02T13:30:00Z",
+ "rule": "A row exists only if it was measured or read from an official source in this session. 'how_established' says which. Nothing here is inferred from a previous session's claim without re-measurement.",
+ "flags": [
+  {
+   "id": "I-01",
+   "severity": "medium",
+   "status": "open",
+   "title": "The official sample_submission.tif is not an all-absence template",
+   "evidence": "The problem page says 'A sample submission that predicts total fault absence is provided'. The file (sha256 2176d08e\u2026, 1,599,597 B) contains 60,988 pixels equal to 1.0, exactly the known-fault catalogue, and 0.0 elsewhere inside the footprint.",
+   "action": "Used only for its grid, CRS, transform and footprint. Never as a zero baseline, and never as a prediction.",
+   "how_established": "measured here (docs/data/anchor-geometry.json, data_verification)",
+   "links": [
+    "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/#submission-format"
+   ]
+  },
+  {
+   "id": "I-02",
+   "severity": "medium",
+   "status": "open",
+   "title": "Band 6 'tc' is mislabelled in the feature file's own tags",
+   "evidence": "The tag reads 'Tilt angle or total curvature - magnetic field derivative for edge detection' with data_category=magnetic_data. Measured on 5,164,300 valid in-footprint pixels: r = +0.9971 with the USGS GeoDAWN radiometric TOTAL COUNT channel, r = +0.8817 with its potassium channel, r = -0.1624 with the official magnetic horizontal-gradient band, and all values are positive (2.95 to 88.57) while a tilt angle spans both signs.",
+   "action": "Treat band 6 as radiometric total count (surface lithology / soil chemistry), not as a magnetic edge detector. Any hypothesis that assumed a magnetic meaning is mis-specified. The official problem page's own layer list includes 'Total radiometric counts per second', which agrees with the measurement.",
+   "how_established": "measured here (docs/data/band6-tc-audit.json)",
+   "links": [
+    "https://www.sciencebase.gov/catalog/item/657e1d85d34e23d3533209f7"
+   ]
+  },
+  {
+   "id": "I-03",
+   "severity": "medium",
+   "status": "fixed",
+   "title": "Invalid feature pixels use a finite float32 sentinel, not NaN",
+   "evidence": "Every one of the 19 bands carries 3,061 (band 6: 3,073) invalid pixels INSIDE the footprint, stored as -3.4028234663852886e+38. np.isfinite() accepts that value, so a naive validity test silently feeds -3.4e38 to a model.",
+   "action": "All loaders in src/gems mask on abs(value) < 1e30 as well as isfinite (src/gems/layers.py SENTINEL, scripts/prepare_data.py). A regression test was added.",
+   "how_established": "measured here (outputs of scripts/prepare_data.py, src/gems/featurecube.py)",
+   "links": []
+  },
+  {
+   "id": "I-04",
+   "severity": "high",
+   "status": "fixed",
+   "title": "The previous download script could never have worked",
+   "evidence": "scripts/download_competition_data.sh hard-coded Dropbox URLs whose rlkey/st/file-id values do not match the shares recorded in the data-bridge manifest (for example example_submission.tif?rlkey=6ec338c4c38e42f1a71587d89 versus the manifest's rlkey=kbykilvau066xuogoosbf4cq8). Even with network access those URLs 404.",
+   "action": "Rewritten to fail closed: scripts/fetch_data_bridge.py acquires the rasters from the hash-pinned public git bridge, falls back to the mirrors named in that bridge's own manifest, verifies every part and the whole file, and never authenticates to the login-gated data tab.",
+   "how_established": "read and compared against GEMSDOE2:data/bridge/manifest.json",
+   "links": []
+  },
+  {
+   "id": "I-05",
+   "severity": "high",
+   "status": "withdrawn",
+   "title": "The headline '4-fold spatial holdout gate passed' claim measured the wrong population",
+   "evidence": "docs/data/validation-report.json claims mean out-of-fold DTI 0.21177 over four geographic quadrant folds with 4/4 wins. Its truth is the supplied catalogue (59,969 positives across the folds) and its folds are quadrants. Known-fault pixels are masked out of the official evaluation, so the catalogue cannot contribute score; and quadrant folds delete the fault population from the held-out region. Measured independently this session: no offline proxy truth ranks the 24 live-scored artefacts better than chance (best Spearman rho = +0.326, p = 0.12, and it ranks the 0.0297 artefact first).",
+   "action": "Claim withdrawn from README.md, docs/PROJECT_BRIEF.md and every site page. Replaced by an explicit statement that placement cannot be validated offline, plus a projection range derived from the exact metric algebra.",
+   "how_established": "measured here (docs/data/offline-proxy-audit.json) plus the official staff ruling",
+   "links": [
+    "https://community.drivendata.org/t/11516/2"
+   ]
+  },
+  {
+   "id": "I-06",
+   "severity": "high",
+   "status": "corrected",
+   "title": "|G| = 125,000 hidden truth pixels is refuted by an order of magnitude",
+   "evidence": "TP_w <= |G| applied to the 24 live scores gives |G| >= 4,607. The r13-lattice-s5 artefact covers 98.9% of the scored domain within 300 m, so its TP_w is nearly independent of where the truth sits; measuring its mean kernel envelope on two real trace populations gives |G| <= 7,709 (SGMC-like geometry) or <= 11,410 (catalogue-like geometry).",
+   "action": "The 550,000-pixel 'value-based emission budget' inherited from earlier group work is abandoned: at the measured |G| it is far past the metric's marginal rule. The shipped emission uses ~120,000 pixels chosen by maximin expected DTI.",
+   "how_established": "measured here (docs/data/live-model-bounds.json)",
+   "links": [
+    "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/#performance-metric"
+   ]
+  },
+  {
+   "id": "I-07",
+   "severity": "medium",
+   "status": "open",
+   "title": "A previously reported proxy correlation did not reproduce",
+   "evidence": "Earlier group work reported Spearman rho = 0.518 (p = 0.048, n = 15) between the SGMC-gap proxy DTI and the public score. Recomputed here on 24 artefacts with the official metric, the same proxy gives rho = +0.194 (p = 0.36) strict and +0.326 (p = 0.12) with a 2 km catalogue buffer; the catalogue proxy gives +0.134 (p = 0.53).",
+   "action": "No offline proxy is used for model or budget selection. The only instrument with out-of-family validation is the habitat regression fitted to the live scores themselves (nested-CV rho = +0.46).",
+   "how_established": "measured here (docs/data/offline-proxy-audit.json)",
+   "links": []
+  },
+  {
+   "id": "I-08",
+   "severity": "medium",
+   "status": "open",
+   "title": "The deep ensemble failed its own admission gate",
+   "evidence": "Five independently initialised and independently trained U-Net members were trained on faults from an independent compilation that the catalogue does not contain. Out of fold, the ensemble's DTI at the operating budget did not beat a seed-matched random emission of the same size on a majority of blocked folds.",
+   "action": "The pre-registered gate set the detector's weight in the submitted emission to 0. The ensemble is still reported in full and still supplies the epistemic/aleatoric decomposition, whose validity does not depend on the members being accurate. Compute was the binding constraint: 2 CPU cores, 3 GB RAM, no GPU.",
+   "how_established": "measured here (docs/data/oof-evaluation.json, docs/data/ensemble-report.json)",
+   "links": []
+  },
+  {
+   "id": "I-09",
+   "severity": "low",
+   "status": "fixed",
+   "title": "The leaderboard feed had silently gone stale",
+   "evidence": "docs/data/leaderboard-status.json recorded status 'stale-snapshot-retained' with error 'URLError: TLS/SSL connection has been closed (EOF)', so the site was serving an older snapshot without saying when.",
+   "action": "Snapshot refreshed manually for 2026-10-02 and the page now prints the retrieval timestamp and a live/stale badge next to the table; .github/workflows/pages.yml refreshes it on every push and daily at 12:00 UTC.",
+   "how_established": "read here and re-fetched from the official leaderboard page",
+   "links": [
+    "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/"
+   ]
+  },
+  {
+   "id": "I-10",
+   "severity": "low",
+   "status": "open",
+   "title": "Sandbox egress blocks every official host except GitHub and PyPI",
+   "evidence": "From the development sandbox, drivendata.org, dropbox.com, usgs.gov, sciencebase.gov, docs.nlr.gov, index.nationalmap.gov, gdr.openei.org, raw.githubusercontent.com and download.pytorch.org all fail the TLS handshake (curl exit 35). api.github.com, codeload.github.com, pypi.org and files.pythonhosted.org succeed. Re-checked 2026-10-02: the agent's page-fetch tool (not bash) does read drivendata.org, community.drivendata.org (including the Discourse .json endpoints), docs.nlr.gov, pangea.stanford.edu and the Wiley / ScienceDirect / GeoScienceWorld abstracts, which is how every ruling and citation in this session was verified at source.",
+   "action": "Official rasters arrive through the hash-pinned git bridge; official page text arrives through a text fetch; torch is installed from PyPI. GitHub Actions has full egress and re-does the leaderboard fetch there.",
+   "how_established": "measured here (connection matrix, this session)",
+   "links": []
+  },
+  {
+   "id": "I-11",
+   "severity": "medium",
+   "status": "open",
+   "title": "Ambiguity in the masking ruling that this submission resolves conservatively",
+   "evidence": "Staff wrote that known-fault pixels 'are masked / excluded from evaluation, so they do not count towards penalty terms'. That is explicit about FP and silent about whether a prediction on a masked pixel can still supply TP credit to a new fault within 300 m of it. Re-read at source on 2026-10-02 (forum 11516, post 2, DrivenData staff 'chrisk-dd'): 'Pixels corresponding to known USGS/INGENIOUS faults are masked / excluded from evaluation, so they do not count towards penalty terms.' and 'Re-evaluation will also mask/exclude the existing USGS/INGENIOUS faults.' and, decisively for this question, 'for scoring purposes it should not matter whether these known faults are included with predictions or not.' The residual ambiguity (kernel credit from a prediction on a masked pixel to a new fault within 300 m) is therefore very likely nil, but it is still an inference from that sentence, not an explicit rule.",
+   "action": "This submission emits nothing on catalogue pixels, which is safe under both readings and matches every top-scoring artefact (on-catalogue mass = 0 for h19-5, h19-4, h16-1, lidarscarp). The alternative reading would make catalogue pixels free upside; it is not taken because the downside under the strict reading is 60,988 pixels of unrepaid FP mass.",
+   "how_established": "read from the official forum; geometry measured here",
+   "links": [
+    "https://community.drivendata.org/t/11516/2"
+   ]
+  },
+  {
+   "id": "I-12",
+   "severity": "high",
+   "status": "resolved",
+   "title": "GitHub credentials expired mid-session, blocking the pull request (restored; PRs #4-#6 merged)",
+   "evidence": "`gh auth status` now reports 'The github.com token in GH_TOKEN is no longer valid'; `git ls-remote origin` fails with 'could not read Username'. Unauthenticated api.github.com calls return 401 Bad credentials and codeload.github.com returns 404 for the sibling repositories that were reachable two hours earlier, which also means scripts/fetch_data_bridge.py can no longer re-download the bridge from this sandbox.",
+   "action": "Resolved the same day: authentication was restored, the work was pushed, and pull requests #4 (main delivery), #5 (Pages contents:write) and #6 (leaderboard feed) were reviewed with green CI and merged to main; the site is deployed. No re-acquisition of data was needed - the official rasters on disk stayed hash-verified throughout.",
+   "how_established": "measured here (gh auth status / git push, 2026-10-02T06:20Z failure; gh pr merge confirmations 2026-10-02T09:17Z-09:44Z)",
+   "links": []
+  },
+  {
+   "id": "I-13",
+   "severity": "medium",
+   "status": "mitigated",
+   "title": "The published leaderboard feed was silently stale: the official board is built by JavaScript, so the automatic refresh could never see it",
+   "evidence": "The first pages.yml run on main exited 0 from the refresh step having written 'status: stale-snapshot-retained, error: ValueError: Could not find a leaderboard table with rank and Tversky headers'. Diagnostics added by the rewrite show what the runner actually received: HTTP 200, 30,166 bytes, correct page title, but tables: 0, rows: 0, cell_text_bytes: 0, user_links: 0, tversky_mentions: 0, loading_placeholder: true. The board is client-rendered. There is no anonymous JSON endpoint either: https://www.drivendata.org/api/competitions/306/leaderboard/ returns 404 with 'please make sure that you are signed in and signed up for that competition'. Meanwhile the delivered snapshot had already gone wrong: the board moved between 02:38 UTC and 09:33 UTC, kinghorton42 (0.2635) entered at rank 10, and the rows coinciding with 0.1922 and 0.1894 are now displayed at ranks 26 and 28, not 24 and 26.",
+   "action": "Three fixes. (1) The snapshot was re-captured from the official page at 09:33 UTC - all 50 displayed rows, with retrieval timestamp, capture method and a note of exactly what moved. (2) scripts/update_leaderboard.py was rewritten to collect tables at any nesting depth, match columns by priority-ordered hints, prefer displayed names over /users/ slugs, validate before accepting (>=10 rows, unique ascending ranks, scores in [0,1]) and record diagnostics on every failure; scripts/render_leaderboard.py plus --render execute the page's public JavaScript in anonymous headless Chromium, which pages.yml installs - no credentials, no signed-in endpoint, no access control bypassed. (3) The attribution caveat is now computed from the rows, and both caveats are printed under every leaderboard table, so a stale or unattributed board cannot pass unnoticed. Verified: the CI probe and the pages.yml refresh both run; the render path is covered by tests using a stub renderer because the sandbox has no egress to drivendata.org.",
+   "how_established": "measured here (runner-side diagnostics committed to docs/data/leaderboard-status.json at 2026-10-02T09:45Z; official page read through the web reader at 02:38Z and 09:33Z; api endpoint probed 2026-10-02)",
+   "links": [
+    "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/"
+   ]
+  },
+  {
+   "id": "I-14",
+   "severity": "high",
+   "status": "corrected",
+   "title": "A sibling repository's Bour & Davy consistency test inserts the cumulative exponent where the published relation needs the density exponent",
+   "evidence": "Bour & Davy (1999, GRL 26(13) 2001-2004, abstract read at Wiley 2026-10-02): x = (a - 1)/D, where a is the exponent of the frequency-length distribution and x the exponent of the mean distance to the nearest larger neighbour. GEMSDOE22 scripts/02_fit_clustering.py fits N(>=L) = C L^-a (a CUMULATIVE exponent, e.g. its alpha_ols 2.02) and then evaluates (a - 1)/D with it; its reported 'D_consistent: true' therefore does not test the published relation. Here the relation was checked by simulation: 6,000-point populations with Levy-dust positions of dimension D and Pareto lengths of density exponent a, five (a, D) settings x 3 seeds - the measured x is bracketed by the geometric-mean and arithmetic-mean estimators around (a - 1)/D and is far from (a - 2)/D (tests/test_faultstats.py). On the real catalogue: a = 3.15 [2.99, 3.34] above 2.95 km, D = 1.51-1.66, predicted x in [1.20, 1.55], measured tail x = 1.54 [1.33, 1.75] (centroid distance) and 1.84 [1.57, 2.13] (edge distance): consistent for the centroid definition, marginal for the edge definition; over all lengths x = 0.92. Caveat: the paper body could not be read (the Wiley e-PDF viewer is blocked), so the density reading is derived (N(>l) ~ l^-(a-1), nearest of N(>l) fractal points at d ~ N^(-1/D)) and confirmed numerically, not read from the text.",
+   "action": "src/gems/faultstats.py defines a as the density exponent everywhere and reports the cumulative form (a - 1) alongside; the simulation is a unit test. The sibling's number is not reused.",
+   "how_established": "read at source (abstract) + measured here (docs/data/fault-statistics.json, tests/test_faultstats.py)",
+   "links": [
+    "https://doi.org/10.1029/1999GL900419",
+    "https://github.com/buffedlizard55-lab/GEMSDOE22/blob/main/scripts/02_fit_clustering.py"
+   ]
+  },
+  {
+   "id": "I-15",
+   "severity": "high",
+   "status": "fixed in H29/H30",
+   "title": "H24's 100,000 dots carry a spectral line at exactly the GeoDAWN Area 2 flight-line spacing",
+   "evidence": "Verified survey geometry (USGS GeoDAWN metadata, mirrored): traverse lines every 400 m (east-west), tie lines every 4,000 m; Area 1 200 m / 2,000 m; Area 1 is 4.7 % of the footprint. The detector (peak power at the survey period over the median of the surrounding band, ranked against 60 control frequencies) finds the 400 m line in the official tmi_hg band (strength 86.9 vs control 95th percentile 6.6) and the 4 km tie-line period in tmi, rtp and tmi_vg, so the survey is visible in the 100 m inputs. H24's dots: strength 243.3 vs control p95 10.0, rank p = 0.016 (the minimum attainable); rows by phase mod 4 = [0.223, 0.235, 0.307, 0.235]. Cause only partly attributed: non-maximum suppression on a RANDOM score produces no line (strength 6.3, p = 0.10) and rank noise of sigma = 0.1 removes it, so the comb is in the score S; the vote map V carries a weak one through ens12-adopted (28.7, p = 0.016) but dropping that voter does not clear the emission, none of the eight habitat layers has a significant line, and the phase of the emission comb (3.1 rad) lies between that of tmi_hg (2.9) and that of S/V/H/ens12 (-2.2 = 4.1), so inheritance from the survey cannot be separated from a coincidence. Across the 23 live-scored emissions the line strength does not correlate with the live score (Spearman -0.15, p = 0.50, n = 23): there is no evidence that the comb hurts the score; it is flagged as an artefact risk for the Phase 2 reviewers.",
+   "action": "scripts/build_audited_emission.py equalises the row phases inside 30 km blocks, moving only the excess dots by 1-2 px (H29 5.4%, H30 2.1%; mean shift 1.45/1.56 px). Re-audit: strength 2.4 (p = 0.74) / 2.3 (p = 0.84); K-bar, eta and coverage are unchanged to four decimals for H29.",
+   "how_established": "measured here (docs/data/prediction-audit.json, h29-build.json, h30-build.json); geometry read from the USGS GeoDAWN metadata file",
+   "links": [
+    "https://doi.org/10.5066/P93LGLVQ",
+    "https://github.com/buffedlizard55-lab/GEMSDOE24/blob/main/data/external/audit_sources/GeoDAWN%20Metadata%20FINAL.csv"
+   ]
+  },
+  {
+   "id": "I-16",
+   "severity": "medium",
+   "status": "fixed in H29/H30",
+   "title": "H24 violates its own stated 400 m minimum separation",
+   "evidence": "931 of H24's 100,000 dots (0.93 %) have a neighbour closer than 4 px, 898 of them exactly adjacent (6,651 violating pairs). src/gems/emission.py::disperse_select accepts every pixel of an equal-score plateau in the same round (cand >= local maximum), so ties bypass the separation rule. The shipped file reproduces bit-for-bit from public inputs (scripts/rebuild_h24_check.py), so this is the code's behaviour, not a file-handling accident.",
+   "action": "disperse_select(break_ties=True) adds a deterministic 1e-9 jitter (default off so the shipped H24 stays reproducible). H29/H30 have 0 violating pairs (checked by cKDTree in the build and in tests/test_audit.py).",
+   "how_established": "measured here (outputs/h24_rebuild_report.json, docs/data/h29-build.json)",
+   "links": []
+  },
+  {
+   "id": "I-17",
+   "severity": "high",
+   "status": "corrected",
+   "title": "'Dispersion is a free lever that does not trade against skill' is contradicted by the only controlled pair; the '0.12-0.34 projected' headline assumed it",
+   "evidence": "pindrop-v4-ridge and pindrop-v4-nodes share the same score and the same 155,021 pixels. Dispersal raised K-bar from 0.099 to 0.270 (eta x2.7) and lowered skill from 7.02 to 2.68, so the implied true-positive mass was unchanged: TP/|G| = 0.70 vs 0.72 at |G| = 6,000 and 0.45 vs 0.47 at 10,000; live DTI 0.1152 vs 0.1193 (+3.5 %). The cross-sectional eta-q correlation (rho = +0.61) is confounded by emission type. If H24/H30 had the same TP per emitted pixel as h19-5 (q = 0.0475-0.0587 over |G| 6k-15k) their DTI would be 0.18-0.19 (H24, 100,000 dots) and 0.17-0.18 (H30, 91,533 dots); lattice-type skill (1.9-2.7, measured on the dispersed artefacts) gives 0.08-0.21 (H24) / 0.08-0.20 (H30); only ridge-level skill (>= 5.5) reaches 0.22-0.42 (H24) / 0.22-0.40 (H30).",
+   "action": "README, site, manifest and the submission statement now state the central expectation (about h19-5) and the scenario range; the earlier headline is marked superseded. The slot decision is the owner's.",
+   "how_established": "measured here (docs/data/habitat-model.json per_anchor, src/gems/emission.py algebra)",
+   "links": []
+  },
+  {
+   "id": "I-18",
+   "severity": "medium",
+   "status": "corrected",
+   "title": "The Hermant et al. (2025) '~400 m misregistration' was stated more strongly than the source",
+   "evidence": "Figure 2 caption of the paper (read at pangea.stanford.edu 2026-10-02): 'Local discrepancy observed in North Central Nevada: distance between USGS Quaternary faults and TLS fault label can be up to 400m.' That is a local maximum, against the authors' own (TLS Geothermics) ground-truth labels, in north-central Nevada; it is not a typical offset, not a lidar-derived label by statement, and not shown for the GeoDAWN region. H-25 was built on 'misregistered by up to ~400 m'. A direct test on the real data finds no average displacement: lidar scarp metrics decay monotonically from the catalogue pixels with the maximum at distance 0 (upface_max 1.38x the far field at 0 m, 1.30 at 200 m, 1.27 at 500 m, 1.13 at 2-3 km).",
+   "action": "Wording corrected on the sources and hypotheses pages. H-25 is demoted to 'not supported on average; a displaced subset is not excluded' (docs/data/fault-statistics.json h25_offset_profile).",
+   "how_established": "read at source + measured here",
+   "links": [
+    "https://pangea.stanford.edu/ERE/db/GeoConf/papers/SGW/2025/Hermant.pdf"
+   ]
+  },
+  {
+   "id": "I-19",
+   "severity": "medium",
+   "status": "open",
+   "title": "Phase 2 labels are built by expert review of submissions, so the geometry of an emission may matter beyond the metric",
+   "evidence": "Competition page (2026-10-02): 'against an expanded label set built from expert review of all submissions'; staff, forum 11527 post 7: 'the largest prize pool (Phase 2) will use a test set that is updated by expert review of all Phase 1 submissions, so your fault predictions have an impact on final evaluation even if they are not the most performant in Phase 1'; rules 3.6.4: the final determination 'will take into account the reviewers' feedback and scores'. Staff declined to describe the data sources, fault types or coverage behind the new faults. A 400 m dot lattice looks unlike a fault map; whether reviewers can use it, and whether the comb would be read as a survey artefact, is not measurable offline.",
+   "action": "H29/H30 remove the comb and the separation violations; the clustering audit is reported with each candidate. No score claim is made from this.",
+   "how_established": "read at source (competition page, forum 11527 .json, rules PDF 3.6)",
+   "links": [
+    "https://www.drivendata.org/competitions/306/competition-doe-gems/",
+    "https://community.drivendata.org/t/how-were-the-new-test-faults-identified-data-sources-and-fault-types/11527",
+    "https://docs.nlr.gov/docs/fy26osti/96647.pdf"
+   ]
+  },
+  {
+   "id": "I-20",
+   "severity": "medium",
+   "status": "mitigated",
+   "title": "The habitat refit reproduces exactly only when the anchors are listed in the committed order (tie-breaking on the duplicate hedge-v2 / ens12-adopted)",
+   "evidence": "A full re-run of scripts/fit_habitat_model.py from public inputs (24 anchors, 95 layers, about 220 s). (1) With the anchors in the order of docs/data/habitat-model.json it reproduces the committed model EXACTLY: the same eight layers in the same order, nested-CV rho 0.43739, weights identical to four decimals, identical CV predictions (all fitted fields compared equal). (2) With the alias hedge-v2 listed last (the order the first restore wrote) the nested-CV predictions are still identical when aligned by anchor id (Spearman 1.000, max difference 0.000) and rho is 0.43652, but the final refit picks of_det_elev_slope_std3 (beta -0.147) instead of lid_ex_max (+0.075) as the eighth layer and the other weights move by 4-12 % (record: docs/data/habitat-model-rerun-2026-10-02.json). Cause: the rank statistic breaks ties by array position and ens12-adopted and hedge-v2 have identical targets (n = 166,519, score 0.1563), so the order of the anchors, not the data, decides near-ties. Relevance: the first next step of the brief is to record the H24 live score and REFIT.",
+   "action": "scripts/restore_workspace.py now writes the anchor manifest in the committed order, so a refit on a fresh clone reproduces the committed model. The committed layer list is retained and H24 is unaffected (it reproduces bit-for-bit from that list). Before the refit that includes a new live score: use average ranks for ties in habitat._spearman and select layers by stability across the leave-family-out folds, so that a near-tie is decided by frequency, not by position.",
+   "how_established": "measured here: two full re-runs of scripts/fit_habitat_model.py on 2026-10-02 (docs/data/habitat-model-rerun-2026-10-02.json is the alias-last run); scripts/rebuild_h24_check.py",
+   "links": []
+  },
+  {
+   "id": "I-21",
+   "severity": "info",
+   "status": "verified",
+   "title": "H24 reproduces bit-for-bit from public inputs",
+   "evidence": "scripts/rebuild_h24_check.py rebuilds the habitat score from the committed layer list and weights, the vote map from nine identity-verified artefacts, S = 0.625 rank(H) + 0.375 rank(V) and the greedy NMS: 100,000 of 100,000 dots identical to docs/downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif. All 23 distinct anchors were re-fetched from sibling repositories and matched the recorded emitted-pixel count and probability mass exactly (scripts/restore_workspace.py); hedge-v2 is a byte-identical copy of ens12-adopted (same n, mass and score).",
+   "action": "None needed; the restore script makes the check repeatable on a fresh clone.",
+   "how_established": "measured here (docs/data/restore-receipt.json, outputs/h24_rebuild_report.json)",
+   "links": []
+  },
+  {
+   "id": "I-22",
+   "severity": "medium",
+   "status": "open",
+   "title": "The official competition rasters are published in the group's public repositories; their redistribution terms could not be checked",
+   "evidence": "The README states that the originals sit behind the login-gated Data tab, and that the working copies come from the group's git data bridge (public sibling repositories). The Data tab, where DrivenData's data-use terms would be shown, is not readable without a login, and this repository does not authenticate. The competition page says external data is encouraged 'provided you or your team possess the necessary licenses'; the underlying USGS and INGENIOUS sources are public, but the terms attached to DrivenData's prepared rasters are unverified.",
+   "action": "Owner to read the Data-tab terms. scripts/restore_workspace.py does not change the situation (it reads the same public mirrors). Nothing here bypasses an access control.",
+   "how_established": "inference from what could and could not be read",
+   "links": [
+    "https://www.drivendata.org/competitions/306/competition-doe-gems/data/"
+   ]
+  },
+  {
+   "id": "I-23",
+   "severity": "info",
+   "status": "verified",
+   "title": "Leaderboard cross-check: the owner's 0.3049 is stale; the live top is 0.3195",
+   "evidence": "Independent text fetch of the official leaderboard on 2026-10-02: #1 DARD 0.3195, #2 alexoktaba 0.3042, #3 Batik Shirt Brothers 0.2998, ..., #26 smrtdoog5 0.1922, #28 SDCF9 0.1894, #32 doegemsDrivendata 0.1847. This matches the CI-rendered feed in docs/data/leaderboard.json. Score equality is not artefact attribution (the board shows no file hash).",
+   "action": "The site's own feed is authoritative and refreshes daily; no manual step.",
+   "how_established": "read at source and compared with the committed feed",
+   "links": [
+    "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/"
+   ]
+  },
+  {
+   "id": "I-24",
+   "severity": "medium",
+   "status": "informational",
+   "title": "The sibling clustering audit flags everything, including the two best-scoring rasters",
+   "evidence": "GEMSDOE22 docs/data/clustering_audit.json marks all four rasters it tested WARN_DIVERGENT (max log divergence 0.47-0.71), including the h19-5 and h19-4 baselines. An audit that flags the best artefacts as artefacts carries no information. This repository's audit instead (i) defines the divergence against catalogue-like samples (independent thinning of whole traces: large-scale divergence 0.18 mean, 0.21 max), (ii) keeps the sign, and (iii) calibrates against 23 live scores.",
+   "action": "Calibration result: signed divergence orders the live scores (Spearman -0.66, p = 0.001); H24/H29 fall in the lattice-like bin (n = 4, mean live DTI 0.093), the best live scores in the mildly-less-clustered bin (n = 7, mean 0.170). Correlational, post-hoc bins, n = 23.",
+   "how_established": "read from the sibling repository + measured here (docs/data/prediction-audit.json)",
+   "links": [
+    "https://github.com/buffedlizard55-lab/GEMSDOE22/blob/main/evidence/clustering_audit.json"
+   ]
+  },
+  {
+   "id": "I-25",
+   "severity": "medium",
+   "status": "fixed",
+   "title": "Recording a live score changed nothing: record_score.py wrote a log that no code read, and its 'refit' re-ran on the same 24 anchors",
+   "evidence": "grep over the repository: docs/data/score-log.json is referenced only inside scripts/record_score.py; scripts/fit_habitat_model.py builds its anchors from .cache/sib/anchors/manifest.json alone. The advertised procedure (executive summary step 5; the brief's first next step: 'record the live score for this emission, then re-fit |G|, q and the habitat weights with 25 observations') therefore re-ran the unchanged 24-anchor fit.",
+   "action": "scripts/record_score.py now finds the uploaded file by the first 8 hex of its SHA-256 (candidates.json, the manifest, docs/downloads), logs it with a cross-validation family, and scripts/restore_workspace.py --anchors turns every logged file into an anchor (identified by its own pixel count and mass); src/gems/habitat.py honours a per-anchor family. The refit is written to docs/data/habitat-model-refit.json so the committed model, and with it the bit-for-bit H24 reproduction, is not overwritten. Smoke-tested end to end with a fake score (25 anchors loaded, n = 91,533, family h24-dispersed; reverted) and unit-tested (tests/test_record_score.py). Remaining caveat: the refit inherits flag I-20 (anchor order, tie handling).",
+   "how_established": "measured here (grep, an end-to-end run with a throw-away score)",
+   "links": []
+  },
+  {
+   "id": "I-26",
+   "severity": "medium",
+   "status": "open",
+   "title": "The 24.6 % north-east lidar 'gap' rests on an unverified premise: the 716-tile list is an OCR-recovered inventory, not the official CSV",
+   "evidence": "The lidar product's own metadata (data/external/lidar_scarp_features.json, mirrored from the sibling repository) records tiles_total 716, tile_status {ok: 706, failed: 10}, grid_cells_with_lidar 3,892,964 (75.4 % of the footprint) and the caveat 'tile list is an OCR-recovered inventory of the competition PDF, not the login-walled CSV'. 'Required tiles' therefore means 'tiles on an OCR'd list'; the north-east gap may be tiles missing from that list rather than ground without 1 m coverage. The tile log itself could not be re-read (GitHub access lapsed, I-27).",
+   "action": "Enumerate the 1 m DEM products that intersect the footprint from the public National Map API (tnmaccess.nationalmap.gov, no key; unreachable from this sandbox, reachable from GitHub Actions or any ordinary machine), compare with the 716 list, fetch the difference, re-aggregate the 12 scarp channels, then re-run the habitat fit. Until then H-24/H-29-style emissions are weakest in the gap.",
+   "how_established": "read from the product's metadata; not independently re-measured",
+   "links": [
+    "https://www.usgs.gov/3d-elevation-program"
+   ]
+  },
+  {
+   "id": "I-27",
+   "severity": "high",
+   "status": "open",
+   "title": "GitHub credentials expired mid-session again (recurrence of I-12): the branch could not be pushed from the sandbox",
+   "evidence": "About two hours into the session `gh auth status` began to report 'The github.com token in GH_TOKEN is no longer valid'; `git push` fails with 'could not read Username', anonymous api.github.com requests from the sandbox answer 401 and codeload.github.com answers 404 for the repository. Every external input had been fetched and verified before this happened; the work is committed locally on the session branch.",
+   "action": "Reconnect GitHub in Arena, then: git push origin arena/01a0fc3f-gemsdoe23; open the pull request to main; confirm that CI is green (it regenerates docs/ and fails on any diff, and re-audits the manifest's primary files); merge. Nothing is lost in the meantime.",
+   "how_established": "measured here (gh auth status, git push, curl)",
+   "links": []
+  }
+ ]
 }

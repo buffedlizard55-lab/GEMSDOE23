@@ -98,7 +98,7 @@ def anchor_geometry(anchor_dir: str, data_dir: str | None = None):
         env = np.clip(1.0 - dist / RADIUS_M, 0.0, 1.0)
         out.append(dict(id=m["id"], lb=float(m["lb"]), area=float(p.sum()),
                         n=int(mask.sum()), kbar=float(env[domain].mean()),
-                        idx=np.flatnonzero(mask.ravel()), family=FAMILIES.get(m["id"], m["id"])))
+                        idx=np.flatnonzero(mask.ravel()), family=FAMILIES.get(m["id"], m.get("family", m["id"]))))
         del p, dist, env
     return out
 

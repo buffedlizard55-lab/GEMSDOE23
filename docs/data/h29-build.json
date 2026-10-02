@@ -1,0 +1,222 @@
+{
+ "generated_utc": "2026-10-02T12:35:07Z",
+ "variant": "h29",
+ "label": "H29 \u00b7 de-aliased lattice-regime emission (H24 ranking)",
+ "keep_top": 1.0,
+ "prior_weight": 0.003,
+ "budget": 100000,
+ "r_min_px": 4.0,
+ "equalisation": {
+  "n_moved": 5441,
+  "share_moved": 0.05441,
+  "mean_abs_shift_px": 1.4530417202720087,
+  "period_px": 4,
+  "block_px": 300,
+  "max_shift_px": 2
+ },
+ "arrangement_target": {
+  "value": -0.21239489224047825,
+  "achieved": -0.589236110357475,
+  "within_0p08": null,
+  "status": "post-hoc target; see docs/data/prediction-audit.json arrangement_target"
+ },
+ "audit_before_h24": {
+  "n": 100000,
+  "survey_lines": {
+   "traverse_400m_along_y": {
+    "f0": 0.25,
+    "strength": 243.28327597883398,
+    "control_median": 3.5494403301595923,
+    "control_p95": 10.045764164558625,
+    "p_rank": 0.01639344262295082,
+    "n_controls": 60
+   },
+   "tie_4km_along_x": {
+    "f0": 0.025,
+    "strength": 1.30275144018274,
+    "control_median": 3.289300910324934,
+    "control_p95": 9.032291259769142,
+    "p_rank": 0.9344262295081968,
+    "n_controls": 60
+   }
+  },
+  "flags": {
+   "traverse_400m_along_y": true,
+   "tie_4km_along_x": false
+  },
+  "row_phase_hist": [
+   0.22308,
+   0.23522,
+   0.30701,
+   0.23469
+  ],
+  "kbar": 0.17378193140029907,
+  "eta": 0.946022680409377,
+  "coverage": 0.437935839150397,
+  "separation_violating_pairs": 6651,
+  "dots_with_violation": 931,
+  "ncc_sum_ratio": [
+   0.9341349012353835,
+   1.0711425230501774,
+   1.077450958965697,
+   1.0646741806922375,
+   1.043772933809699,
+   1.0311486868357649,
+   1.0211420301521776,
+   1.008655296098529,
+   1.0006305971985407,
+   0.9968107502381525
+  ],
+  "signed_divergence": -0.5844954083511664,
+  "arrangement_bin": "lattice-like (flat, Poisson-like at >= 1 km)",
+  "near_long_enrichment": {
+   "200-1000m": 1.0252945416124362,
+   "1000-2500m": 0.9944529829360851,
+   "2500-7000m": 0.9738230147376504,
+   "7000-99999m": 0.974403695076868
+  },
+  "mean_score_rank": 0.7040475010871887
+ },
+ "audit_after": {
+  "n": 100000,
+  "survey_lines": {
+   "traverse_400m_along_y": {
+    "f0": 0.25,
+    "strength": 2.445862999427605,
+    "control_median": 3.537991919524001,
+    "control_p95": 9.599755249639324,
+    "p_rank": 0.7377049180327869,
+    "n_controls": 60
+   },
+   "tie_4km_along_x": {
+    "f0": 0.025,
+    "strength": 1.1209430343069473,
+    "control_median": 2.819087852645003,
+    "control_p95": 8.403001424743428,
+    "p_rank": 0.9344262295081968,
+    "n_controls": 60
+   }
+  },
+  "flags": {
+   "traverse_400m_along_y": false,
+   "tie_4km_along_x": false
+  },
+  "row_phase_hist": [
+   0.24804,
+   0.24922,
+   0.25444,
+   0.2483
+  ],
+  "kbar": 0.1749013066291809,
+  "eta": 0.9521162618644673,
+  "coverage": 0.441224662848571,
+  "separation_violating_pairs": 0,
+  "dots_with_violation": 0,
+  "ncc_sum_ratio": [
+   0.839664398493757,
+   1.0379461282945455,
+   1.056865640731039,
+   1.0513429451045413,
+   1.038247705580294,
+   1.0270474107288328,
+   1.0202946130090118,
+   1.0088196768124815,
+   1.002432170559428,
+   0.9989328600194812
+  ],
+  "signed_divergence": -0.589236110357475,
+  "arrangement_bin": "lattice-like (flat, Poisson-like at >= 1 km)",
+  "near_long_enrichment": {
+   "200-1000m": 1.0312685811848321,
+   "1000-2500m": 0.9977711443739766,
+   "2500-7000m": 0.9760957811503199,
+   "7000-99999m": 0.9652658745146191
+  },
+  "mean_score_rank": 0.7008826732635498,
+  "share_within_200m_of_h24_dot": 0.98655,
+  "share_identical_to_h24": 0.93162
+ },
+ "geometry": {
+  "area": 100000.0,
+  "kbar": 0.1749013066291809,
+  "eta": 0.9521162618644673,
+  "coverage": 0.441224662848571
+ },
+ "files": {
+  "nan": {
+   "name": "gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-nan.tif",
+   "href": "downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-nan.tif",
+   "bytes": 1706230,
+   "sha256": "28f30b31c5d054764038144c2742364c5e4f1e2ca79f122281d04cb9d15cd5db",
+   "variant": "nan-outside-footprint",
+   "ok_to_upload": true
+  },
+  "allfinite": {
+   "name": "gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-allfinite.tif",
+   "href": "downloads/gemsdoe23-h29-dealiased-habitat-20261002-7bf9fac6-allfinite.tif",
+   "bytes": 933862,
+   "sha256": "ae5c5aafce85a395af73944ab10f3fc2cad7bcc1244d49a52d53443bd0f5c3c2",
+   "variant": "zeros-outside-footprint",
+   "ok_to_upload": true
+  }
+ },
+ "expected_dti_scenarios": {
+  "lattice-type skill 2.0 (nodes/discovery/r13 measured 1.9-2.7)": {
+   "6000": 0.08395104550352865,
+   "10000": 0.12344586177621383,
+   "15000": 0.1614015202096052
+  },
+  "pindrop-nodes skill 2.7": {
+   "6000": 0.11267178742504783,
+   "10000": 0.16522417653776084,
+   "15000": 0.21545778727447018
+  },
+  "dotted-ridge skill 5.5 (best dotted, measured)": {
+   "6000": 0.22427551766851295,
+   "10000": 0.32541617196034167,
+   "15000": 0.42012130454718866
+  }
+ },
+ "expected_dti_if_q_equals_h19_5": {
+  "6000": 0.1858960836896905,
+  "10000": 0.18284941512540606,
+  "15000": 0.179870888625068
+ },
+ "expectation_summary": {
+  "central": [
+   0.179870888625068,
+   0.1858960836896905
+  ],
+  "lattice_type_skill": [
+   0.08395104550352865,
+   0.21545778727447018
+  ],
+  "ridge_level_skill": [
+   0.22427551766851295,
+   0.42012130454718866
+  ],
+  "scenario_range": [
+   0.08395104550352865,
+   0.42012130454718866
+  ]
+ },
+ "uninformative_score_check": {
+  "6000": {
+   "h24": 0.04206225474729285,
+   "this": 0.04233089504134645,
+   "relative_change": 0.006386730708269672
+  },
+  "10000": {
+   "h24": 0.062099399308552,
+   "this": 0.062494398374459026,
+   "relative_change": 0.006360755020260234
+  },
+  "15000": {
+   "h24": 0.0815082471791828,
+   "this": 0.08202465043224517,
+   "relative_change": 0.00633559511992865
+  }
+ },
+ "note": "GEMSDOE23 H29 | lidar scarps + detrended slope + low U habitat, off-catalogue | 100,000 dots, tie-broken 400 m NMS on the top 100% of the score, row-phase equalised (no 400 m flight-line comb) | unscored; central expectation ~ h19-5: DTI 0.18-0.19 if TP per emitted pixel matches | sha256 28f30b31",
+ "what_is_not_claimed": "No placement skill is added or validated. Blocked-holdout gate: NOT PASSED (no valid holdout exists, I-05); the file is provided for the owner's slot decision, not recommended on score grounds."
+}

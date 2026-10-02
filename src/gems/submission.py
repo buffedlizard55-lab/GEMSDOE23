@@ -103,6 +103,7 @@ def write_submission_raster(
     template_path: str | Path,
     output_path: str | Path,
     outside: str = "nan",
+    description: str = "fault_probability_h24_dispersed_habitat",
 ) -> Path:
     """Write one float32 probability band using the sample raster's exact profile.
 
@@ -149,5 +150,5 @@ def write_submission_raster(
         )
         with rasterio.open(output_path, "w", **profile) as dst:
             dst.write(output, 1)
-            dst.set_band_description(1, "fault_probability_h24_dispersed_habitat")
+            dst.set_band_description(1, description)
     return output_path

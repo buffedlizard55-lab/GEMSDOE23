@@ -108,7 +108,7 @@ and the record is in `docs/data/`.
   `0.1626·TP_w/(0.1626·A + 0.8·|G|)` — equivalently, while TP gain per unit of FP mass exceeds
   `τ = 0.2·DTI/(1 − 0.2·DTI)` (τ = 0.0323 at DTI 0.1563, 0.0676 at 0.3168).
 
-### The size of the hidden public-test truth set
+### The size of the hidden public-test truth set *(bounds updated after the fp_relief correction: |G| = 5,564 – 14,944; see `docs/data/live-model-bounds.json`)*
 
 * **COMPUTED.** `TP_w ≤ |G|` over 24 live-scored artefacts gives **|G| ≥ 4,607**.
 * **COMPUTED.** The `r13-lattice-s5` artefact covers **98.9 %** of the scored domain within 300 m, so
@@ -120,7 +120,7 @@ and the record is in `docs/data/`.
   is unsound: at |G| ≈ 10⁴ the false-negative floor `0.8·|G|` is small next to `0.1626·A` once A
   exceeds ~10⁵, so extra area cannot be repaid.
 
-### Dispersion is a model-free lever
+### Dispersion is a model-free lever *(SUPERSEDED 2026-10-02: see "Dispersion revisited" below; kept for history)*
 
 * **COMPUTED.** `TP_w` takes a *maximum* over predictions inside each 300 m cone while `FP_w` *sums*
   every emitted pixel, so stacking pixels inside one another's cone buys nothing and still costs.
@@ -254,3 +254,122 @@ every returned score with `scripts/record_score.py`.
   ([forum 11527](https://community.drivendata.org/t/11527)).
 * Whether the SGMC compilation's unmapped faults are a biased stand-in for the experts' additions: they
   share a habitat (measured) but the proxy DTI does not rank artefacts (measured).
+
+---
+
+## Clustering session (2026-10-02) — fault populations as a spatial statistic
+
+Everything below was fitted on `labels.tif` (no feature band, no model) or measured on the 23 live-scored
+artefacts, and every number has a record in `docs/data/fault-statistics.json` or
+`docs/data/prediction-audit.json`. Labels as above: `OBSERVED` = read at the source, `COMPUTED` = a script
+here produced it, `INFERENCE` = argued, not measured.
+
+### The two published statistics, and what could and could not be read
+
+* **OBSERVED (abstract).** Bour & Davy (1999), *Geophys. Res. Lett.* 26(13), 2001–2004,
+  [doi:10.1029/1999GL900419](https://doi.org/10.1029/1999GL900419): the fractal dimension D of fault networks
+  and the exponent a of the frequency-length distribution are related by **x = (a − 1)/D**, x being the exponent
+  of the *average distance from a fault to its nearest neighbour of larger length*; large faults have their nearest
+  larger neighbour farther away (San Andreas data agree). **Not readable here:** the paper body (the Wiley e-PDF
+  viewer is blocked), so whether a is the density or the cumulative exponent, and whether distance is centroid or
+  edge, is not stated in what was read.
+* **INFERENCE, then COMPUTED.** With positions of fractal dimension D independent of size, the nearest of the
+  N(>l) ~ l^-(a−1) larger faults lies at d ~ N^(−1/D) ~ l^((a−1)/D): the published form needs the **density**
+  exponent. A simulation (Lévy-dust positions, Pareto lengths, 5 settings × 3 seeds) confirms it: the measured x is
+  bracketed by the geometric-mean and arithmetic-mean estimators around (a−1)/D and is far from (a−2)/D
+  (`tests/test_faultstats.py`). The sibling repository GEMSDOE22 used a *cumulative* exponent in (a−1)/D (flag I-14).
+* **OBSERVED (abstract and citing papers).** Marrett, Gale, Gómez & Laubach (2018), *J. Struct. Geol.* 108, 16–33,
+  [doi:10.1016/j.jsg.2017.06.012](https://doi.org/10.1016/j.jsg.2017.06.012): the **normalised correlation count
+  (NCC)** is the observed correlation count over the count expected for a randomly arranged population, scale by
+  scale (NCC = 1 random, > 1 clustered, < 1 anti-clustered/regular, summarised in Storti 2020 and Wang et al. 2019,
+  [doi:10.1144/petgeo2018-146](https://doi.org/10.1144/petgeo2018-146)); the slope of the normalised correlation
+  *sum* on log-log axes equals the correlation dimension minus one; free software CorrCount (not run here). It is
+  published for **1-D scanlines**; the 2-D pair-count form used here is an adaptation and is labelled as one.
+* **OBSERVED (existence and citation only).** Clauset, Shalizi & Newman (2009), *SIAM Rev.* 51, 661–703,
+  [doi:10.1137/070710111](https://doi.org/10.1137/070710111) (power-law MLE with a KS-chosen cut-off);
+  Bonnet et al. (2001), *Rev. Geophys.* 39, 347–383, [doi:10.1029/1999RG000074](https://doi.org/10.1029/1999RG000074);
+  Ackermann & Schlische (1997), *Geology* 25, 1127–1130, anticlustering of small normal faults around larger ones
+  (cited by Bour & Davy).
+
+### The known catalogue as a fault population (fitted before any model)
+
+* **COMPUTED.** 60,988 label pixels form **3,199** 8-connected traces (median extent 1.24 km, longest 27.4 km, 467 ≥ 3 km).
+  Components are a lower bound on the number of faults and an upper bound on length: touching traces merge.
+* **COMPUTED.** Length exponent (density) **a = 3.15 [2.99, 3.34]** above
+  2.95 km (KS-chosen, n = 480); cumulative 2.15; power law and lognormal are
+  indistinguishable on that tail (Vuong z = -1.31).
+* **COMPUTED.** Nearest-larger-neighbour exponent over the tail: **x = 1.54 [1.33, 1.75]**
+  (centroid distance), 1.84 [1.57, 2.13] (edge distance); over all lengths 0.92.
+  Correlation dimension of centroids D = 1.51 (1.5–30 km) / 1.66 (0.5–10 km); the slope of
+  the normalised correlation sum + 2 gives 1.56. **Bour & Davy predicts x ∈ [1.20, 1.55]:
+  consistent for the centroid definition, marginal for the edge definition.** Below ~3 km the slope flattens (0.92): short
+  traces sit farther from larger ones than the long-fault scaling predicts — incompleteness, merging or a physical break;
+  the data cannot separate them.
+* **COMPUTED.** Normalised correlation sum of centroids: 3.6× (0.5 km), 4.2× (1 km), 3.6× (2 km), 2.3× (5 km), 1.6× (10 km),
+  1.15× (30 km) against a 95 % CSR envelope of 0.88–1.12 at 1 km and 0.99–1.02 at 30 km: clustered at every scale tested.
+* **COMPUTED (replication).** On the 376 vector USGS Quaternary traces with centroids in the footprint (`gdr_qfaults_traces.csv`,
+  median 10 km — a different object definition): a = 3.03 [2.68, 3.55], D = 1.45,
+  tail x = 1.12 [0.70, 1.44] against a predicted 1.40. The file's `map_scale` takes the values 100 (280 traces) and 250 (846); the unit is not stated.
+
+### The geometric prior: real, local and small for the faults that matter
+
+* **COMPUTED.** Short catalogue traces (< 3 km) are enriched **×2.3 within 1 km** of long (≥ 3 km) traces, decaying to ×1 at ~3 km and
+  ×0.4–0.7 beyond 4 km; blocked out-of-fold AUC **0.67**. No near-field depletion (Ackermann & Schlische) at 100 m resolution.
+* **COMPUTED.** SGMC faults the catalogue does not capture (> 300 m from any catalogue pixel; an independent, mostly older compilation, the only
+  available sample of *missing* faults): ×1.8 at 200–400 m, ×1.4 at 400–600 m, ≈ 1.1 at 1 km, ≈ 1 beyond, depleted past 7 km; blocked AUC
+  **0.55**, no better than the parameter-free "closer is better" baseline.
+* **COMPUTED.** Along strike, around 1,214 tips of the long traces: the continuation wedge (≤ 25° of strike) is enriched
+  ×2.06 at 300–600 m and ×1.32 at 600–1,000 m against ×1.34/×0.96 laterally (continuation ÷ lateral
+  1.13 [1.01, 1.27]); catalogue short traces ×2.6 → ×1.6.
+  The zone 300–1,000 m beyond the tips covers **0.67 %** of the eligible domain and holds **1.12 %** of the missing-fault proxy pixels.
+* **COMPUTED.** Live scores do not reward concentration near known faults: Spearman ρ = -0.30 (p = 0.16) between the enrichment of an artefact's pixels within 0.2–1 km of long faults
+  and its live DTI; the five emissions at > 3× all scored 0.002–0.046.
+* **COMPUTED.** As a rank bonus ≤ 0.003 the prior moves ~1 % of H24's dots by more than 200 m, because within a 9 × 9 non-maximum-suppression window the lift field is flat.
+  A prior can matter only by changing which windows get dots (density), which the live scores do not support. **INFERENCE:** the 200–600 m band is also where a displaced duplicate of
+  a catalogued fault would fall.
+
+### The post-hoc audit and what survived calibration
+
+* **OBSERVED.** USGS GeoDAWN metadata (mirrored in `data/external/audit_sources/`, [doi:10.5066/P93LGLVQ](https://doi.org/10.5066/P93LGLVQ)): traverse lines **400 m (Area 2) / 200 m (Area 1)**
+  flown east–west (`traverse_line_direction_degCCW_fromN` 90); tie lines **4,000 m / 2,000 m** north–south (180); terrain clearance 150/200 m (Area 2). The official outlines reproduce the published areas
+  to 0.04 % (footprint 51,673.7 km² vs 51,695.2 km²; Area 1 2,412.6 vs 2,411.7 km²); Area 1 is 4.7 % of the footprint.
+* **COMPUTED.** Survey lines are visible in the 100 m inputs: `tmi_hg` carries the 400 m line (strength 87 vs control p95 6.6, the maximum rank significance); `tmi`, `rtp`, `tmi_vg` carry the 4 km tie-line
+  period; `ext_UK` the 400 m line (18 vs 6.1). The radiometric total count and the non-airborne bands do not.
+* **COMPUTED.** H24 carried the 400 m line (strength 243 vs 10, rank p 0.016), 931 dots closer than its stated 400 m, and a lattice arrangement. The comb is in the score (NMS on random scores gives none; rank noise
+  σ = 0.1 removes it; a wider radius or σ ≤ 0.005 do not); its cause is only partly attributed (flag I-15). Row-phase equalisation clears it (H29/H30 strength 2.4/2.3) by moving 5.4 %/2.1 % of the dots 1.5 px.
+* **COMPUTED.** The symmetric RMS divergence cannot tell a lattice from a catalogue-hugging detector; the **signed** divergence can: Spearman **-0.66** (p = 0.001) with live DTI over 23 emissions;
+  bins (post-hoc): over-clustered mean 0.034 (n = 8), catalogue-like 0.099 (4), **mildly less clustered 0.170 (7, holds the top three)**, lattice-like 0.093 (4). Survey-line strength and edge-jump indices do **not** correlate with the score.
+  The only controlled pair (pindrop ridge +0.20 vs nodes −0.62, same score and pixels) scored 0.1152 vs 0.1193.
+* **COMPUTED.** H-25 (relocation) on the aggregate: lidar scarp metrics decay monotonically from the catalogue pixels with the maximum at distance 0 (upface_max ×1.38 → ×1.13 at 2–3 km); no off-centre ring.
+
+### Dispersion revisited (supersedes "Dispersion is a model-free lever" above)
+
+* **COMPUTED.** The earlier reading — η correlates with TP per emitted pixel (ρ = +0.61) and does not cost skill (ρ = +0.13) — is cross-sectional and confounded by emission type. The controlled pair shows η ×2.7 with skill ÷ 2.6 and
+  unchanged TP (implied TP/|G| 0.70 vs 0.72 at |G| = 6,000). If H24/H30 match h19-5's TP per emitted pixel their DTI is 0.17–0.19; lattice-type skill gives 0.08–0.21; ridge-level skill (≥ 5.5) 0.22–0.42. The "0.12–0.34 projected"
+  headline is superseded (flag I-17).
+
+### Reproducibility facts
+
+* **COMPUTED.** H24 rebuilds **bit-for-bit** from public inputs (`scripts/rebuild_h24_check.py`); all 23 distinct anchors re-fetch with exact emitted-pixel count and mass identity (`scripts/restore_workspace.py`); `hedge-v2` is a byte-identical copy of `ens12-adopted`.
+  A full habitat refit reproduces the committed model **exactly** in the committed anchor order and differs in the eighth layer in another order (tie-breaking on the duplicate anchor, flag I-20).
+* **OBSERVED.** The lidar product's own metadata records 716 tiles (706 ok, 10 failed) and the caveat that the tile list is "an OCR-recovered inventory of the competition PDF, not the login-walled CSV": the 24.6 % north-east gap may be
+  tiles missing from that list rather than ground without 1 m coverage. The remedy is to enumerate the footprint's 1 m tiles from the public National Map API from a machine with egress (not possible from this sandbox).
+
+### Rules and rulings re-read at the source on 2026-10-02
+
+* **OBSERVED.** Competition ends **3 Dec 2026, 23:59 UTC**; Phase 1 $50,000 (top five on the private test set), Phase 2 $250,000 on "an expanded label set built from expert review of all submissions"
+  ([competition page](https://www.drivendata.org/competitions/306/competition-doe-gems/)). Rules ([OSTI 96647](https://docs.nlr.gov/docs/fy26osti/96647.pdf)): three submissions per week (§3.2, §3.4), one final
+  submission across both rounds (§3.5), finalists deliver code able to "reproduce the winning results and generate predictions on new data samples" (§3.5), "the set of faults included in the public test dataset and the relative weight
+  of faults in both test datasets" is set by the organisers (§3.6.2), the final determination takes "the reviewers' feedback and scores" into account (§3.6.4).
+* **OBSERVED.** Forum 11516 (staff): known faults "are masked / excluded from evaluation", "re-evaluation will also mask/exclude the existing USGS/INGENIOUS faults", and "for scoring purposes it should not matter whether these known
+  faults are included with predictions or not". Forum 11536 (staff): "new fault" is "any fault pixel not already captured by USGS/INGENIOUS" and can include newly mapped geometry of an existing system. Forum 11527 post 7 (staff):
+  no details on the data sources, fault types or coverage; "your fault predictions have an impact on final evaluation even if they are not the most performant in Phase 1".
+* **OBSERVED.** Hermant et al. (2025), Fig. 2: "distance between USGS Quaternary faults and TLS fault label can be up to 400m" in a local area of north-central Nevada — a local maximum, not a typical offset (flag I-18).
+* **OBSERVED.** Leaderboard 2026-10-02: DARD 0.3195 leads; the owner's 0.3049 is stale (flag I-23).
+
+### Hypotheses of this session
+
+H-29 audit-matched arrangement (built as the file H30; file H29 is its lattice-regime control) · H-30 along-strike continuation beyond tips (measured; tie-break only) · H-31 survey-aware low-pass of magnetic
+inputs (queued) · H-32 slots as controlled experiments (needs the owner to override standing rule 1) · H-33 completeness-corrected short-fault deficit (queued). H-25 was tested on the aggregate and is not supported. H-26 in its simplest form (hot springs more than 500 m from any mapped fault,
+`springs_hot_offmapped_*`, already in the 95-layer bank) shows no signal (density ρ = +0.08, p = 0.71; inverse distance −0.22, p = 0.31, against −0.52 for raw hot springs; superseded
+attribution record, sign and order only): the residual removes the anti-predictive sign but adds no skill. A fitted-residual form (anomaly given distance to the nearest fault) is still open.

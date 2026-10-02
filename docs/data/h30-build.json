@@ -1,0 +1,222 @@
+{
+ "generated_utc": "2026-10-02T12:35:41Z",
+ "variant": "h30",
+ "label": "H30 \u00b7 arrangement-matched habitat emission (H24 ranking, audit-constrained)",
+ "keep_top": 0.3,
+ "prior_weight": 0.003,
+ "budget": 100000,
+ "r_min_px": 4.0,
+ "equalisation": {
+  "n_moved": 1960,
+  "share_moved": 0.021413042290758525,
+  "mean_abs_shift_px": 1.5551020408163265,
+  "period_px": 4,
+  "block_px": 300,
+  "max_shift_px": 2
+ },
+ "arrangement_target": {
+  "value": -0.21239489224047825,
+  "achieved": -0.2093849541970085,
+  "within_0p08": true,
+  "status": "post-hoc target; see docs/data/prediction-audit.json arrangement_target"
+ },
+ "audit_before_h24": {
+  "n": 100000,
+  "survey_lines": {
+   "traverse_400m_along_y": {
+    "f0": 0.25,
+    "strength": 243.28327597883398,
+    "control_median": 3.5494403301595923,
+    "control_p95": 10.045764164558625,
+    "p_rank": 0.01639344262295082,
+    "n_controls": 60
+   },
+   "tie_4km_along_x": {
+    "f0": 0.025,
+    "strength": 1.30275144018274,
+    "control_median": 3.289300910324934,
+    "control_p95": 9.032291259769142,
+    "p_rank": 0.9344262295081968,
+    "n_controls": 60
+   }
+  },
+  "flags": {
+   "traverse_400m_along_y": true,
+   "tie_4km_along_x": false
+  },
+  "row_phase_hist": [
+   0.22308,
+   0.23522,
+   0.30701,
+   0.23469
+  ],
+  "kbar": 0.17378193140029907,
+  "eta": 0.946022680409377,
+  "coverage": 0.437935839150397,
+  "separation_violating_pairs": 6651,
+  "dots_with_violation": 931,
+  "ncc_sum_ratio": [
+   0.9341349012353835,
+   1.0711425230501774,
+   1.077450958965697,
+   1.0646741806922375,
+   1.043772933809699,
+   1.0311486868357649,
+   1.0211420301521776,
+   1.008655296098529,
+   1.0006305971985407,
+   0.9968107502381525
+  ],
+  "signed_divergence": -0.5844954083511664,
+  "arrangement_bin": "lattice-like (flat, Poisson-like at >= 1 km)",
+  "near_long_enrichment": {
+   "200-1000m": 1.0252945416124362,
+   "1000-2500m": 0.9944529829360851,
+   "2500-7000m": 0.9738230147376504,
+   "7000-99999m": 0.974403695076868
+  },
+  "mean_score_rank": 0.7040475010871887
+ },
+ "audit_after": {
+  "n": 91533,
+  "survey_lines": {
+   "traverse_400m_along_y": {
+    "f0": 0.25,
+    "strength": 2.287610964490471,
+    "control_median": 3.7274588799274317,
+    "control_p95": 9.130137385408787,
+    "p_rank": 0.8360655737704918,
+    "n_controls": 60
+   },
+   "tie_4km_along_x": {
+    "f0": 0.025,
+    "strength": 2.2206024735662933,
+    "control_median": 3.1196217739473093,
+    "control_p95": 7.203415366227369,
+    "p_rank": 0.6885245901639344,
+    "n_controls": 60
+   }
+  },
+  "flags": {
+   "traverse_400m_along_y": false,
+   "tie_4km_along_x": false
+  },
+  "row_phase_hist": [
+   0.24798706477445293,
+   0.2499426436367212,
+   0.2540286017064884,
+   0.24804168988233752
+  ],
+  "kbar": 0.15661264955997467,
+  "eta": 0.9314210940316786,
+  "coverage": 0.3794449498030407,
+  "separation_violating_pairs": 0,
+  "dots_with_violation": 0,
+  "ncc_sum_ratio": [
+   1.5825460791438197,
+   1.8396266440390328,
+   1.8399611189338096,
+   1.7828293313249592,
+   1.6701655821696237,
+   1.5468745891691331,
+   1.4535197927982004,
+   1.3370931746471415,
+   1.2749852143629803,
+   1.2142367026206389
+  ],
+  "signed_divergence": -0.2093849541970085,
+  "arrangement_bin": "mildly less clustered than the catalogue (the bin holding the best live scores)",
+  "near_long_enrichment": {
+   "200-1000m": 1.394722035512193,
+   "1000-2500m": 1.1538688622473503,
+   "2500-7000m": 0.9127415799795816,
+   "7000-99999m": 0.8178422202654855
+  },
+  "mean_score_rank": 0.8134938478469849,
+  "share_within_200m_of_h24_dot": 0.6791321162859296,
+  "share_identical_to_h24": 0.6622201828848612
+ },
+ "geometry": {
+  "area": 91533.0,
+  "kbar": 0.15661264955997467,
+  "eta": 0.9314210940316786,
+  "coverage": 0.3794449498030407
+ },
+ "files": {
+  "nan": {
+   "name": "gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif",
+   "href": "downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-nan.tif",
+   "bytes": 1692444,
+   "sha256": "38539dc647d5ede0d8fa90123810d18130ee15e524097f55e83b6b8a57976ea9",
+   "variant": "nan-outside-footprint",
+   "ok_to_upload": true
+  },
+  "allfinite": {
+   "name": "gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif",
+   "href": "downloads/gemsdoe23-h30-arrangement-matched-habitat-20261002-0d4e02e8-allfinite.tif",
+   "bytes": 922168,
+   "sha256": "d07cbb6f69076e76f1a8a4806ddc5639421bc9a59b10d80a09b9fb423bb99427",
+   "variant": "zeros-outside-footprint",
+   "ok_to_upload": true
+  }
+ },
+ "expected_dti_scenarios": {
+  "lattice-type skill 2.0 (nodes/discovery/r13 measured 1.9-2.7)": {
+   "6000": 0.08072211676018828,
+   "10000": 0.11775073857963328,
+   "15000": 0.15278371034425134
+  },
+  "pindrop-nodes skill 2.7": {
+   "6000": 0.10836254981833349,
+   "10000": 0.1576639438738086,
+   "15000": 0.2040754506469383
+  },
+  "dotted-ridge skill 5.5 (best dotted, measured)": {
+   "6000": 0.21588643751491085,
+   "10000": 0.31099746756810265,
+   "15000": 0.3988281479641975
+  }
+ },
+ "expected_dti_if_q_equals_h19_5": {
+  "6000": 0.18271828643903146,
+  "10000": 0.17825103809843026,
+  "15000": 0.17395391391756848
+ },
+ "expectation_summary": {
+  "central": [
+   0.17395391391756848,
+   0.18271828643903146
+  ],
+  "lattice_type_skill": [
+   0.08072211676018828,
+   0.2040754506469383
+  ],
+  "ridge_level_skill": [
+   0.21588643751491085,
+   0.3988281479641975
+  ],
+  "scenario_range": [
+   0.08072211676018828,
+   0.3988281479641975
+  ]
+ },
+ "uninformative_score_check": {
+  "6000": {
+   "h24": 0.04206225474729285,
+   "this": 0.040689512739924875,
+   "relative_change": -0.0326359586668693
+  },
+  "10000": {
+   "h24": 0.062099399308552,
+   "this": 0.05957689158849909,
+   "relative_change": -0.04062048503109317
+  },
+  "15000": {
+   "h24": 0.0815082471791828,
+   "this": 0.07757710699659696,
+   "relative_change": -0.04822996836067217
+  }
+ },
+ "note": "GEMSDOE23 H30 | lidar scarps + detrended slope + low U habitat, off-catalogue | 91,533 dots, tie-broken 400 m NMS on the top 30% of the score, row-phase equalised (no 400 m flight-line comb) | unscored; central expectation ~ h19-5: DTI 0.17-0.18 if TP per emitted pixel matches | sha256 38539dc6",
+ "what_is_not_claimed": "No placement skill is added or validated. Blocked-holdout gate: NOT PASSED (no valid holdout exists, I-05); the file is provided for the owner's slot decision, not recommended on score grounds."
+}
