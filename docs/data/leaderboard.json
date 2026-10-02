@@ -1,7 +1,7 @@
 {
   "competition": "DOE GEMS Prize / DrivenData #306",
   "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-  "retrieved_utc": "2026-10-02T18:02:50+00:00",
+  "retrieved_utc": "2026-10-02T19:17:08+00:00",
   "source_status": "live",
   "capture_method": "Rendered by headless Chromium (scripts/render_leaderboard.py) because the official page builds its table with JavaScript, then parsed and validated by scripts/update_leaderboard.py (strategy: header row 0, score column 3).",
   "parse_strategy": "header row 0, score column 3",
@@ -44,69 +44,69 @@
     },
     {
       "rank": 7,
+      "participant": "ndavis7",
+      "score": 0.2888,
+      "score_text": "0.2888"
+    },
+    {
+      "rank": 8,
       "participant": "GrigorSargsyan",
       "score": 0.2868,
       "score_text": "0.2868"
     },
     {
-      "rank": 8,
+      "rank": 9,
       "participant": "mzoorob",
       "score": 0.2862,
       "score_text": "0.2862"
     },
     {
-      "rank": 9,
+      "rank": 10,
       "participant": "HardcoreTechGod",
       "score": 0.2854,
       "score_text": "0.2854"
     },
     {
-      "rank": 10,
+      "rank": 11,
       "participant": "op01",
       "score": 0.271,
       "score_text": "0.2710"
     },
     {
-      "rank": 11,
+      "rank": 12,
       "participant": "kinghorton42",
       "score": 0.2635,
       "score_text": "0.2635"
     },
     {
-      "rank": 12,
+      "rank": 13,
       "participant": "ad3002",
       "score": 0.2627,
       "score_text": "0.2627"
     },
     {
-      "rank": 13,
+      "rank": 14,
       "participant": "exposed",
       "score": 0.2624,
       "score_text": "0.2624"
     },
     {
-      "rank": 14,
+      "rank": 15,
       "participant": "tchu",
       "score": 0.2511,
       "score_text": "0.2511"
     },
     {
-      "rank": 15,
+      "rank": 16,
       "participant": "wbg1",
       "score": 0.2477,
       "score_text": "0.2477"
     },
     {
-      "rank": 16,
+      "rank": 17,
       "participant": "BrandenKMurray",
       "score": 0.2469,
       "score_text": "0.2469"
-    },
-    {
-      "rank": 17,
-      "participant": "ndavis7",
-      "score": 0.2368,
-      "score_text": "0.2368"
     },
     {
       "rank": 18,
@@ -312,7 +312,7 @@
   "phase_caveat": "These are public leaderboard results only, not private Initial Prize Round (Phase 1) or expert-updated Final Prize Round (Phase 2) scores.",
   "capture_path": "headless-render",
   "refresh_status": {
-    "checked_utc": "2026-10-02T18:02:47+00:00",
+    "checked_utc": "2026-10-02T19:17:05+00:00",
     "status": "live",
     "capture_path": "headless-render",
     "row_count": 50,
@@ -335,10 +335,10 @@
       ],
       "render": {
         "returncode": 0,
-        "stdout": "rendered 158567 bytes of HTML to /tmp/gems-leaderboard-rendered.html",
+        "stdout": "rendered 158583 bytes of HTML to /tmp/gems-leaderboard-rendered.html",
         "stderr": ""
       },
-      "rendered_bytes": 158567
+      "rendered_bytes": 158583
     }
   },
   "source_note": "Retrieved live from the official public leaderboard page."
