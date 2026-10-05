@@ -1,0 +1,26 @@
+{
+ "generated_utc": "2026-10-05T20:41:55Z",
+ "source": "https://earthquake.usgs.gov/fdsnws/event/1/",
+ "citation": "USGS Earthquake Hazards Program, Advanced National Seismic System (ANSS), Comprehensive Earthquake Catalog (ComCat)",
+ "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=text&starttime=1960-01-01&endtime=2026-10-05T20%3A41&minmagnitude=2.5&minlatitude=37.3339&maxlatitude=40.7247&minlongitude=-120.0372&maxlongitude=-116.1386&orderby=time-asc&eventtype=earthquake",
+ "format": "FDSN text (pipe-separated)",
+ "box": {
+  "lon": [
+   -120.0372,
+   -116.1386
+  ],
+  "lat": [
+   37.3339,
+   40.7247
+  ]
+ },
+ "box_definition": "exact EPSG:32611 footprint rectangle of the official template, unbuffered",
+ "min_magnitude": 2.5,
+ "starttime": "1960-01-01",
+ "endtime": "2026-10-05T20:41",
+ "event_count": 15266,
+ "sha256": "9f0a41cede62ed2d8e5ae5cd2c0d2aa0e351d6fd9d450a5eaf08c33a780c202a",
+ "bytes": 1863141,
+ "obtainability_verified_utc": "2026-10-02",
+ "note": "Hypothesis H-40 input. The official competition bands ieq_n100a15/deq_n100a15 smooth seismicity at a 100 km radius; this raw list permits 5-10 km lineament layers. Not yet validated on any holdout."
+}
