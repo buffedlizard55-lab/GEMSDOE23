@@ -1,14 +1,14 @@
 {
-  "checked_utc": "2026-10-04T16:02:44+00:00",
+  "checked_utc": "2026-10-06T17:29:07+00:00",
   "status": "live",
   "capture_path": "headless-render",
   "row_count": 50,
   "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
   "top": {
     "rank": 1,
-    "participant": "nchuzhoy",
-    "score": 0.3262,
-    "score_text": "0.3262"
+    "participant": "xiaofanhu",
+    "score": 0.3774,
+    "score_text": "0.3774"
   },
   "diagnostics": {
     "attempts": [
@@ -22,9 +22,9 @@
     ],
     "render": {
       "returncode": 0,
-      "stdout": "rendered 158469 bytes of HTML to /tmp/tmppc2jj9ux/gems-leaderboard-rendered.html",
+      "stdout": "rendered 158522 bytes of HTML to /tmp/tmpoya580if/gems-leaderboard-rendered.html",
       "stderr": ""
     },
-    "rendered_bytes": 158469
+    "rendered_bytes": 158522
   }
 }
