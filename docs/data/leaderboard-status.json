@@ -1,5 +1,5 @@
 {
-  "checked_utc": "2026-10-11T16:51:52+00:00",
+  "checked_utc": "2026-10-12T20:29:21+00:00",
   "status": "live",
   "capture_path": "headless-render",
   "row_count": 50,
@@ -7,8 +7,8 @@
   "top": {
     "rank": 1,
     "participant": "xiaofanhu",
-    "score": 0.4133,
-    "score_text": "0.4133"
+    "score": 0.4275,
+    "score_text": "0.4275"
   },
   "diagnostics": {
     "attempts": [
@@ -22,9 +22,9 @@
     ],
     "render": {
       "returncode": 0,
-      "stdout": "rendered 161617 bytes of HTML to /tmp/tmpms3h9o_p/gems-leaderboard-rendered.html",
+      "stdout": "rendered 161065 bytes of HTML to /tmp/tmp9qs9zed3/gems-leaderboard-rendered.html",
       "stderr": ""
     },
-    "rendered_bytes": 161617
+    "rendered_bytes": 161065
   }
 }
