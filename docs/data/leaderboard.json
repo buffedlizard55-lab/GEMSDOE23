@@ -1,7 +1,7 @@
 {
   "competition": "DOE GEMS Prize / DrivenData #306",
   "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-  "retrieved_utc": "2026-10-19T17:50:50+00:00",
+  "retrieved_utc": "2026-10-20T15:54:52+00:00",
   "source_status": "live",
   "capture_method": "Rendered by headless Chromium (scripts/render_leaderboard.py) because the official page builds its table with JavaScript, then parsed and validated by scripts/update_leaderboard.py (strategy: header row 0, score column 3).",
   "parse_strategy": "header row 0, score column 3",
@@ -9,14 +9,14 @@
     {
       "rank": 1,
       "participant": "xiaofanhu",
-      "score": 0.4356,
-      "score_text": "0.4356"
+      "score": 0.4413,
+      "score_text": "0.4413"
     },
     {
       "rank": 2,
       "participant": "rariwa",
-      "score": 0.3771,
-      "score_text": "0.3771"
+      "score": 0.3811,
+      "score_text": "0.3811"
     },
     {
       "rank": 3,
@@ -110,27 +110,27 @@
     },
     {
       "rank": 18,
+      "participant": "Azazel",
+      "score": 0.3279,
+      "score_text": "0.3279"
+    },
+    {
+      "rank": 19,
       "participant": "shixing",
       "score": 0.3273,
       "score_text": "0.3273"
     },
     {
-      "rank": 19,
+      "rank": 20,
       "participant": "nchuzhoy",
       "score": 0.3262,
       "score_text": "0.3262"
     },
     {
-      "rank": 20,
+      "rank": 21,
       "participant": "kinghorton42",
       "score": 0.3261,
       "score_text": "0.3261"
-    },
-    {
-      "rank": 21,
-      "participant": "Azazel",
-      "score": 0.3256,
-      "score_text": "0.3256"
     },
     {
       "rank": 22,
@@ -236,83 +236,83 @@
     },
     {
       "rank": 39,
+      "participant": "drjy",
+      "score": 0.2829,
+      "score_text": "0.2829"
+    },
+    {
+      "rank": 40,
       "participant": "anna_ms",
       "score": 0.2826,
       "score_text": "0.2826"
     },
     {
-      "rank": 40,
+      "rank": 41,
       "participant": "jgaines",
       "score": 0.282,
       "score_text": "0.2820"
     },
     {
-      "rank": 41,
+      "rank": 42,
       "participant": "moongrega",
       "score": 0.2818,
       "score_text": "0.2818"
     },
     {
-      "rank": 42,
+      "rank": 43,
       "participant": "arnofault",
       "score": 0.2817,
       "score_text": "0.2817"
     },
     {
-      "rank": 43,
+      "rank": 44,
       "participant": "op01",
       "score": 0.2797,
       "score_text": "0.2797"
     },
     {
-      "rank": 44,
+      "rank": 45,
       "participant": "extradr19",
       "score": 0.2778,
       "score_text": "0.2778"
     },
     {
-      "rank": 45,
+      "rank": 46,
       "participant": "jfper21",
       "score": 0.2772,
       "score_text": "0.2772"
     },
     {
-      "rank": 46,
+      "rank": 47,
       "participant": "wonderfulbig12",
       "score": 0.2761,
       "score_text": "0.2761"
     },
     {
-      "rank": 47,
+      "rank": 48,
       "participant": "1stop",
       "score": 0.2759,
       "score_text": "0.2759"
     },
     {
-      "rank": 48,
+      "rank": 49,
       "participant": "jorgeschmidt",
       "score": 0.2757,
       "score_text": "0.2757"
     },
     {
-      "rank": 49,
+      "rank": 50,
       "participant": "wbg1",
       "score": 0.275,
       "score_text": "0.2750"
-    },
-    {
-      "rank": 50,
-      "participant": "drjy",
-      "score": 0.2749,
-      "score_text": "0.2749"
     }
   ],
   "row_count": 50,
-  "attribution_caveat": "The official public leaderboard displays participants and scores but does not expose a prediction-file SHA-256 or public submission identifier; score equality is not artifact, account, or team attribution. As of 2026-10-19: H19-4 (0.1894) is not on the currently displayed rows; H19-5 (0.1922) is not on the currently displayed rows.",
+  "attribution_caveat": "The official public leaderboard displays participants and scores but does not expose a prediction-file SHA-256 or public submission identifier; score equality is not artifact, account, or team attribution. As of 2026-10-20: H19-4 (0.1894) is not on the currently displayed rows; H19-5 (0.1922) is not on the currently displayed rows.",
   "phase_caveat": "These are public leaderboard results only, not private Initial Prize Round (Phase 1) or expert-updated Final Prize Round (Phase 2) scores.",
   "capture_path": "headless-render",
   "refresh_status": {
-    "checked_utc": "2026-10-19T17:50:47+00:00",
+    "checked_utc": "2026-10-20T15:54:47+00:00",
     "status": "live",
     "capture_path": "headless-render",
     "row_count": 50,
@@ -320,8 +320,8 @@
     "top": {
       "rank": 1,
       "participant": "xiaofanhu",
-      "score": 0.4356,
-      "score_text": "0.4356"
+      "score": 0.4413,
+      "score_text": "0.4413"
     },
     "diagnostics": {
       "attempts": [
@@ -335,10 +335,10 @@
       ],
       "render": {
         "returncode": 0,
-        "stdout": "rendered 161826 bytes of HTML to /tmp/tmpfaz78ufl/gems-leaderboard-rendered.html",
+        "stdout": "rendered 161790 bytes of HTML to /tmp/tmp3o2_zntq/gems-leaderboard-rendered.html",
         "stderr": ""
       },
-      "rendered_bytes": 161826
+      "rendered_bytes": 161790
     }
   },
   "source_note": "Retrieved live from the official public leaderboard page."
