@@ -1,7 +1,7 @@
 {
   "competition": "DOE GEMS Prize / DrivenData #306",
   "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-  "retrieved_utc": "2026-10-23T15:59:48+00:00",
+  "retrieved_utc": "2026-10-24T14:57:13+00:00",
   "source_status": "live",
   "capture_method": "Rendered by headless Chromium (scripts/render_leaderboard.py) because the official page builds its table with JavaScript, then parsed and validated by scripts/update_leaderboard.py (strategy: header row 0, score column 3).",
   "parse_strategy": "header row 0, score column 3",
@@ -15,8 +15,8 @@
     {
       "rank": 2,
       "participant": "cfld__",
-      "score": 0.3904,
-      "score_text": "0.3904"
+      "score": 0.3916,
+      "score_text": "0.3916"
     },
     {
       "rank": 3,
@@ -56,63 +56,63 @@
     },
     {
       "rank": 9,
+      "participant": "DARD",
+      "score": 0.3358,
+      "score_text": "0.3358"
+    },
+    {
+      "rank": 10,
       "participant": "yifanxu",
       "score": 0.333,
       "score_text": "0.3330"
     },
     {
-      "rank": 10,
+      "rank": 11,
       "participant": "newway",
       "score": 0.3328,
       "score_text": "0.3328"
     },
     {
-      "rank": 11,
+      "rank": 12,
       "participant": "ohyeah",
       "score": 0.3318,
       "score_text": "0.3318"
     },
     {
-      "rank": 12,
+      "rank": 13,
       "participant": "yaoyi",
       "score": 0.3316,
       "score_text": "0.3316"
     },
     {
-      "rank": 13,
+      "rank": 14,
       "participant": "ruping",
       "score": 0.3314,
       "score_text": "0.3314"
     },
     {
-      "rank": 14,
+      "rank": 15,
       "participant": "giles",
       "score": 0.3313,
       "score_text": "0.3313"
     },
     {
-      "rank": 15,
+      "rank": 16,
       "participant": "li002666",
       "score": 0.3312,
       "score_text": "0.3312"
     },
     {
-      "rank": 16,
+      "rank": 17,
       "participant": "baobao",
       "score": 0.3308,
       "score_text": "0.3308"
     },
     {
-      "rank": 17,
+      "rank": 18,
       "participant": "mzoorob",
       "score": 0.3304,
       "score_text": "0.3304"
-    },
-    {
-      "rank": 18,
-      "participant": "DARD",
-      "score": 0.3289,
-      "score_text": "0.3289"
     },
     {
       "rank": 19,
@@ -308,11 +308,11 @@
     }
   ],
   "row_count": 50,
-  "attribution_caveat": "The official public leaderboard displays participants and scores but does not expose a prediction-file SHA-256 or public submission identifier; score equality is not artifact, account, or team attribution. As of 2026-10-23: H19-4 (0.1894) is not on the currently displayed rows; H19-5 (0.1922) is not on the currently displayed rows.",
+  "attribution_caveat": "The official public leaderboard displays participants and scores but does not expose a prediction-file SHA-256 or public submission identifier; score equality is not artifact, account, or team attribution. As of 2026-10-24: H19-4 (0.1894) is not on the currently displayed rows; H19-5 (0.1922) is not on the currently displayed rows.",
   "phase_caveat": "These are public leaderboard results only, not private Initial Prize Round (Phase 1) or expert-updated Final Prize Round (Phase 2) scores.",
   "capture_path": "headless-render",
   "refresh_status": {
-    "checked_utc": "2026-10-23T15:59:43+00:00",
+    "checked_utc": "2026-10-24T14:57:10+00:00",
     "status": "live",
     "capture_path": "headless-render",
     "row_count": 50,
@@ -335,10 +335,10 @@
       ],
       "render": {
         "returncode": 0,
-        "stdout": "rendered 161852 bytes of HTML to /tmp/tmpddbnudbp/gems-leaderboard-rendered.html",
+        "stdout": "rendered 162498 bytes of HTML to /tmp/tmp1cr9x5v8/gems-leaderboard-rendered.html",
         "stderr": ""
       },
-      "rendered_bytes": 161852
+      "rendered_bytes": 162498
     }
   },
   "source_note": "Retrieved live from the official public leaderboard page."
