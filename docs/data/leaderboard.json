@@ -1,7 +1,7 @@
 {
   "competition": "DOE GEMS Prize / DrivenData #306",
   "source_url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
-  "retrieved_utc": "2026-10-30T17:19:17+00:00",
+  "retrieved_utc": "2026-10-31T16:23:50+00:00",
   "source_status": "live",
   "capture_method": "Rendered by headless Chromium (scripts/render_leaderboard.py) because the official page builds its table with JavaScript, then parsed and validated by scripts/update_leaderboard.py (strategy: header row 0, score column 3).",
   "parse_strategy": "header row 0, score column 3",
@@ -15,14 +15,14 @@
     {
       "rank": 2,
       "participant": "cfld__",
-      "score": 0.3925,
-      "score_text": "0.3925"
+      "score": 0.3934,
+      "score_text": "0.3934"
     },
     {
       "rank": 3,
       "participant": "rariwa",
-      "score": 0.3915,
-      "score_text": "0.3915"
+      "score": 0.3917,
+      "score_text": "0.3917"
     },
     {
       "rank": 4,
@@ -39,280 +39,280 @@
     {
       "rank": 6,
       "participant": "exposed",
-      "score": 0.3621,
-      "score_text": "0.3621"
+      "score": 0.3631,
+      "score_text": "0.3631"
     },
     {
       "rank": 7,
+      "participant": "herculesschonfeldt6",
+      "score": 0.3568,
+      "score_text": "0.3568"
+    },
+    {
+      "rank": 8,
+      "participant": "tommymaherregen",
+      "score": 0.3558,
+      "score_text": "0.3558"
+    },
+    {
+      "rank": 9,
+      "participant": "sevenrights0",
+      "score": 0.3557,
+      "score_text": "0.3557"
+    },
+    {
+      "rank": 10,
+      "participant": "raulcbrooks0909",
+      "score": 0.355,
+      "score_text": "0.3550"
+    },
+    {
+      "rank": 11,
+      "participant": "luh.correia98",
+      "score": 0.3544,
+      "score_text": "0.3544"
+    },
+    {
+      "rank": 12,
+      "participant": "jaydevelop111",
+      "score": 0.3533,
+      "score_text": "0.3533"
+    },
+    {
+      "rank": 13,
+      "participant": "holandakrait",
+      "score": 0.352,
+      "score_text": "0.3520"
+    },
+    {
+      "rank": 14,
+      "participant": "j234",
+      "score": 0.35,
+      "score_text": "0.3500"
+    },
+    {
+      "rank": 15,
+      "participant": "xlgracias",
+      "score": 0.348,
+      "score_text": "0.3480"
+    },
+    {
+      "rank": 16,
+      "participant": "mzoorob",
+      "score": 0.3476,
+      "score_text": "0.3476"
+    },
+    {
+      "rank": 17,
       "participant": "joeyfezster",
       "score": 0.3447,
       "score_text": "0.3447"
     },
     {
-      "rank": 8,
+      "rank": 18,
+      "participant": "liel93",
+      "score": 0.344,
+      "score_text": "0.3440"
+    },
+    {
+      "rank": 19,
       "participant": "JerryDataWorks",
       "score": 0.3418,
       "score_text": "0.3418"
     },
     {
-      "rank": 9,
+      "rank": 20,
+      "participant": "jay398144",
+      "score": 0.3417,
+      "score_text": "0.3417"
+    },
+    {
+      "rank": 21,
       "participant": "alexoktaba",
       "score": 0.3416,
       "score_text": "0.3416"
     },
     {
-      "rank": 10,
+      "rank": 22,
       "participant": "DARD",
-      "score": 0.3407,
-      "score_text": "0.3407"
+      "score": 0.3409,
+      "score_text": "0.3409"
     },
     {
-      "rank": 11,
+      "rank": 23,
       "participant": "vladee",
       "score": 0.3405,
       "score_text": "0.3405"
     },
     {
-      "rank": 12,
-      "participant": "mzoorob",
-      "score": 0.3401,
-      "score_text": "0.3401"
-    },
-    {
-      "rank": 13,
+      "rank": 24,
       "participant": "Azazel",
       "score": 0.3399,
       "score_text": "0.3399"
     },
     {
-      "rank": 14,
+      "rank": 25,
       "participant": "yaoyi",
       "score": 0.3396,
       "score_text": "0.3396"
     },
     {
-      "rank": 15,
+      "rank": 26,
       "participant": "ndavis7",
       "score": 0.3396,
       "score_text": "0.3396"
     },
     {
-      "rank": 16,
+      "rank": 27,
+      "participant": "LL967",
+      "score": 0.3389,
+      "score_text": "0.3389"
+    },
+    {
+      "rank": 28,
       "participant": "baobao",
       "score": 0.3388,
       "score_text": "0.3388"
     },
     {
-      "rank": 17,
+      "rank": 29,
       "participant": "mekaddishken23",
       "score": 0.3364,
       "score_text": "0.3364"
     },
     {
-      "rank": 18,
-      "participant": "sevenrights0",
-      "score": 0.3363,
-      "score_text": "0.3363"
-    },
-    {
-      "rank": 19,
+      "rank": 30,
       "participant": "tonholanda400",
       "score": 0.3354,
       "score_text": "0.3354"
     },
     {
-      "rank": 20,
-      "participant": "tommymaherregen",
-      "score": 0.3351,
-      "score_text": "0.3351"
-    },
-    {
-      "rank": 21,
+      "rank": 31,
       "participant": "barthelmeslorenzo",
       "score": 0.3349,
       "score_text": "0.3349"
     },
     {
-      "rank": 22,
+      "rank": 32,
       "participant": "ohyeah",
       "score": 0.3348,
       "score_text": "0.3348"
     },
     {
-      "rank": 23,
+      "rank": 33,
       "participant": "crown160265",
       "score": 0.3344,
       "score_text": "0.3344"
     },
     {
-      "rank": 24,
+      "rank": 34,
       "participant": "yifanxu",
       "score": 0.3335,
       "score_text": "0.3335"
     },
     {
-      "rank": 25,
-      "participant": "liel93",
-      "score": 0.3334,
-      "score_text": "0.3334"
-    },
-    {
-      "rank": 26,
-      "participant": "xlgracias",
-      "score": 0.3333,
-      "score_text": "0.3333"
-    },
-    {
-      "rank": 27,
+      "rank": 35,
       "participant": "leskiw.grazyna",
       "score": 0.333,
       "score_text": "0.3330"
     },
     {
-      "rank": 28,
+      "rank": 36,
       "participant": "newway",
       "score": 0.3328,
       "score_text": "0.3328"
     },
     {
-      "rank": 29,
-      "participant": "jay398144",
-      "score": 0.3326,
-      "score_text": "0.3326"
-    },
-    {
-      "rank": 30,
-      "participant": "jaydevelop111",
-      "score": 0.3326,
-      "score_text": "0.3326"
-    },
-    {
-      "rank": 31,
-      "participant": "luh.correia98",
-      "score": 0.3323,
-      "score_text": "0.3323"
-    },
-    {
-      "rank": 32,
+      "rank": 37,
       "participant": "ruping",
       "score": 0.3314,
       "score_text": "0.3314"
     },
     {
-      "rank": 33,
+      "rank": 38,
       "participant": "giles",
       "score": 0.3313,
       "score_text": "0.3313"
     },
     {
-      "rank": 34,
-      "participant": "j234",
-      "score": 0.3312,
-      "score_text": "0.3312"
-    },
-    {
-      "rank": 35,
+      "rank": 39,
       "participant": "li002666",
       "score": 0.3312,
       "score_text": "0.3312"
     },
     {
-      "rank": 36,
+      "rank": 40,
       "participant": "joano",
       "score": 0.3311,
       "score_text": "0.3311"
     },
     {
-      "rank": 37,
+      "rank": 41,
       "participant": "tovictoria1008",
       "score": 0.3308,
       "score_text": "0.3308"
     },
     {
-      "rank": 38,
-      "participant": "LL967",
-      "score": 0.3306,
-      "score_text": "0.3306"
-    },
-    {
-      "rank": 39,
+      "rank": 42,
       "participant": "gftuhin123g",
       "score": 0.3295,
       "score_text": "0.3295"
     },
     {
-      "rank": 40,
-      "participant": "holandakrait",
-      "score": 0.3287,
-      "score_text": "0.3287"
-    },
-    {
-      "rank": 41,
+      "rank": 43,
       "participant": "sahransah",
       "score": 0.328,
       "score_text": "0.3280"
     },
     {
-      "rank": 42,
+      "rank": 44,
       "participant": "shixing",
       "score": 0.3273,
       "score_text": "0.3273"
     },
     {
-      "rank": 43,
+      "rank": 45,
       "participant": "nchuzhoy",
       "score": 0.3262,
       "score_text": "0.3262"
     },
     {
-      "rank": 44,
+      "rank": 46,
       "participant": "kinghorton42",
       "score": 0.3261,
       "score_text": "0.3261"
     },
     {
-      "rank": 45,
+      "rank": 47,
       "participant": "danielhenshall85",
       "score": 0.3244,
       "score_text": "0.3244"
     },
     {
-      "rank": 46,
+      "rank": 48,
       "participant": "tran.thuy.trang",
       "score": 0.3231,
       "score_text": "0.3231"
     },
     {
-      "rank": 47,
+      "rank": 49,
       "participant": "like60986",
       "score": 0.3217,
       "score_text": "0.3217"
     },
     {
-      "rank": 48,
+      "rank": 50,
       "participant": "kpomazi",
       "score": 0.3195,
       "score_text": "0.3195"
-    },
-    {
-      "rank": 49,
-      "participant": "drjy",
-      "score": 0.318,
-      "score_text": "0.3180"
-    },
-    {
-      "rank": 50,
-      "participant": "twang",
-      "score": 0.3169,
-      "score_text": "0.3169"
     }
   ],
   "row_count": 50,
-  "attribution_caveat": "The official public leaderboard displays participants and scores but does not expose a prediction-file SHA-256 or public submission identifier; score equality is not artifact, account, or team attribution. As of 2026-10-30: H19-4 (0.1894) is not on the currently displayed rows; H19-5 (0.1922) is not on the currently displayed rows.",
+  "attribution_caveat": "The official public leaderboard displays participants and scores but does not expose a prediction-file SHA-256 or public submission identifier; score equality is not artifact, account, or team attribution. As of 2026-10-31: H19-4 (0.1894) is not on the currently displayed rows; H19-5 (0.1922) is not on the currently displayed rows.",
   "phase_caveat": "These are public leaderboard results only, not private Initial Prize Round (Phase 1) or expert-updated Final Prize Round (Phase 2) scores.",
   "capture_path": "headless-render",
   "refresh_status": {
-    "checked_utc": "2026-10-30T17:19:13+00:00",
+    "checked_utc": "2026-10-31T16:23:46+00:00",
     "status": "live",
     "capture_path": "headless-render",
     "row_count": 50,
@@ -335,10 +335,10 @@
       ],
       "render": {
         "returncode": 0,
-        "stdout": "rendered 163533 bytes of HTML to /tmp/tmpqyn9qk_i/gems-leaderboard-rendered.html",
+        "stdout": "rendered 164013 bytes of HTML to /tmp/tmp4uxrt96n/gems-leaderboard-rendered.html",
         "stderr": ""
       },
-      "rendered_bytes": 163533
+      "rendered_bytes": 164013
     }
   },
   "source_note": "Retrieved live from the official public leaderboard page."
